@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useMemo } from "react";
+import { useMemo } from "react";
 import { StorageAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { RouterAdapter } from "@/features/router/infra";
@@ -7,7 +7,7 @@ import { LocalStorageAdapter } from "@/features/storage/infra";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
-export function AdaptersProvider({ children }: PropsWithChildren) {
+export function AdaptersProvider() {
 	const storageAdapter = useMemo(() => new LocalStorageAdapter(), []);
 	const authAdapter = useMemo(
 		() => new StorageAuthAdapter(storageAdapter),
@@ -23,9 +23,9 @@ export function AdaptersProvider({ children }: PropsWithChildren) {
 
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
-			<RouterProvider>
-				<AuthProvider>{children}</AuthProvider>
-			</RouterProvider>
+			<AuthProvider>
+				<RouterProvider />
+			</AuthProvider>
 		</AdaptersContext.Provider>
 	);
 }
