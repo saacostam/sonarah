@@ -1,6 +1,7 @@
 import { useMemo, type PropsWithChildren } from "react";
-import { LocalStorageAdapter } from "@/features/storage/infra";
 import { StorageAuthAdapter } from "@/features/auth/infra";
+import { AuthProvider } from "@/features/auth/ui";
+import { LocalStorageAdapter } from "@/features/storage/infra";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
@@ -14,6 +15,8 @@ export function AdaptersProvider({ children }: PropsWithChildren) {
     }
 
     return <AdaptersContext.Provider value={allAdapters}>
-        {children}
+        <AuthProvider>
+            {children}
+        </AuthProvider>
     </AdaptersContext.Provider>
 }
