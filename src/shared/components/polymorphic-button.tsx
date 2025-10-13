@@ -4,16 +4,22 @@ import type { IButtonAction } from "@/shared/types";
 
 export interface PolymorphicButtonProps {
 	action: IButtonAction;
+	size?: ButtonProps["size"];
 	variant?: ButtonProps["variant"];
 }
 
-export function PolymorphicButton({ action, variant }: PolymorphicButtonProps) {
+export function PolymorphicButton({
+	action,
+	size,
+	variant,
+}: PolymorphicButtonProps) {
 	return (
 		<Button
 			asChild={action.action.type === "href"}
 			onClick={
 				action.action.type === "button" ? action.action.onClick : undefined
 			}
+			size={size}
 			variant={variant}
 		>
 			{action.action.type === "href" && (

@@ -1,6 +1,7 @@
 import { Outlet, Route, Routes } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
+import { ErrorScreen } from "@/features/errors/ui";
 import { RouterContext } from "../../app";
 import { RouteName } from "../../domain";
 
@@ -23,6 +24,14 @@ export function RouterProvider() {
 						element="Login"
 					/>
 				</Route>
+				<Route
+					path="*"
+					element={
+						<ErrorScreen
+							resetHref={routerAdapter.generateRoute({ name: RouteName.HOME })}
+						/>
+					}
+				/>
 			</Routes>
 		</RouterContext.Provider>
 	);

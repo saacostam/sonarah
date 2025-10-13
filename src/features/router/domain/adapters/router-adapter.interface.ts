@@ -2,6 +2,9 @@ import type { RouteName } from "../entities";
 
 export type GenerateRouteAction =
 	| {
+			name: RouteName.DASHBOARD;
+	  }
+	| {
 			name: RouteName.LOGIN;
 	  }
 	| {

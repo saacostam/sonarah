@@ -13,6 +13,9 @@ export class RouterAdapter implements IRouterAdapter {
 
 	generateRoute(action: GenerateRouteAction): string {
 		switch (action.name) {
+			case RouteName.DASHBOARD: {
+				return "/dash";
+			}
 			case RouteName.LOGIN: {
 				return "/login";
 			}

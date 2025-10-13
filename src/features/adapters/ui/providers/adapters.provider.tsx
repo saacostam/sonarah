@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { HashRouter, useLocation, useNavigate } from "react-router";
 import { StorageAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
+import { MockErrorLoggerAdapter } from "@/features/errors/infra";
+import { ErrorsProvider } from "@/features/errors/ui";
 import { RouterAdapter } from "@/features/router/infra";
 import { RouterProvider } from "@/features/router/ui";
 import { LocalStorageAdapter } from "@/features/storage/infra";
@@ -29,21 +31,25 @@ function AdaptersProviderDI() {
 		() => new RouterAdapter(navigate, location),
 		[location, navigate],
 	);
+	const errorLoggerAdapter = useMemo(() => new MockErrorLoggerAdapter(), []);
 
 	const allAdapters: IAdapters = useMemo(
 		() => ({
 			authAdapter: authAdapter,
+			errorLoggerAdapter: errorLoggerAdapter,
 			routerAdapter: routerAdapter,
 			storageAdapter: storageAdapter,
 		}),
-		[authAdapter, routerAdapter, storageAdapter],
+		[authAdapter, errorLoggerAdapter, routerAdapter, storageAdapter],
 	);
 
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
-			<AuthProvider>
-				<RouterProvider />
-			</AuthProvider>
+			<ErrorsProvider>
+				<AuthProvider>
+					<RouterProvider />
+				</AuthProvider>
+			</ErrorsProvider>
 		</AdaptersContext.Provider>
 	);
 }
