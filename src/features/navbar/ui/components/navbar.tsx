@@ -6,7 +6,7 @@ export function Navbar() {
 	const { status, mainAction, secondaryAction } = useNavbar();
 
 	return (
-		<Box width="100%" style={{ borderBottom: "var(--accent-6) 1px solid" }}>
+		<Box width="100%" style={{ borderBottom: "var(--gray-8) 1px solid" }}>
 			<Container p="4">
 				<Flex align="center" justify="between">
 					<Logo />
