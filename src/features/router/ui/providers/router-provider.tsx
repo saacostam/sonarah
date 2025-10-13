@@ -1,4 +1,4 @@
-import { HashRouter, Outlet, Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { RouterContext } from "../../app";
@@ -8,24 +8,22 @@ export function RouterProvider() {
 	const { routerAdapter } = useAdapters();
 
 	return (
-		<HashRouter>
-			<RouterContext.Provider value={routerAdapter}>
-				<Routes>
+		<RouterContext.Provider value={routerAdapter}>
+			<Routes>
+				<Route
+					element={
+						<AppLayout>
+							<Outlet />
+						</AppLayout>
+					}
+				>
+					<Route index element="Home" />
 					<Route
-						element={
-							<AppLayout>
-								<Outlet />
-							</AppLayout>
-						}
-					>
-						<Route index element="Home" />
-						<Route
-							path={routerAdapter.generateRoute({ name: RouteName.LOGIN })}
-							element="Login"
-						/>
-					</Route>
-				</Routes>
-			</RouterContext.Provider>
-		</HashRouter>
+						path={routerAdapter.generateRoute({ name: RouteName.LOGIN })}
+						element="Login"
+					/>
+				</Route>
+			</Routes>
+		</RouterContext.Provider>
 	);
 }
