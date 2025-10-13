@@ -7,7 +7,7 @@ export class StorageAuthAdapter implements IAuthAdapter {
     ) {}
 
     async getSession(): Promise<ISession> {
-        const _token = this.clientStorageAdapter.get(StorageKeys.TOKEN);
+        const _token = await this.clientStorageAdapter.get(StorageKeys.TOKEN);
 
         const token = typeof _token === "string" && _token.trim().length > 0 ? _token : null;
 
