@@ -1,26 +1,26 @@
-import type { StorageKeys, IStorageAdapter } from "../../domain";
+import type { IStorageAdapter, StorageKeys } from "../../domain";
 
 export class LocalStorageAdapter implements IStorageAdapter {
-    async get(key: StorageKeys): Promise<unknown | null> {
-        const val = localStorage.getItem(key);
+	async get(key: StorageKeys): Promise<unknown | null> {
+		const val = localStorage.getItem(key);
 
-        if (val === null) return null;
+		if (val === null) return null;
 
-        try {
-            return JSON.parse(val);
-        } catch {
-            return null;
-        }
-    };
+		try {
+			return JSON.parse(val);
+		} catch {
+			return null;
+		}
+	}
 
-    async set(key: StorageKeys, value: never) {
-        localStorage.setItem(key, JSON.stringify(value));
-    };
+	async set(key: StorageKeys, value: never) {
+		localStorage.setItem(key, JSON.stringify(value));
+	}
 
-    async unsafeGet<T>(key: StorageKeys): Promise<T | null> {
-        const val = this.get(key);
+	async unsafeGet<T>(key: StorageKeys): Promise<T | null> {
+		const val = this.get(key);
 
-        if (val === null) return null;
-        return val as T;
-    }
+		if (val === null) return null;
+		return val as T;
+	}
 }
