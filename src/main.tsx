@@ -5,6 +5,7 @@ import { Theme } from "@radix-ui/themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AdaptersProvider } from "@/features/adapters/ui";
+import { AppLayout } from "@/features/app-shell/ui";
 import App from "./App";
 import "./index.css";
 
@@ -15,8 +16,15 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
 			<AdaptersProvider>
-				<Theme accentColor="crimson">
-					<App />
+				<Theme
+					accentColor="red"
+					appearance="dark"
+					grayColor="sage"
+					panelBackground="translucent"
+				>
+					<AppLayout>
+						<App />
+					</AppLayout>
 				</Theme>
 			</AdaptersProvider>
 			<ReactQueryDevtools />
