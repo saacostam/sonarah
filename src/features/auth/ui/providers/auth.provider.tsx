@@ -1,17 +1,11 @@
-import { type PropsWithChildren, useMemo } from "react";
-import { LocalStorageAdapter } from "@/features/storage/infra";
+import type { PropsWithChildren } from "react";
+import { useAdapters } from "@/features/adapters/app";
 import { AuthContext } from "../../app";
-import { StorageAuthAdapter } from "../../infra";
 
 export function AuthProvider({ children }: PropsWithChildren) {
-	const storageAuthAdapter = useMemo(
-		() => new StorageAuthAdapter(new LocalStorageAdapter()),
-		[],
-	);
+	const { authAdapter } = useAdapters();
 
 	return (
-		<AuthContext.Provider value={storageAuthAdapter}>
-			{children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={authAdapter}>{children}</AuthContext.Provider>
 	);
 }
