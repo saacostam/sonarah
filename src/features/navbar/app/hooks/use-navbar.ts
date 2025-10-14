@@ -1,7 +1,10 @@
 import { useMemo } from "react";
+import { useAdapters } from "@/features/adapters/app";
 import { useQuerySession } from "@/features/auth/app";
+import { RouteName } from "@/features/router/domain";
 
 export function useNavbar() {
+	const { routerAdapter } = useAdapters();
 	const session = useQuerySession();
 
 	return useMemo(
@@ -16,24 +19,39 @@ export function useNavbar() {
 							mainAction:
 								session.data.type === "unauthenticated"
 									? {
-											label: "Signin",
-											action: { type: "href" as const, href: "#" },
+											label: "Login",
+											action: {
+												type: "href" as const,
+												href: routerAdapter.generateRoute({
+													name: RouteName.LOGIN,
+												}),
+											},
 										}
 									: {
 											label: "Start",
-											action: { type: "href" as const, href: "#" },
+											action: {
+												type: "href" as const,
+												href: routerAdapter.generateRoute({
+													name: RouteName.DASHBOARD,
+												}),
+											},
 										},
 							secondaryAction:
 								session.data.type === "authenticated"
 									? {
 											label: "Sign Out",
-											action: { type: "href" as const, href: "#" },
+											action: {
+												type: "href" as const,
+												href: routerAdapter.generateRoute({
+													name: RouteName.LOGIN,
+												}),
+											},
 										}
 									: null,
 						}
 					: {
 							status: "error" as const,
 						},
-		[session.data, session.isLoading, session.isSuccess],
+		[routerAdapter, session.data, session.isLoading, session.isSuccess],
 	);
 }
