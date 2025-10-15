@@ -5,15 +5,14 @@ export type GenerateRouteAction =
 			name: RouteName.DASHBOARD;
 	  }
 	| {
-			name: RouteName.LOGIN;
-	  }
-	| {
 			name: RouteName.HOME;
 	  };
 
 export interface IRouterAdapter {
 	generateRoute(action: GenerateRouteAction): string;
-	push(route: string): Promise<void>;
-	getLocation(): string;
 	getBaseUrl(): string;
+	getPathname(): string;
+	getUrlSearchParams(): URLSearchParams;
+	push(route: string): Promise<void>;
+	replace(route: string): Promise<void>;
 }

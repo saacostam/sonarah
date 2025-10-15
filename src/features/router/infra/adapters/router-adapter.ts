@@ -14,10 +14,7 @@ export class RouterAdapter implements IRouterAdapter {
 	generateRoute(action: GenerateRouteAction): string {
 		switch (action.name) {
 			case RouteName.DASHBOARD: {
-				return "/dash";
-			}
-			case RouteName.LOGIN: {
-				return "/login";
+				return "/app";
 			}
 			case RouteName.HOME: {
 				return "/";
@@ -25,15 +22,23 @@ export class RouterAdapter implements IRouterAdapter {
 		}
 	}
 
+	getBaseUrl(): string {
+		return window.location.origin;
+	}
+
+	getPathname(): string {
+		return this.location.pathname;
+	}
+
+	getUrlSearchParams(): URLSearchParams {
+		return new URLSearchParams(window.location.search);
+	}
+
 	async push(route: string): Promise<void> {
 		return this.navigate(route);
 	}
 
-	getLocation(): string {
-		return this.location.pathname;
-	}
-
-	getBaseUrl(): string {
-		return window.location.origin;
+	async replace(route: string): Promise<void> {
+		return this.navigate(route, { replace: true });
 	}
 }

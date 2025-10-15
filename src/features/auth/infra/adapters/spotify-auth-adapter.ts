@@ -1,6 +1,7 @@
-import { type IRouterAdapter, RouteName } from "@/features/router/domain";
+import { DomainError, DomainErrorType } from "@/features/errors/domain";
+import type { IRouterAdapter } from "@/features/router/domain";
 import { type IStorageAdapter, StorageKeys } from "@/features/storage/domain";
-import type { IAuthAdapter, ISession } from "../../domain";
+import type { IAuthAdapter, IAuthAdapterPayload, ISession } from "../../domain";
 
 const CLIENT_ID = "336489bc89354dff841b0eb68d389193";
 
@@ -26,8 +27,54 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 				};
 	}
 
+	async removeSession() {
+		await this.clientStorageAdapter.remove(StorageKeys.TOKEN);
+	}
+
+	async requestAccessToken(args: IAuthAdapterPayload["IRequestAccessTokenIn"]) {
+		const _codeVerifier = await this.clientStorageAdapter.get(
+			StorageKeys.CODE_VERIFIER,
+		);
+		const codeVerifier =
+			typeof _codeVerifier === "string" ? _codeVerifier : null;
+
+		if (!codeVerifier) {
+			throw new DomainError(
+				DomainErrorType.BAD_REQUEST,
+				"We couldn't complete the login process. Please try signing in again.",
+				"[PKCE] Missing code_verifier",
+			);
+		}
+
+		const redirectUri = this.getRedirectUri();
+
+		const url = "https://accounts.spotify.com/api/token";
+		const payload = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				client_id: CLIENT_ID,
+				grant_type: "authorization_code",
+				code: args.code,
+				redirect_uri: redirectUri,
+				code_verifier: codeVerifier,
+			}),
+		};
+
+		const body = await fetch(url, payload);
+		const response = await body.json();
+
+		return response.access_token;
+	}
+
+	async setSession({ token }: IAuthAdapterPayload["ISetSessionIn"]) {
+		await this.clientStorageAdapter.set(StorageKeys.TOKEN, token);
+	}
+
 	async startAuthFlow() {
-		const redirectUri = `${this.routerAdapter.getBaseUrl()}/#${this.routerAdapter.generateRoute({ name: RouteName.LOGIN })}`;
+		const redirectUri = this.getRedirectUri();
 
 		const scope = "user-read-private user-read-email";
 		const authUrl = new URL("https://accounts.spotify.com/authorize");
@@ -49,24 +96,18 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 		window.location.href = authUrl.toString();
 	}
 
-	private generateRandomString(length: number) {
-		const possible =
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		const values = crypto.getRandomValues(new Uint8Array(length));
-		return values.reduce((acc, x) => acc + possible[x % possible.length], "");
-	}
-
-	private async sha256(plain: string) {
-		const encoder = new TextEncoder();
-		const data = encoder.encode(plain);
-		return window.crypto.subtle.digest("SHA-256", data);
-	}
-
 	private base64encode(input: ArrayBuffer) {
 		return btoa(String.fromCharCode(...new Uint8Array(input)))
 			.replace(/=/g, "")
 			.replace(/\+/g, "-")
 			.replace(/\//g, "_");
+	}
+
+	private generateRandomString(length: number) {
+		const possible =
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		const values = crypto.getRandomValues(new Uint8Array(length));
+		return values.reduce((acc, x) => acc + possible[x % possible.length], "");
 	}
 
 	private async getCodeChallenge() {
@@ -76,5 +117,15 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 			codeVerifier,
 			codeChallenge: this.base64encode(hashed),
 		};
+	}
+
+	private getRedirectUri() {
+		return this.routerAdapter.getBaseUrl();
+	}
+
+	private async sha256(plain: string) {
+		const encoder = new TextEncoder();
+		const data = encoder.encode(plain);
+		return window.crypto.subtle.digest("SHA-256", data);
 	}
 }

@@ -16,14 +16,14 @@ export function useAuthGuard() {
 		[routerAdapter],
 	);
 
-	const location = routerAdapter.getLocation();
+	const location = routerAdapter.getPathname();
 	const isPublicRoute = publicRoutesPaths.some(
 		(publicRoute) => location === publicRoute,
 	);
 
 	const shouldGoToApp =
 		session.isSuccess && session.data.type === "authenticated" && isPublicRoute;
-	const shouldGoLogin =
+	const shouldGoToHome =
 		session.isSuccess &&
 		session.data.type === "unauthenticated" &&
 		!isPublicRoute;
@@ -37,14 +37,12 @@ export function useAuthGuard() {
 	}, [routerAdapter, shouldGoToApp]);
 
 	useEffect(() => {
-		if (shouldGoLogin) {
-			routerAdapter.push(
-				routerAdapter.generateRoute({ name: RouteName.LOGIN }),
-			);
+		if (shouldGoToHome) {
+			routerAdapter.push(routerAdapter.generateRoute({ name: RouteName.HOME }));
 		}
-	}, [routerAdapter, shouldGoLogin]);
+	}, [routerAdapter, shouldGoToHome]);
 
-	const pending = !session.isSuccess || shouldGoToApp || shouldGoLogin;
+	const pending = !session.isSuccess || shouldGoToApp || shouldGoToHome;
 
 	return useMemo(
 		() => (session.isError ? "error" : pending ? "loading" : "success"),

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { HashRouter, useLocation, useNavigate } from "react-router";
+import { BrowserRouter, useLocation, useNavigate } from "react-router";
 import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
@@ -12,9 +12,9 @@ import type { IAdapters } from "../../domain";
 
 export function AdaptersProvider() {
 	return (
-		<HashRouter>
+		<BrowserRouter>
 			<AdaptersProviderDI />
-		</HashRouter>
+		</BrowserRouter>
 	);
 }
 

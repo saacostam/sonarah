@@ -13,6 +13,10 @@ export class LocalStorageAdapter implements IStorageAdapter {
 		}
 	}
 
+	async remove(key: StorageKeys) {
+		localStorage.removeItem(key);
+	}
+
 	async set(key: StorageKeys, value: unknown) {
 		localStorage.setItem(key, JSON.stringify(value));
 	}

@@ -1,11 +1,80 @@
-import { useMemo } from "react";
-import { useAdapters } from "@/features/adapters/app";
+import { useEffect, useMemo } from "react";
+import {
+	useMutationRequestAccessToken,
+	useMutationSetSession,
+	useMutationStartAuthFlow,
+	useQuerySession,
+} from "@/features/auth/app";
+import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
+import type { IButtonAction } from "@/shared/types";
+
+enum UrlSearchParam {
+	CODE = "code",
+}
 
 export function useHomeScreen() {
-	const { routerAdapter } = useAdapters();
+	const router = useRouter();
+	const session = useQuerySession();
 
-	const ctaHref = routerAdapter.generateRoute({ name: RouteName.DASHBOARD });
+	const { mutate: setSession } = useMutationSetSession();
+	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
+	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
 
-	return useMemo(() => ({ ctaHref }), [ctaHref]);
+	const urlSearchParams = router.getUrlSearchParams();
+	const code = urlSearchParams.get(UrlSearchParam.CODE);
+
+	const isAuth = session.isSuccess && session.data.type === "authenticated";
+	const mainCta: IButtonAction = useMemo(
+		() => ({
+			action: isAuth
+				? {
+						type: "href",
+						href: router.generateRoute({ name: RouteName.DASHBOARD }),
+					}
+				: {
+						type: "button",
+						onClick: () => startAuthFlow(),
+					},
+			label: isAuth ? "Start Now" : "Login",
+		}),
+		[isAuth, router, startAuthFlow],
+	);
+
+	useEffect(() => {
+		if (code) {
+			const reset = () => router.replace(router.getPathname());
+
+			requestAccessToken(
+				{ code },
+				{
+					onSuccess: (token) => {
+						setSession(
+							{ token },
+							{
+								onSettled: () =>
+									router.replace(
+										router.generateRoute({ name: RouteName.DASHBOARD }),
+									),
+							},
+						);
+					},
+					onError: (e) => {
+						console.error(e);
+						reset();
+					},
+				},
+			);
+		}
+	}, [code, requestAccessToken, router, setSession]);
+
+	return useMemo(
+		() =>
+			code || session.isLoading
+				? { status: "loading" as const }
+				: session.isSuccess
+					? { status: "success" as const, mainCta }
+					: { status: "error" as const },
+		[code, mainCta, session.isLoading, session.isSuccess],
+	);
 }

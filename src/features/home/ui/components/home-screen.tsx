@@ -3,7 +3,7 @@ import { PolymorphicButton } from "@/shared/components";
 import { useHomeScreen } from "../../app";
 
 export function HomeScreen() {
-	const { ctaHref } = useHomeScreen();
+	const { status, mainCta } = useHomeScreen();
 
 	return (
 		<Flex
@@ -18,18 +18,14 @@ export function HomeScreen() {
 				Sonarah analyzes the energy of your favorite music and crafts new
 				playlists with precision and personality.
 			</Text>
-			<PolymorphicButton
-				action={{
-					action: {
-						type: "href",
-						href: ctaHref,
-					},
-					label: "Start Now",
-				}}
-				mt="6"
-				size="4"
-				style={{ width: "fit-content" }}
-			/>
+			{status === "success" && (
+				<PolymorphicButton
+					action={mainCta}
+					mt="6"
+					size="4"
+					style={{ width: "fit-content" }}
+				/>
+			)}
 		</Flex>
 	);
 }
