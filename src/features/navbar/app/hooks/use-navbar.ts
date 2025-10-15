@@ -1,16 +1,24 @@
 import { useMemo } from "react";
-import { useMutationStartAuthFlow, useQuerySession } from "@/features/auth/app";
+import {
+	useMutationLogout,
+	useMutationStartAuthFlow,
+	useQuerySession,
+} from "@/features/auth/app";
 import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 
 export function useNavbar() {
 	const router = useRouter();
+
 	const session = useQuerySession();
-	const startAuthFlow = useMutationStartAuthFlow();
+
+	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
+	const { mutate: logout } = useMutationLogout();
 
 	return useMemo(
-		() =>
-			session.isLoading
+		() => ({
+			logoHref: router.generateRoute({ name: RouteName.HOME }),
+			loader: session.isLoading
 				? {
 						status: "loading" as const,
 					}
@@ -23,7 +31,7 @@ export function useNavbar() {
 											label: "Login",
 											action: {
 												type: "button" as const,
-												onClick: () => startAuthFlow.mutate(),
+												onClick: () => startAuthFlow(),
 											},
 										}
 									: {
@@ -40,10 +48,8 @@ export function useNavbar() {
 									? {
 											label: "Sign Out",
 											action: {
-												type: "href" as const,
-												href: router.generateRoute({
-													name: RouteName.HOME,
-												}),
+												type: "button" as const,
+												onClick: () => logout(),
 											},
 										}
 									: null,
@@ -51,6 +57,14 @@ export function useNavbar() {
 					: {
 							status: "error" as const,
 						},
-		[router, session.data, session.isLoading, session.isSuccess, startAuthFlow],
+		}),
+		[
+			logout,
+			router,
+			session.data,
+			session.isLoading,
+			session.isSuccess,
+			startAuthFlow,
+		],
 	);
 }
