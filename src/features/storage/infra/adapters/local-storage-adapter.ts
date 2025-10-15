@@ -13,7 +13,7 @@ export class LocalStorageAdapter implements IStorageAdapter {
 		}
 	}
 
-	async set(key: StorageKeys, value: never) {
+	async set(key: StorageKeys, value: unknown) {
 		localStorage.setItem(key, JSON.stringify(value));
 	}
 

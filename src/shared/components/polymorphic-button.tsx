@@ -17,8 +17,10 @@ export function PolymorphicButton(props: PolymorphicButtonProps) {
 			}
 			{...rest}
 		>
-			{action.action.type === "href" && (
+			{action.action.type === "href" ? (
 				<Link to={action.action.href}>{action.label}</Link>
+			) : (
+				action.label
 			)}
 		</Button>
 	);

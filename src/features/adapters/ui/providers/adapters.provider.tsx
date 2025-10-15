@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { HashRouter, useLocation, useNavigate } from "react-router";
-import { StorageAuthAdapter } from "@/features/auth/infra";
+import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
 import { ErrorsProvider } from "@/features/errors/ui";
@@ -23,13 +23,13 @@ function AdaptersProviderDI() {
 	const location = useLocation();
 
 	const storageAdapter = useMemo(() => new LocalStorageAdapter(), []);
-	const authAdapter = useMemo(
-		() => new StorageAuthAdapter(storageAdapter),
-		[storageAdapter],
-	);
 	const routerAdapter = useMemo(
 		() => new RouterAdapter(navigate, location),
 		[location, navigate],
+	);
+	const authAdapter = useMemo(
+		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),
+		[routerAdapter, storageAdapter],
 	);
 	const errorLoggerAdapter = useMemo(() => new MockErrorLoggerAdapter(), []);
 

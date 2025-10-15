@@ -28,8 +28,6 @@ export function useAuthGuard() {
 		session.data.type === "unauthenticated" &&
 		!isPublicRoute;
 
-	console.log({ location, shouldGoToApp, shouldGoLogin });
-
 	useEffect(() => {
 		if (shouldGoToApp) {
 			routerAdapter.push(

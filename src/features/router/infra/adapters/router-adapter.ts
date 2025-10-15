@@ -32,4 +32,8 @@ export class RouterAdapter implements IRouterAdapter {
 	getLocation(): string {
 		return this.location.pathname;
 	}
+
+	getBaseUrl(): string {
+		return window.location.origin;
+	}
 }

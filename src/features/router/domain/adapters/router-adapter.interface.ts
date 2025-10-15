@@ -15,4 +15,5 @@ export interface IRouterAdapter {
 	generateRoute(action: GenerateRouteAction): string;
 	push(route: string): Promise<void>;
 	getLocation(): string;
+	getBaseUrl(): string;
 }

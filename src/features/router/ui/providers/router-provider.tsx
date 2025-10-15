@@ -3,6 +3,7 @@ import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
+import { LoginScreen } from "@/features/login/ui";
 import { RouterContext } from "../../app";
 import { RouteName } from "../../domain";
 
@@ -22,7 +23,7 @@ export function RouterProvider() {
 					<Route index element={<HomeScreen />} />
 					<Route
 						path={routerAdapter.generateRoute({ name: RouteName.LOGIN })}
-						element="Login"
+						element={<LoginScreen />}
 					/>
 				</Route>
 				<Route

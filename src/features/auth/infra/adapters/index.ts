@@ -1,1 +1,1 @@
-export * from "./storage-auth-adapter";
+export * from "./spotify-auth-adapter";
