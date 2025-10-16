@@ -5,5 +5,5 @@ export enum INotificationAdapterType {
 }
 
 export interface INotificationAdapter {
-	type: INotificationAdapterType;
+	notify(type: INotificationAdapterType, msg: string): Promise<void>;
 }
