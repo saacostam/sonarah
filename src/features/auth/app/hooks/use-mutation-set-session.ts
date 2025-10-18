@@ -9,8 +9,8 @@ export function useMutationSetSession() {
 
 	return useMutation({
 		mutationKey: [MutationKey.SET_SESSION],
-		mutationFn: (args: IAuthAdapterPayload["ISetSessionIn"]) =>
-			authAdapter.setSession(args),
+		mutationFn: (args: IAuthAdapterPayload["ISetTokenIn"]) =>
+			authAdapter.setToken(args),
 		onSettled: () =>
 			queryClient.invalidateQueries({
 				queryKey: [QueryKey.SESSION],

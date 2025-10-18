@@ -9,7 +9,7 @@ export function useMutationLogout() {
 
 	return useMutation({
 		mutationKey: [MutationKey.LOGOUT],
-		mutationFn: () => authAdapter.removeSession(),
+		mutationFn: () => authAdapter.removeToken(),
 		onSettled: () =>
 			queryClient.invalidateQueries({
 				queryKey: [QueryKey.SESSION],

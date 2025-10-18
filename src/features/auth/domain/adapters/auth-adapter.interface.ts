@@ -1,12 +1,12 @@
 import type { ISession } from "../entities";
 
 export interface IAuthAdapter {
-	getSession: () => Promise<ISession>;
-	removeSession: () => Promise<void>;
+	getToken: () => Promise<ISession>;
+	removeToken: () => Promise<void>;
 	requestAccessToken: (
 		args: IAuthAdapterPayload["IRequestAccessTokenIn"],
 	) => Promise<IAuthAdapterPayload["IRequestAccessTokenOut"]>;
-	setSession: (args: IAuthAdapterPayload["ISetSessionIn"]) => Promise<void>;
+	setToken: (args: IAuthAdapterPayload["ISetTokenIn"]) => Promise<void>;
 	startAuthFlow: () => Promise<void>;
 }
 
@@ -15,7 +15,7 @@ export interface IAuthAdapterPayload {
 		code: string;
 	};
 	IRequestAccessTokenOut: string;
-	ISetSessionIn: {
+	ISetTokenIn: {
 		token: string;
 	};
 }

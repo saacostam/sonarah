@@ -13,7 +13,7 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 		private routerAdapter: IRouterAdapter,
 	) {}
 
-	async getSession(): Promise<ISession> {
+	async getToken(): Promise<ISession> {
 		const _token = await this.clientStorageAdapter.get(StorageKeys.TOKEN);
 
 		const token =
@@ -29,7 +29,7 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 				};
 	}
 
-	async removeSession() {
+	async removeToken() {
 		await this.clientStorageAdapter.remove(StorageKeys.TOKEN);
 	}
 
@@ -107,7 +107,7 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 		return body.access_token;
 	}
 
-	async setSession({ token }: IAuthAdapterPayload["ISetSessionIn"]) {
+	async setToken({ token }: IAuthAdapterPayload["ISetTokenIn"]) {
 		await this.clientStorageAdapter.set(StorageKeys.TOKEN, token);
 	}
 

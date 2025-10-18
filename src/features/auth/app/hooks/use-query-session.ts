@@ -7,6 +7,6 @@ export function useQuerySession() {
 
 	return useQuery({
 		queryKey: [QueryKey.SESSION],
-		queryFn: () => authAdapter.getSession(),
+		queryFn: () => authAdapter.getToken(),
 	});
 }
