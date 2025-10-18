@@ -7,7 +7,9 @@ export class UserRepository implements IUserRepository {
 	async getUser(): Promise<IUser> {
 		const res = await this.spotifyAuthClient.get<{
 			id: string;
+			country: string;
 			display_name: string;
+			email: string;
 			images: {
 				url: string;
 			}[];
@@ -15,6 +17,8 @@ export class UserRepository implements IUserRepository {
 
 		return {
 			id: res.id,
+			country: res.country,
+			email: res.email,
 			name: res.display_name,
 			profilePicture: res.images.at(0)?.url,
 		};
