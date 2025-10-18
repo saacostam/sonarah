@@ -1,31 +1,11 @@
-import { Flex, Heading, Text } from "@radix-ui/themes";
-import { PolymorphicButton } from "@/shared/components";
 import { useHomeScreen } from "../../app";
+import { HomeScreenContent } from "./home-screen-content";
+import { HomeScreenSkeleton } from "./home-screen-skeleton";
 
 export function HomeScreen() {
 	const { status, mainCta } = useHomeScreen();
 
-	return (
-		<Flex
-			direction="column"
-			align="center"
-			style={{ maxWidth: 720, margin: "3rem auto" }}
-		>
-			<Heading align="center" size="9">
-				Smart playlists, your personal soundtrack.
-			</Heading>
-			<Text align="center" mt="4" size="4">
-				Sonarah analyzes the energy of your favorite music and crafts new
-				playlists with precision and personality.
-			</Text>
-			{status === "success" && (
-				<PolymorphicButton
-					action={mainCta}
-					mt="6"
-					size="4"
-					style={{ width: "fit-content" }}
-				/>
-			)}
-		</Flex>
-	);
+	if (status === "error" || status === "loading") return <HomeScreenSkeleton />;
+
+	return <HomeScreenContent mainCta={mainCta} />;
 }
