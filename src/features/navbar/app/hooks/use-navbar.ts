@@ -17,7 +17,10 @@ export function useNavbar() {
 
 	return useMemo(
 		() => ({
-			logoHref: router.generateRoute({ name: RouteName.HOME }),
+			logoHref:
+				session.isSuccess && session.data.type === "authenticated"
+					? router.generateRoute({ name: RouteName.DASHBOARD })
+					: router.generateRoute({ name: RouteName.HOME }),
 			loader: session.isLoading
 				? {
 						status: "loading" as const,
@@ -35,7 +38,7 @@ export function useNavbar() {
 											},
 										}
 									: {
-											label: "Start",
+											label: "Home",
 											action: {
 												type: "href" as const,
 												href: router.generateRoute({
