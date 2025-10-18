@@ -7,7 +7,7 @@ export interface PolymorphicButtonProps extends ButtonProps {
 }
 
 export function PolymorphicButton(props: PolymorphicButtonProps) {
-	const { action, ...rest } = props;
+	const { action, style, ...rest } = props;
 
 	return (
 		<Button
@@ -15,6 +15,10 @@ export function PolymorphicButton(props: PolymorphicButtonProps) {
 			onClick={
 				action.action.type === "button" ? action.action.onClick : undefined
 			}
+			style={{
+				cursor: "pointer",
+				...style,
+			}}
 			{...rest}
 		>
 			{action.action.type === "href" ? (
