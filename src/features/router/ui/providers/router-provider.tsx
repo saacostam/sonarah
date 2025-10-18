@@ -1,6 +1,7 @@
 import { Outlet, Route, Routes } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
+import { DashboardScreen } from "@/features/dashboard/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
 import { RouterContext } from "../../app";
@@ -22,7 +23,7 @@ export function RouterProvider() {
 					<Route index element={<HomeScreen />} />
 					<Route
 						path={routerAdapter.generateRoute({ name: RouteName.DASHBOARD })}
-						element={null}
+						element={<DashboardScreen />}
 					/>
 				</Route>
 				<Route

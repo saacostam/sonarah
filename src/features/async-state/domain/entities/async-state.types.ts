@@ -1,5 +1,6 @@
 export enum QueryKey {
 	SESSION = "Session",
+	USER = "User",
 }
 
 export enum MutationKey {

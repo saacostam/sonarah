@@ -4,6 +4,7 @@ import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
 import { ErrorsProvider } from "@/features/errors/ui";
+import { RepositoriesProvider } from "@/features/repositories/ui";
 import { RouterAdapter } from "@/features/router/infra";
 import { RouterProvider } from "@/features/router/ui";
 import { LocalStorageAdapter } from "@/features/storage/infra";
@@ -47,7 +48,9 @@ function AdaptersProviderDI() {
 		<AdaptersContext.Provider value={allAdapters}>
 			<ErrorsProvider>
 				<AuthProvider>
-					<RouterProvider />
+					<RepositoriesProvider>
+						<RouterProvider />
+					</RepositoriesProvider>
 				</AuthProvider>
 			</ErrorsProvider>
 		</AdaptersContext.Provider>
