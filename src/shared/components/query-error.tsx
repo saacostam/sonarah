@@ -21,10 +21,10 @@ export function QueryError({
 			style={{ border: "var(--red-5) 1px solid", background: "var(--red-2)" }}
 		>
 			<Flex direction="column" gap="2">
-				<Heading color="red" size="4">
+				<Heading color="red" size="3">
 					{title}
 				</Heading>
-				<Text size="3">{description}</Text>
+				<Text size="2">{description}</Text>
 				{retry && (
 					<PolymorphicButton
 						action={{
