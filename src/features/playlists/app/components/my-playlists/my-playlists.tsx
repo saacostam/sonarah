@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useState } from "react";
 import { QueryError } from "@/shared/components";
-import { PlusIcon } from "@/shared/icons";
+import { ArrowPathIcon, PlusIcon } from "@/shared/icons";
 import { useQueryMyPlaylists } from "../../hooks";
 import { MyPlaylistsSkeleton } from "./my-playlists-skeleton";
 import { PlaylistItem } from "./playlist-item";
@@ -32,9 +32,19 @@ export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 					</Heading>
 					<Text>Select the playlist you want to reference</Text>
 				</div>
-				<Button onClick={onCreatePlaylist} style={{ cursor: "pointer" }}>
-					<PlusIcon height={16} width={16} /> Create Playlist
-				</Button>
+				<Flex gap="2">
+					<Button
+						onClick={() => myPlaylists.refetch()}
+						variant="outline"
+						style={{ cursor: "pointer" }}
+						loading={myPlaylists.isFetching}
+					>
+						<ArrowPathIcon height={20} width={20} />
+					</Button>
+					<Button onClick={onCreatePlaylist} style={{ cursor: "pointer" }}>
+						<PlusIcon height={16} width={16} /> Create Playlist
+					</Button>
+				</Flex>
 			</Flex>
 			{myPlaylists.isError && (
 				<QueryError
