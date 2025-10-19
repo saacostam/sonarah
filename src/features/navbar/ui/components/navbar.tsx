@@ -5,7 +5,7 @@ import { useNavbar } from "../../app";
 
 export function Navbar() {
 	const {
-		loader: { status, mainAction, secondaryAction },
+		loader: { status, mainAction },
 		logoHref,
 	} = useNavbar();
 
@@ -21,9 +21,6 @@ export function Navbar() {
 					{status === "success" && (
 						<Flex gap="4">
 							<PolymorphicButton action={mainAction} />
-							{secondaryAction && (
-								<PolymorphicButton action={secondaryAction} variant="outline" />
-							)}
 						</Flex>
 					)}
 					{status === "loading" && <Skeleton height="32px" width="64px" />}

@@ -38,24 +38,12 @@ export function useNavbar() {
 											},
 										}
 									: {
-											label: "Home",
-											action: {
-												type: "href" as const,
-												href: router.generateRoute({
-													name: RouteName.DASHBOARD,
-												}),
-											},
-										},
-							secondaryAction:
-								session.data.type === "authenticated"
-									? {
 											label: "Sign Out",
 											action: {
 												type: "button" as const,
 												onClick: () => logout(),
 											},
-										}
-									: null,
+										},
 						}
 					: {
 							status: "error" as const,
