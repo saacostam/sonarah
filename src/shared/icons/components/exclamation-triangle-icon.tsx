@@ -1,12 +1,6 @@
-export interface ExclamationTriangleIconProps {
-	height?: number;
-	width?: number;
-}
+import type { IconProps } from "../types";
 
-export function ExclamationTriangleIcon({
-	width,
-	height,
-}: ExclamationTriangleIconProps) {
+export function ExclamationTriangleIcon({ width, height }: IconProps) {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
