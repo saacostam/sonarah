@@ -16,7 +16,7 @@ function App() {
 			>
 				<AdaptersProvider />
 			</Theme>
-			<ReactQueryDevtools />
+			<ReactQueryDevtools buttonPosition="bottom-left" />
 		</QueryClientProvider>
 	);
 }
