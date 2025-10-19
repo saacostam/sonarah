@@ -48,7 +48,7 @@ export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 			{myPlaylists.isSuccess &&
 				(myPlaylists.data.total > 0 ? (
 					<>
-						<Flex wrap="wrap" gap="6" width="100%" mb="6">
+						<Flex wrap="wrap" gap="6" width="100%" mb="6" justify="center">
 							{myPlaylists.data.playlists.map((playlist) => (
 								<PlaylistItem key={playlist.id} playlist={playlist} />
 							))}
