@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text } from "@radix-ui/themes";
+import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useState } from "react";
 import { QueryError } from "@/shared/components";
 import { useQueryMyPlaylists } from "../../hooks";
@@ -7,20 +7,34 @@ import { PlaylistItem } from "./playlist-item";
 
 const LIMIT = 14;
 
-export function MyPlaylists() {
+export interface MyPlaylistsProps {
+	onCreatePlaylist: () => void;
+}
+
+export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 	const [page, setPage] = useState<number>(1);
 
 	const myPlaylists = useQueryMyPlaylists({ req: { page, limit: LIMIT } });
 
 	return (
 		<main data-testid="my-playlists">
-			<Box mb="6">
-				<Heading>
-					My Playlists{" "}
-					{myPlaylists.isSuccess ? ` (${myPlaylists.data.total})` : null}
-				</Heading>
-				<Text>Select the playlist you want to reference</Text>
-			</Box>
+			<Flex
+				mb="6"
+				direction={{ initial: "column", xs: "row" }}
+				gap="4"
+				justify="between"
+			>
+				<div>
+					<Heading>
+						My Playlists{" "}
+						{myPlaylists.isSuccess ? ` (${myPlaylists.data.total})` : null}
+					</Heading>
+					<Text>Select the playlist you want to reference</Text>
+				</div>
+				<Button onClick={onCreatePlaylist} style={{ cursor: "pointer" }}>
+					Create Playlist
+				</Button>
+			</Flex>
 			{myPlaylists.isError && (
 				<QueryError
 					title="Unable to fetch my playlists"
