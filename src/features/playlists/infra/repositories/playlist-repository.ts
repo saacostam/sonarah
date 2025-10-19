@@ -7,6 +7,23 @@ import type {
 export class PlaylistRepository implements IPlaylistRepository {
 	constructor(private spotifyAuthClient: IClientAdapter) {}
 
+	async create(
+		args: IPlaylistRepositoryPayload["CreatePlaylistIn"],
+	): Promise<IPlaylistRepositoryPayload["CreatePlaylistOut"]> {
+		const { name, userId, visibility } = args;
+
+		const res = await this.spotifyAuthClient.post<{
+			id: string;
+		}>(`/v1/users/${userId}/playlists`, {
+			name,
+			public: visibility === "public",
+		});
+
+		return {
+			id: res.id,
+		};
+	}
+
 	async getAll(
 		args: IPlaylistRepositoryPayload["GetAllIn"],
 	): Promise<IPlaylistRepositoryPayload["GetAllOut"]> {
@@ -20,9 +37,11 @@ export class PlaylistRepository implements IPlaylistRepository {
 			total: number;
 			items: {
 				id: string;
-				images: {
-					url: string;
-				}[];
+				images:
+					| null
+					| {
+							url: string;
+					  }[];
 				name: string;
 				owner: {
 					display_name: string;
@@ -40,7 +59,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				id: item.id,
 				name: item.name,
 				creatorName: item.owner.display_name,
-				pictureUrl: item.images.at(0)?.url,
+				pictureUrl: item.images?.at(0)?.url,
 				numberOfTracks: item.tracks.total,
 			})),
 		};

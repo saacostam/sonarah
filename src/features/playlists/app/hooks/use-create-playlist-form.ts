@@ -9,6 +9,8 @@ const CreatePlaylistFormSchema = z.object({
 		.max(50, "Playlist name can't be longer than 50 characters"),
 });
 
+export type ICreatePlaylistForm = z.infer<typeof CreatePlaylistFormSchema>;
+
 export function useCreatePlaylistForm() {
 	return useForm({
 		defaultValues: {

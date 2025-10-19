@@ -38,6 +38,7 @@ export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 			</Flex>
 			{myPlaylists.isError && (
 				<QueryError
+					error={myPlaylists.error}
 					title="Unable to fetch my playlists"
 					retry={{
 						onClick: myPlaylists.refetch,

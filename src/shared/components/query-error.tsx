@@ -1,20 +1,22 @@
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
+import { getErrorMessage } from "../utils";
 import { PolymorphicButton } from "./polymorphic-button";
 
 export interface QueryErrorProps {
 	title: string;
-	description?: string;
+	error: unknown;
 	retry?: {
 		onClick: () => void;
 		isPending: boolean;
 	};
 }
 
-export function QueryError({
-	title,
-	description = "This may be due to a network issue or temporary server downtime. Please check your connection or try again in a moment.",
-	retry,
-}: QueryErrorProps) {
+export function QueryError({ title, error, retry }: QueryErrorProps) {
+	const description = getErrorMessage(
+		error,
+		"This may be due to a network issue or temporary server downtime. Please check your connection or try again in a moment.",
+	);
+
 	return (
 		<Card
 			data-testid="query-error"

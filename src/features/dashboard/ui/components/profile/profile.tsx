@@ -9,6 +9,7 @@ export function Profile() {
 	if (user.isError)
 		return (
 			<QueryError
+				error={user.error}
 				title="Unable to fetch user profile"
 				retry={{ onClick: user.refetch, isPending: user.isPending }}
 			/>
