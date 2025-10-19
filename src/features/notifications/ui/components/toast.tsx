@@ -1,5 +1,5 @@
 import { Flex, Heading, Text } from "@radix-ui/themes";
-import { XIcon } from "@/features/icons";
+import { XIcon } from "@/shared/icons";
 
 export interface ToastProps {
 	description: string;
