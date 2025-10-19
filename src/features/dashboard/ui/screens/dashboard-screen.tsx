@@ -1,5 +1,5 @@
-import { Profile } from "../components";
+import { MyPlaylists } from "@/features/playlists/app";
 
 export function DashboardScreen() {
-	return <Profile />;
+	return <MyPlaylists />;
 }

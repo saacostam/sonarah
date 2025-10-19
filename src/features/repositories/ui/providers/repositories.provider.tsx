@@ -3,6 +3,8 @@ import { useAdapters } from "@/features/adapters/app";
 import { useQuerySession } from "@/features/auth/app";
 import type { IClientAdapter } from "@/features/clients/domain";
 import { FetchClientAdapter } from "@/features/clients/infra";
+import type { IPlaylistRepository } from "@/features/playlists/domain";
+import { PlaylistRepository } from "@/features/playlists/infra";
 import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
 import { RepositoriesContext } from "../../app";
@@ -26,6 +28,10 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 		[authAdapter, routerAdapter, session.data],
 	);
 
+	const playlistRepository: IPlaylistRepository = useMemo(
+		() => new PlaylistRepository(spotifyFetchClientAdapter),
+		[spotifyFetchClientAdapter],
+	);
 	const userRepository: IUserRepository = useMemo(
 		() => new UserRepository(spotifyFetchClientAdapter),
 		[spotifyFetchClientAdapter],
@@ -33,9 +39,10 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 
 	const repositories: IRepositories = useMemo(
 		() => ({
+			playlist: playlistRepository,
 			user: userRepository,
 		}),
-		[userRepository],
+		[playlistRepository, userRepository],
 	);
 
 	return (
