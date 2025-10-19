@@ -6,7 +6,7 @@ export function AppLayout({ children }: PropsWithChildren) {
 	return (
 		<>
 			<Navbar />
-			<Container mt="4" px="4">
+			<Container mt="6" px="4">
 				{children}
 			</Container>
 		</>
