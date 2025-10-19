@@ -1,13 +1,19 @@
+import type { IAuthAdapter } from "@/features/auth/domain";
+import { type IRouterAdapter, RouteName } from "@/features/router/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 
 export class FetchClientAdapter implements IClientAdapter {
 	private readonly baseUrl?: string;
 	private readonly defaultHeaders?: Record<string, string>;
 
-	constructor(options?: {
-		baseUrl?: string;
-		defaultHeaders?: Record<string, string>;
-	}) {
+	constructor(
+		private authAdapter: IAuthAdapter,
+		private routerAdapter: IRouterAdapter,
+		options?: {
+			baseUrl?: string;
+			defaultHeaders?: Record<string, string>;
+		},
+	) {
 		this.baseUrl = options?.baseUrl;
 		this.defaultHeaders = options?.defaultHeaders;
 	}
@@ -53,6 +59,13 @@ export class FetchClientAdapter implements IClientAdapter {
 		});
 
 		if (!response.ok) {
+			if (response.status === 401) {
+				await this.authAdapter.removeToken();
+				await this.routerAdapter.push(
+					this.routerAdapter.generateRoute({ name: RouteName.HOME }),
+				);
+			}
+
 			const errorBody = await response.text().catch(() => "");
 			throw new Error(
 				`HTTP ${response.status} ${response.statusText}: ${errorBody}`,
