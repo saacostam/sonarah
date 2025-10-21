@@ -27,8 +27,8 @@ export function PlaylistItem({ playlist }: PlaylistItemProps) {
 						<Heading align="center" truncate size="4">
 							{playlist.name}
 						</Heading>
-						<Text align="center" size="2">
-							{playlist.numberOfTracks} Tracks
+						<Text align="center" size="2" color="red">
+							{playlist.numberOfTracks} songs
 						</Text>
 					</div>
 				</Flex>

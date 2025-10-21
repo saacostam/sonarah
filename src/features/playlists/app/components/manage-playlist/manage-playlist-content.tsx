@@ -29,12 +29,12 @@ export function ManagePlaylistContent({
 							<Heading size="4" truncate>
 								{playlist.name}
 							</Heading>
-							<Text size="2" truncate style={{ color: "var(--gray-11)" }}>
+							<Text size="3" truncate style={{ color: "var(--gray-11)" }}>
 								by {playlist.creatorName}
 							</Text>
 						</div>
-						<Text size="1" color="red">
-							{playlist.numberOfTracks} Tracks • {formatTime}
+						<Text size="2" color="red">
+							{playlist.numberOfTracks} songs • {formatTime}
 						</Text>
 					</Flex>
 				</Flex>
