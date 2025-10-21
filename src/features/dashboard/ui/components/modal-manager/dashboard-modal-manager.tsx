@@ -32,7 +32,7 @@ export function DashboardModalManager() {
 					open={status.type === "create-playlist"}
 					onOpenChange={onClose}
 				>
-					<Dialog.Content>
+					<Dialog.Content width="512px">
 						<Dialog.Title>Create Playlist</Dialog.Title>
 						<CreatePlaylist onCancel={onClose} onSuccess={onSuccess} />
 					</Dialog.Content>
