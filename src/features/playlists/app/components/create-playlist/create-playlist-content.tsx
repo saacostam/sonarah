@@ -1,5 +1,6 @@
 import { Box, Button, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
+import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { InlineErrorMessage, Input } from "@/shared/components";
 import { getErrorMessage } from "@/shared/utils";
 import {
@@ -10,11 +11,13 @@ import {
 
 export interface CreatePlaylistContentProps {
 	onCancel: () => void;
+	onSuccess: (args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => void;
 	userId: string;
 }
 
 export function CreatePlaylistContent({
 	onCancel,
+	onSuccess,
 	userId,
 }: CreatePlaylistContentProps) {
 	const { mutate: mutateCreatePlaylist, isPending: createPlaylistIsPending } =
@@ -40,11 +43,11 @@ export function CreatePlaylistContent({
 								"Unable to create playlist right now.",
 							),
 						}),
-					onSuccess: () => onCancel(),
+					onSuccess: (args) => onSuccess(args),
 				},
 			);
 		},
-		[createPlaylistForm, onCancel, mutateCreatePlaylist, userId],
+		[createPlaylistForm, onSuccess, mutateCreatePlaylist, userId],
 	);
 
 	return (
