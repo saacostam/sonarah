@@ -91,6 +91,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 							id: string;
 							name: string;
 						}[];
+						duration_ms: number;
 					};
 				}[];
 			};
@@ -102,10 +103,12 @@ export class PlaylistRepository implements IPlaylistRepository {
 				name: res.name,
 				creatorName: res.owner.display_name,
 				numberOfTracks: res.tracks.total,
+				pictureUrl: res.images?.at(0)?.url,
 				tracks: res.tracks.items.map((item) => ({
 					id: item.track.id,
 					name: item.track.name,
 					artistNames: item.track.artists.map((artist) => artist.name),
+					durationInMs: item.track.duration_ms,
 				})),
 			},
 		};

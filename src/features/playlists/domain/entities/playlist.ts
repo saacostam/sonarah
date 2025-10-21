@@ -15,4 +15,5 @@ export interface ITrack {
 	name: string;
 	pictureUrl?: string;
 	artistNames: string[];
+	durationInMs: number;
 }

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import { QueryError } from "@/shared/components";
 import { useQueryPlaylistById } from "../../hooks";
+import { ManagePlaylistContent } from "./manage-playlist-content";
 import { ManagePlaylistSkeleton } from "./manage-playlist-skeleton";
 
 export interface ManagePlaylistProps {
@@ -34,7 +35,8 @@ export function ManagePlaylist({ id, onNotFound }: ManagePlaylistProps) {
 		return (
 			<QueryError title="Unable to fetch playlist" error={playlistById.error} />
 		);
-	if (playlistById.isSuccess) return "Success";
+	if (playlistById.isSuccess)
+		return <ManagePlaylistContent playlist={playlistById.data.playlist} />;
 
 	return <ManagePlaylistSkeleton />;
 }
