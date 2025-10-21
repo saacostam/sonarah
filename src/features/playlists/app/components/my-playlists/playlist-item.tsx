@@ -1,11 +1,11 @@
 import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
-import type { IPlaylist } from "@/features/playlists/domain";
+import type { ILeanPlaylist } from "@/features/playlists/domain";
 import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 
 export interface PlaylistItemProps {
-	playlist: IPlaylist;
+	playlist: ILeanPlaylist;
 }
 
 export function PlaylistItem({ playlist }: PlaylistItemProps) {

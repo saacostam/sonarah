@@ -1,4 +1,5 @@
 import type { IAuthAdapter } from "@/features/auth/domain";
+import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import { type IRouterAdapter, RouteName } from "@/features/router/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 
@@ -67,6 +68,15 @@ export class FetchClientAdapter implements IClientAdapter {
 			}
 
 			const errorBody = await response.text().catch(() => "");
+
+			if (response.status === 404) {
+				throw new DomainError(
+					DomainErrorType.NOT_FOUND,
+					"Not found",
+					`[FetchClientAdapter.404]: ${errorBody}`,
+				);
+			}
+
 			throw new Error(
 				`HTTP ${response.status} ${response.statusText}: ${errorBody}`,
 			);

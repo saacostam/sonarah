@@ -1,19 +1,36 @@
-import { Flex, Skeleton } from "@radix-ui/themes";
+import { useCallback } from "react";
+import { useAdapters } from "@/features/adapters/app";
+import { INotificationAdapterType } from "@/features/notifications/domain";
 import { useRouter } from "@/features/router/app";
+import { RouteName } from "@/features/router/domain";
+import {
+	ManagePlaylist,
+	ManagePlaylistSkeleton,
+} from "../components/manage-playlist";
 
 export function ManagePlaylistScreen() {
+	const { notificationsAdapter } = useAdapters();
+
 	const router = useRouter();
 	const { id } = router.getParams();
 
+	const onNotFound = useCallback(
+		() =>
+			router
+				.push(router.generateRoute({ name: RouteName.DASHBOARD }))
+				.finally(() =>
+					notificationsAdapter.notify(
+						INotificationAdapterType.ERROR,
+						"Playlist Not Found",
+						"We couldn’t find a playlist with that ID.",
+					),
+				),
+		[notificationsAdapter, router],
+	);
+
 	return id ? (
-		<Flex direction="column" gap="4">
-			<Skeleton height="24px" width="128px" />
-			<Skeleton height="128px" width="100%" />
-		</Flex>
+		<ManagePlaylist id={id} onNotFound={onNotFound} />
 	) : (
-		<Flex direction="column" gap="4">
-			<Skeleton height="24px" width="128px" />
-			<Skeleton height="128px" width="100%" />
-		</Flex>
+		<ManagePlaylistSkeleton />
 	);
 }

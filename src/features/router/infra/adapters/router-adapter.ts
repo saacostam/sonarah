@@ -1,4 +1,4 @@
-import type { useLocation, useNavigate, useParams } from "react-router";
+import { type useLocation, type useNavigate, useParams } from "react-router";
 import {
 	type GenerateRouteAction,
 	type IRouterAdapter,
@@ -9,7 +9,6 @@ export class RouterAdapter implements IRouterAdapter {
 	constructor(
 		private navigate: ReturnType<typeof useNavigate>,
 		private location: ReturnType<typeof useLocation>,
-		private params: ReturnType<typeof useParams>,
 	) {}
 
 	defineRoute(name: RouteName): string {
@@ -49,7 +48,8 @@ export class RouterAdapter implements IRouterAdapter {
 	}
 
 	getParams(): Record<string, string | undefined> {
-		return this.params as Record<string, string | undefined>;
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		return useParams();
 	}
 
 	getUrlSearchParams(): URLSearchParams {

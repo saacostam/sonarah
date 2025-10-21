@@ -1,4 +1,4 @@
-import type { IPlaylist } from "../entities";
+import type { ILeanPlaylist, IPlaylist } from "../entities";
 
 export interface IPlaylistRepository {
 	create(
@@ -8,6 +8,10 @@ export interface IPlaylistRepository {
 	getAll(
 		args: IPlaylistRepositoryPayload["GetAllIn"],
 	): Promise<IPlaylistRepositoryPayload["GetAllOut"]>;
+
+	getById(
+		args: IPlaylistRepositoryPayload["GetByIdIn"],
+	): Promise<IPlaylistRepositoryPayload["GetByIdOut"]>;
 }
 
 export interface IPlaylistRepositoryPayload {
@@ -26,7 +30,14 @@ export interface IPlaylistRepositoryPayload {
 	};
 	GetAllOut: {
 		page: number;
-		playlists: IPlaylist[];
+		playlists: ILeanPlaylist[];
 		total: number;
+	};
+
+	GetByIdIn: {
+		id: string;
+	};
+	GetByIdOut: {
+		playlist: IPlaylist;
 	};
 }

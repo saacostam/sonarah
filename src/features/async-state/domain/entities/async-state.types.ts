@@ -1,5 +1,6 @@
 export enum QueryKey {
 	MY_PLAYLISTS = "My Playlists",
+	PLAYLIST_BY_ID = "Playlist By Id",
 	SESSION = "Session",
 	USER = "User",
 }

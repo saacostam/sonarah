@@ -64,4 +64,50 @@ export class PlaylistRepository implements IPlaylistRepository {
 			})),
 		};
 	}
+
+	async getById(
+		args: IPlaylistRepositoryPayload["GetByIdIn"],
+	): Promise<IPlaylistRepositoryPayload["GetByIdOut"]> {
+		const { id } = args;
+
+		const res = await this.spotifyAuthClient.get<{
+			id: string;
+			images:
+				| null
+				| {
+						url: string;
+				  }[];
+			name: string;
+			owner: {
+				display_name: string;
+			};
+			tracks: {
+				total: number;
+				items: {
+					track: {
+						id: string;
+						name: string;
+						artists: {
+							id: string;
+							name: string;
+						}[];
+					};
+				}[];
+			};
+		}>(`/v1/playlists/${id}`);
+
+		return {
+			playlist: {
+				id: res.id,
+				name: res.name,
+				creatorName: res.owner.display_name,
+				numberOfTracks: res.tracks.total,
+				tracks: res.tracks.items.map((item) => ({
+					id: item.track.id,
+					name: item.track.name,
+					artistNames: item.track.artists.map((artist) => artist.name),
+				})),
+			},
+		};
+	}
 }

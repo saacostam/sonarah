@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
-import { HashRouter, useLocation, useNavigate, useParams } from "react-router";
+import { HashRouter, useLocation, useNavigate } from "react-router";
 import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
@@ -25,12 +25,11 @@ export function AdaptersProvider() {
 function AdaptersProviderDI() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const params = useParams();
 
 	const storageAdapter = useMemo(() => new LocalStorageAdapter(), []);
 	const routerAdapter = useMemo(
-		() => new RouterAdapter(navigate, location, params),
-		[location, params, navigate],
+		() => new RouterAdapter(navigate, location),
+		[location, navigate],
 	);
 	const authAdapter = useMemo(
 		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),
