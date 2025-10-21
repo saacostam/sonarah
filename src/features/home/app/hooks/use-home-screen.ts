@@ -52,10 +52,7 @@ export function useHomeScreen() {
 						setSession(
 							{ token },
 							{
-								onSettled: () =>
-									router.replace(
-										router.generateRoute({ name: RouteName.DASHBOARD }),
-									),
+								onSettled: () => router.reset(),
 							},
 						);
 					},

@@ -1,16 +1,23 @@
 import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
 import type { IPlaylist } from "@/features/playlists/domain";
+import { useRouter } from "@/features/router/app";
+import { RouteName } from "@/features/router/domain";
 
 export interface PlaylistItemProps {
 	playlist: IPlaylist;
 }
 
 export function PlaylistItem({ playlist }: PlaylistItemProps) {
+	const router = useRouter();
+
 	return (
 		<Tooltip content={`${playlist.name} by ${playlist.creatorName}`}>
 			<Link
-				to="#"
+				to={router.generateRoute({
+					name: RouteName.PLAYLIST_BY_ID,
+					payload: { id: playlist.id },
+				})}
 				style={{ textDecoration: "none", color: "inherit" }}
 				className="clickable"
 			>

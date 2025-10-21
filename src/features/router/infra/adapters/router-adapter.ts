@@ -1,4 +1,4 @@
-import type { useLocation, useNavigate } from "react-router";
+import type { useLocation, useNavigate, useParams } from "react-router";
 import {
 	type GenerateRouteAction,
 	type IRouterAdapter,
@@ -9,7 +9,22 @@ export class RouterAdapter implements IRouterAdapter {
 	constructor(
 		private navigate: ReturnType<typeof useNavigate>,
 		private location: ReturnType<typeof useLocation>,
+		private params: ReturnType<typeof useParams>,
 	) {}
+
+	defineRoute(name: RouteName): string {
+		switch (name) {
+			case RouteName.DASHBOARD: {
+				return "/app";
+			}
+			case RouteName.HOME: {
+				return "/";
+			}
+			case RouteName.PLAYLIST_BY_ID: {
+				return "/playlist/:id";
+			}
+		}
+	}
 
 	generateRoute(action: GenerateRouteAction): string {
 		switch (action.name) {
@@ -18,6 +33,9 @@ export class RouterAdapter implements IRouterAdapter {
 			}
 			case RouteName.HOME: {
 				return "/";
+			}
+			case RouteName.PLAYLIST_BY_ID: {
+				return `/playlist/${action.payload.id}`;
 			}
 		}
 	}
@@ -30,6 +48,10 @@ export class RouterAdapter implements IRouterAdapter {
 		return this.location.pathname;
 	}
 
+	getParams(): Record<string, string | undefined> {
+		return this.params as Record<string, string | undefined>;
+	}
+
 	getUrlSearchParams(): URLSearchParams {
 		return new URLSearchParams(window.location.search);
 	}
@@ -40,5 +62,9 @@ export class RouterAdapter implements IRouterAdapter {
 
 	async replace(route: string): Promise<void> {
 		return this.navigate(route, { replace: true });
+	}
+
+	async reset(): Promise<void> {
+		window.location.href = window.location.origin;
 	}
 }
