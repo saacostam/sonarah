@@ -5,3 +5,5 @@
 # TODO
 - [x] Create skeleton page for auth-guard
 - [ ] Create error page for auth-guard
+- [ ] Create Empty Search for playlists
+- [ ] Create Empty Search for manage-playlist (playlist-by-id)
