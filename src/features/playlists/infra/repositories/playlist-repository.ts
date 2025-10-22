@@ -92,6 +92,13 @@ export class PlaylistRepository implements IPlaylistRepository {
 							name: string;
 						}[];
 						duration_ms: number;
+						album: {
+							images:
+								| null
+								| {
+										url: string;
+								  }[];
+						};
 					};
 				}[];
 			};
@@ -109,6 +116,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 					name: item.track.name,
 					artistNames: item.track.artists.map((artist) => artist.name),
 					durationInMs: item.track.duration_ms,
+					pictureUrl: item.track.album.images?.at(0)?.url,
 				})),
 			},
 		};

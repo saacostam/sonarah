@@ -2,6 +2,7 @@ import { Avatar, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { useMemo } from "react";
 import type { IPlaylist } from "@/features/playlists/domain";
 import { formatTimeFromMilliseconds } from "@/shared/utils";
+import { TrackItem } from "./track-item";
 
 export interface ManagePlaylistContentProps {
 	playlist: IPlaylist;
@@ -39,6 +40,14 @@ export function ManagePlaylistContent({
 					</Flex>
 				</Flex>
 			</Card>
+			<Heading mt="6" size="5">
+				Tracks
+			</Heading>
+			<Flex direction="column" gap="4" wrap="nowrap" my="4">
+				{playlist.tracks.map((track, index) => (
+					<TrackItem key={track.id} track={track} order={index + 1} />
+				))}
+			</Flex>
 		</>
 	);
 }
