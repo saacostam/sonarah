@@ -3,6 +3,8 @@ import { Outlet, Route, Routes } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { AuthGuardSkeleton } from "@/features/auth/ui";
+import { ErrorScreen } from "@/features/errors/ui";
+import { HomeScreen } from "@/features/home/ui";
 import { RouterContext } from "../../app";
 import { RouteName } from "../../domain";
 
@@ -11,16 +13,6 @@ const ManagePlaylistScreen = lazy(() =>
 	import("@/features/playlists/app/screens/manage-playlist-screen").then(
 		(m) => ({ default: m.ManagePlaylistScreen }),
 	),
-);
-const HomeScreen = lazy(() =>
-	import("@/features/home/ui/components/home-screen").then((m) => ({
-		default: m.HomeScreen,
-	})),
-);
-const ErrorScreen = lazy(() =>
-	import("@/features/errors/ui/components/error-screen").then((m) => ({
-		default: m.ErrorScreen,
-	})),
 );
 const DashboardScreen = lazy(() =>
 	import("@/features/dashboard/ui/screens/dashboard-screen").then((m) => ({
