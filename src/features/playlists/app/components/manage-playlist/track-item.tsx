@@ -13,7 +13,7 @@ export function TrackItem({ track, order }: TrackItemProps) {
 	return (
 		<Card>
 			<Flex direction="row" gap="4" wrap="wrap">
-				<Avatar fallback={order} src={track.pictureUrl} size="5" />
+				<Avatar fallback={order} src={track.pictureUrl} size="4" />
 				<Flex direction="column" gap="2">
 					<div>
 						<Heading size="3" truncate>

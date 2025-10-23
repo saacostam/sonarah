@@ -43,7 +43,7 @@ export function ManagePlaylistContent({
 			<Heading mt="6" size="5">
 				Tracks
 			</Heading>
-			<Flex direction="column" gap="4" wrap="nowrap" my="4">
+			<Flex direction="column" gap="2" wrap="nowrap" my="4">
 				{playlist.tracks.map((track, index) => (
 					<TrackItem key={track.id} track={track} order={index + 1} />
 				))}

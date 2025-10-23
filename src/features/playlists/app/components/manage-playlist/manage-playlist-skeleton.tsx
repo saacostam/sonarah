@@ -6,11 +6,13 @@ export function ManagePlaylistSkeleton() {
 			<Skeleton height="24px" width="128px" />
 			<Skeleton height="128px" width="100%" />
 			<Skeleton height="24px" width="128px" mt="4" />
-			<Skeleton height="72px" width="100%" />
-			<Skeleton height="72px" width="100%" />
-			<Skeleton height="72px" width="100%" />
-			<Skeleton height="72px" width="100%" />
-			<Skeleton height="72px" width="100%" />
+			<Flex direction="column" gap="2">
+				<Skeleton height="72px" width="100%" />
+				<Skeleton height="72px" width="100%" />
+				<Skeleton height="72px" width="100%" />
+				<Skeleton height="72px" width="100%" />
+				<Skeleton height="72px" width="100%" />
+			</Flex>
 		</Flex>
 	);
 }
