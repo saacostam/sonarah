@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import { useRouter } from "@/features/router/app";
@@ -22,11 +22,15 @@ export function ManagePlaylistScreen() {
 					notificationsAdapter.notify(
 						INotificationAdapterType.ERROR,
 						"Playlist Not Found",
-						"We couldn’t find a playlist with that ID.",
+						"We couldn't find a playlist with that ID.",
 					),
 				),
 		[notificationsAdapter, router],
 	);
+
+	useEffect(() => {
+		if (id === undefined) onNotFound();
+	}, [id, onNotFound]);
 
 	return id ? (
 		<ManagePlaylist id={id} onNotFound={onNotFound} />
