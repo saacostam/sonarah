@@ -63,6 +63,10 @@ export function ManagePlaylist({
 				<QueryError
 					title="Unable to fetch playlist"
 					error={playlistById.error}
+					retry={{
+						onClick: playlistById.refetch,
+						isPending: playlistById.isFetching,
+					}}
 				/>
 			)}
 			{playlistById.isSuccess && (

@@ -5,7 +5,7 @@ import { PolymorphicButton } from "./polymorphic-button";
 export interface QueryErrorProps {
 	title: string;
 	error: unknown;
-	retry?: {
+	retry: {
 		onClick: () => void;
 		isPending: boolean;
 	};

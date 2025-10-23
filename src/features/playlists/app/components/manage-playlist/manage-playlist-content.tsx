@@ -1,7 +1,6 @@
-import { Avatar, Card, Flex, Heading, Text } from "@radix-ui/themes";
-import { useMemo } from "react";
+import { Flex, Heading } from "@radix-ui/themes";
 import type { IPlaylist } from "@/features/playlists/domain";
-import { formatTimeFromMilliseconds } from "@/shared/utils";
+import { PlaylistBrief } from "../shared";
 import { TrackItem } from "./track-item";
 
 export interface ManagePlaylistContentProps {
@@ -11,34 +10,9 @@ export interface ManagePlaylistContentProps {
 export function ManagePlaylistContent({
 	playlist,
 }: ManagePlaylistContentProps) {
-	const formatTime = useMemo(
-		() =>
-			formatTimeFromMilliseconds(
-				playlist.tracks.reduce((sum, track) => sum + track.durationInMs, 0),
-			),
-		[playlist.tracks],
-	);
-
 	return (
 		<>
-			<Card>
-				<Flex gap="4" wrap="wrap">
-					<Avatar fallback={playlist.name} src={playlist.pictureUrl} size="7" />
-					<Flex direction="column" justify="between">
-						<div>
-							<Heading size="4" truncate>
-								{playlist.name}
-							</Heading>
-							<Text size="3" truncate style={{ color: "var(--gray-11)" }}>
-								by {playlist.creatorName}
-							</Text>
-						</div>
-						<Text size="2" color="red">
-							{playlist.numberOfTracks} songs • {formatTime}
-						</Text>
-					</Flex>
-				</Flex>
-			</Card>
+			<PlaylistBrief playlist={playlist} />
 			<Heading mt="6" size="5">
 				Tracks
 			</Heading>

@@ -3,7 +3,10 @@ import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
-import { MatchPlaylist } from "../components/match-playlist";
+import {
+	MatchPlaylist,
+	MatchPlaylistSkeleton,
+} from "../components/match-playlist";
 
 export function MatchPlaylistScreen() {
 	const { notificationsAdapter } = useAdapters();
@@ -29,5 +32,9 @@ export function MatchPlaylistScreen() {
 		if (id === undefined) onNotFound();
 	}, [id, onNotFound]);
 
-	return id ? <MatchPlaylist /> : <MatchPlaylist />;
+	return id ? (
+		<MatchPlaylist id={id} onNotFound={onNotFound} />
+	) : (
+		<MatchPlaylistSkeleton />
+	);
 }
