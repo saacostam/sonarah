@@ -3,15 +3,12 @@ import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
-import {
-	ManagePlaylist,
-	ManagePlaylistSkeleton,
-} from "../components/manage-playlist";
+import { MatchPlaylist } from "../components/match-playlist";
 
-export function ManagePlaylistScreen() {
+export function MatchPlaylistScreen() {
 	const { notificationsAdapter } = useAdapters();
-
 	const router = useRouter();
+
 	const { id } = router.getParams();
 
 	const onNotFound = useCallback(
@@ -22,7 +19,7 @@ export function ManagePlaylistScreen() {
 					notificationsAdapter.notify(
 						INotificationAdapterType.ERROR,
 						"Playlist Not Found",
-						"We couldn't find a playlist with that ID.",
+						"We couldn't find a playlist with that ID",
 					),
 				),
 		[notificationsAdapter, router],
@@ -32,16 +29,5 @@ export function ManagePlaylistScreen() {
 		if (id === undefined) onNotFound();
 	}, [id, onNotFound]);
 
-	return id ? (
-		<ManagePlaylist
-			id={id}
-			onNextHref={router.generateRoute({
-				name: RouteName.MATCH_PLAYLIST_BY_ID,
-				payload: { id },
-			})}
-			onNotFound={onNotFound}
-		/>
-	) : (
-		<ManagePlaylistSkeleton />
-	);
+	return id ? <MatchPlaylist /> : <MatchPlaylist />;
 }

@@ -12,6 +12,12 @@ export type GenerateRouteAction =
 			payload: {
 				id: string;
 			};
+	  }
+	| {
+			name: RouteName.MATCH_PLAYLIST_BY_ID;
+			payload: {
+				id: string;
+			};
 	  };
 
 export interface IRouterAdapter {

@@ -14,6 +14,11 @@ const ManagePlaylistScreen = lazy(() =>
 		(m) => ({ default: m.ManagePlaylistScreen }),
 	),
 );
+const MatchPlaylistScreen = lazy(() =>
+	import("@/features/playlists/app/screens/match-playlist-screen").then(
+		(m) => ({ default: m.MatchPlaylistScreen }),
+	),
+);
 const DashboardScreen = lazy(() =>
 	import("@/features/dashboard/ui/screens/dashboard-screen").then((m) => ({
 		default: m.DashboardScreen,
@@ -42,6 +47,10 @@ export function RouterProvider() {
 						<Route
 							path={routerAdapter.defineRoute(RouteName.PLAYLIST_BY_ID)}
 							element={<ManagePlaylistScreen />}
+						/>
+						<Route
+							path={routerAdapter.defineRoute(RouteName.MATCH_PLAYLIST_BY_ID)}
+							element={<MatchPlaylistScreen />}
 						/>
 					</Route>
 					<Route

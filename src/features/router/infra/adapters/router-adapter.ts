@@ -19,6 +19,9 @@ export class RouterAdapter implements IRouterAdapter {
 			case RouteName.HOME: {
 				return "/";
 			}
+			case RouteName.MATCH_PLAYLIST_BY_ID: {
+				return "/match/:id";
+			}
 			case RouteName.PLAYLIST_BY_ID: {
 				return "/playlist/:id";
 			}
@@ -32,6 +35,9 @@ export class RouterAdapter implements IRouterAdapter {
 			}
 			case RouteName.HOME: {
 				return "/";
+			}
+			case RouteName.MATCH_PLAYLIST_BY_ID: {
+				return `/match/${action.payload.id}`;
 			}
 			case RouteName.PLAYLIST_BY_ID: {
 				return `/playlist/${action.payload.id}`;

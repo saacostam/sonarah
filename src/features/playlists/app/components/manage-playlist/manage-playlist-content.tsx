@@ -21,7 +21,6 @@ export function ManagePlaylistContent({
 
 	return (
 		<>
-			<Heading mb="4">Manage Playlist</Heading>
 			<Card>
 				<Flex gap="4" wrap="wrap">
 					<Avatar fallback={playlist.name} src={playlist.pictureUrl} size="7" />

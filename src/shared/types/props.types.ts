@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
+
 export interface IButtonAction {
-	label: string;
+	label: ReactNode;
 	action:
 		| {
 				type: "href";
