@@ -2,11 +2,11 @@ import { lazy, Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
-import { AuthGuardSkeleton } from "@/features/auth/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
 import { RouterContext } from "../../app";
 import { RouteName } from "../../domain";
+import { LazyLoadingRouteSkeleton } from "../components";
 
 // Lazy imports
 const ManagePlaylistScreen = lazy(() =>
@@ -30,7 +30,7 @@ export function RouterProvider() {
 
 	return (
 		<RouterContext.Provider value={routerAdapter}>
-			<Suspense fallback={<AuthGuardSkeleton />}>
+			<Suspense fallback={<LazyLoadingRouteSkeleton />}>
 				<Routes>
 					<Route
 						element={
