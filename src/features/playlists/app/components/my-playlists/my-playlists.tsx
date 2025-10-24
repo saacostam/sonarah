@@ -1,6 +1,6 @@
 import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useState } from "react";
-import { QueryError } from "@/shared/components";
+import { EmptyQuery, QueryError } from "@/shared/components";
 import { ArrowPathIcon, PlusIcon } from "@/shared/icons";
 import { useQueryMyPlaylists } from "../../hooks";
 import { MyPlaylistsSkeleton } from "./my-playlists-skeleton";
@@ -90,7 +90,9 @@ export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 								})}
 						</Flex>
 					</>
-				) : null)}
+				) : (
+					<EmptyQuery />
+				))}
 		</main>
 	);
 }
