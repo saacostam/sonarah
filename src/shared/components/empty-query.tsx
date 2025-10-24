@@ -14,7 +14,7 @@ export function EmptyQuery({
 		<Card>
 			<Flex align="center" direction="column" gap="2">
 				<CubeTransparentIcon height={64} width={64} />
-				<Heading>{title}</Heading>
+				<Heading size="6">{title}</Heading>
 				<Text style={{ color: "var(--gray-11)" }}>{description}</Text>
 			</Flex>
 		</Card>

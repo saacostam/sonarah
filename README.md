@@ -6,5 +6,5 @@
 - [x] Create skeleton page for auth-guard
 - [ ] Create error page for auth-guard
 - [x] Create Empty-Search for playlists
-- [ ] Create Empty-Search for manage-playlist (playlist-by-id)
+- [x] Create Empty-Search for manage-playlist (playlist-by-id)
 - [ ] Create custom Suspense-Boundary for lazy-loaded routes
