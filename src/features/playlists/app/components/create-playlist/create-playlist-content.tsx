@@ -82,11 +82,11 @@ export function CreatePlaylistContent({
 					<InlineErrorMessage>{errors.root?.message}</InlineErrorMessage>
 				)}
 				<Flex gap="4" justify="end">
-					<Button type="submit" loading={createPlaylistIsPending}>
-						Create
-					</Button>
 					<Button type="button" variant="outline" onClick={onCancel}>
 						Cancel
+					</Button>
+					<Button type="submit" loading={createPlaylistIsPending}>
+						Create
 					</Button>
 				</Flex>
 			</Flex>
