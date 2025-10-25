@@ -29,7 +29,7 @@ export function PlaylistBrief({ playlist }: PlaylistBriefProps) {
 							by {playlist.creatorName}
 						</Text>
 					</div>
-					<Text size="2" color="red">
+					<Text size="2" style={{ color: "var(--accent-9)" }}>
 						{playlist.numberOfTracks} songs • {formatTime}
 					</Text>
 				</Flex>

@@ -27,7 +27,7 @@ export function PlaylistItem({ playlist }: PlaylistItemProps) {
 						<Heading align="center" truncate size="4">
 							{playlist.name}
 						</Heading>
-						<Text align="center" size="2" color="red">
+						<Text align="center" size="2" style={{ color: "var(--accent-9)" }}>
 							{playlist.numberOfTracks} songs
 						</Text>
 					</div>
