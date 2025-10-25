@@ -23,5 +23,15 @@ function DashboardScreenContent() {
 		[setStatus],
 	);
 
-	return <MyPlaylists onCreatePlaylist={onCreatePlaylist} />;
+	const onImportPlaylist = useCallback(
+		() => setStatus({ type: "search-playlist" }),
+		[setStatus],
+	);
+
+	return (
+		<MyPlaylists
+			onCreatePlaylist={onCreatePlaylist}
+			onSearchPlaylist={onImportPlaylist}
+		/>
+	);
 }

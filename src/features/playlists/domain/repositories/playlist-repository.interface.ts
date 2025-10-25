@@ -12,6 +12,14 @@ export interface IPlaylistRepository {
 	getById(
 		args: IPlaylistRepositoryPayload["GetByIdIn"],
 	): Promise<IPlaylistRepositoryPayload["GetByIdOut"]>;
+
+	save(
+		args: IPlaylistRepositoryPayload["SaveIn"],
+	): Promise<IPlaylistRepositoryPayload["SaveOut"]>;
+
+	search(
+		args: IPlaylistRepositoryPayload["SearchIn"],
+	): Promise<IPlaylistRepositoryPayload["SearchOut"]>;
 }
 
 export interface IPlaylistRepositoryPayload {
@@ -39,5 +47,23 @@ export interface IPlaylistRepositoryPayload {
 	};
 	GetByIdOut: {
 		playlist: IPlaylist;
+	};
+
+	SaveIn: {
+		id: ILeanPlaylist["id"];
+	};
+	SaveOut: {
+		id: string;
+	};
+
+	SearchIn: {
+		limit: number;
+		q: string;
+		page: number;
+	};
+	SearchOut: {
+		page: number;
+		playlists: ILeanPlaylist[];
+		total: number;
 	};
 }

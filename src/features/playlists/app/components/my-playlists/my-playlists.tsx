@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useState } from "react";
 import { EmptyQuery, QueryError } from "@/shared/components";
-import { ArrowPathIcon, PlusIcon } from "@/shared/icons";
+import { ArrowDownTrayIcon, PlusIcon } from "@/shared/icons";
 import { useQueryMyPlaylists } from "../../hooks";
 import { MyPlaylistsSkeleton } from "./my-playlists-skeleton";
 import { PlaylistItem } from "./playlist-item";
@@ -10,9 +10,13 @@ const LIMIT = 14;
 
 export interface MyPlaylistsProps {
 	onCreatePlaylist: () => void;
+	onSearchPlaylist: () => void;
 }
 
-export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
+export function MyPlaylists({
+	onCreatePlaylist,
+	onSearchPlaylist,
+}: MyPlaylistsProps) {
 	const [page, setPage] = useState<number>(1);
 
 	const myPlaylists = useQueryMyPlaylists({ req: { page, limit: LIMIT } });
@@ -34,15 +38,15 @@ export function MyPlaylists({ onCreatePlaylist }: MyPlaylistsProps) {
 				</div>
 				<Flex gap="2">
 					<Button
-						onClick={() => myPlaylists.refetch()}
-						variant="outline"
+						onClick={onSearchPlaylist}
 						style={{ cursor: "pointer" }}
-						loading={myPlaylists.isFetching}
+						variant="outline"
 					>
-						<ArrowPathIcon height={20} width={20} />
+						<ArrowDownTrayIcon height={16} width={16} /> Import
 					</Button>
+
 					<Button onClick={onCreatePlaylist} style={{ cursor: "pointer" }}>
-						<PlusIcon height={16} width={16} /> Create Playlist
+						<PlusIcon height={16} width={16} /> Create
 					</Button>
 				</Flex>
 			</Flex>

@@ -9,7 +9,7 @@ function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Theme
-				accentColor="red"
+				accentColor="yellow"
 				appearance="dark"
 				grayColor="sage"
 				panelBackground="translucent"

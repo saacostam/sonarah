@@ -82,7 +82,21 @@ export class FetchClientAdapter implements IClientAdapter {
 			);
 		}
 
-		return response.json() as Promise<TResponse>;
+		if (response.status === 204) {
+			return {} as TResponse;
+		}
+
+		const text = await response.text();
+		if (!text) {
+			return {} as TResponse;
+		}
+
+		try {
+			return JSON.parse(text) as TResponse;
+		} catch {
+			// Handle invalid JSON but non-empty body gracefully
+			throw new Error(`Invalid JSON response: ${text}`);
+		}
 	}
 
 	get<TResponse>(

@@ -7,6 +7,9 @@ export interface IDashboardModalManager {
 		  }
 		| {
 				type: "create-playlist";
+		  }
+		| {
+				type: "search-playlist";
 		  };
 	setStatus: (status: IDashboardModalManager["status"]) => void;
 }
