@@ -1,6 +1,5 @@
-import { Card, Flex, Heading, Text } from "@radix-ui/themes";
+import { Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { getErrorMessage } from "../utils";
-import { PolymorphicButton } from "./polymorphic-button";
 
 export interface QueryErrorProps {
 	title: string;
@@ -28,17 +27,14 @@ export function QueryError({ title, error, retry }: QueryErrorProps) {
 				</Heading>
 				<Text size="2">{description}</Text>
 				{retry && (
-					<PolymorphicButton
-						action={{
-							label: "Retry",
-							action: {
-								type: "button",
-								onClick: retry.onClick,
-							},
-						}}
-						style={{ width: "fit-content" }}
+					<Button
+						color="red"
 						loading={retry.isPending}
-					/>
+						onClick={retry.onClick}
+						style={{ cursor: "pointer", width: "fit-content" }}
+					>
+						Retry
+					</Button>
 				)}
 			</Flex>
 		</Card>
