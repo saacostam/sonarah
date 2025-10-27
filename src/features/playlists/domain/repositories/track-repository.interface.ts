@@ -9,6 +9,7 @@ export interface ITrackRepository {
 export interface ITrackRepositoryPayload {
 	GetRecommendationsIn: {
 		name: string;
+		artists: string[];
 	};
 	GetRecommendationsOut: {
 		tracks: ITrack[];

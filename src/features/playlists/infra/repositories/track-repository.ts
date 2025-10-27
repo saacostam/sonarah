@@ -11,10 +11,10 @@ export class TrackRepository implements ITrackRepository {
 	async getRecommendations(
 		args: ITrackRepositoryPayload["GetRecommendationsIn"],
 	): Promise<ITrackRepositoryPayload["GetRecommendationsOut"]> {
-		const { name } = args;
+		const { name, artists } = args;
 
 		const params = new URLSearchParams({
-			q: name,
+			q: `${name} ${artists.join(" ")}`,
 			type: "playlist",
 			limit: String(10),
 		});

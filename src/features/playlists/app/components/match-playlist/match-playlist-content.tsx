@@ -47,9 +47,10 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 	const [deltaY, setDeltaY] = useState(0);
 
 	const queryTrackRecommendations = useQueryTrackRecommendations({
-		enabled: !!currentMatchingTrack?.name,
+		enabled: !!currentMatchingTrack,
 		req: {
-			name: currentMatchingTrack?.name || "", // Only called when id is defined
+			name: currentMatchingTrack?.name || "", // Only called when current matching track is defined
+			artists: currentMatchingTrack?.artistNames || [],
 		},
 	});
 
