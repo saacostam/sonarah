@@ -16,7 +16,7 @@ export class TrackRepository implements ITrackRepository {
 		const params = new URLSearchParams({
 			q: `${name} ${artists.join(" ")}`,
 			type: "playlist",
-			limit: String(10),
+			limit: String(3),
 		});
 
 		const searchResponse = await this.spotifyAuthClient.get<{
@@ -25,13 +25,18 @@ export class TrackRepository implements ITrackRepository {
 					id: string;
 					name: string;
 					images: { url: string }[];
+					tracks: {
+						total: number;
+					};
 				} | null)[];
 			};
 		}>(`/v1/search?${params.toString()}`);
 
-		const playlist = searchResponse.playlists.items.find(
-			(item) => item !== null,
-		);
+		const playlist = [...searchResponse.playlists.items]
+			.filter((item) => item !== null)
+			.sort((itemA, itemB) => itemB.tracks.total - itemA.tracks.total)
+			.at(0);
+
 		if (!playlist) {
 			return { tracks: [] };
 		}
