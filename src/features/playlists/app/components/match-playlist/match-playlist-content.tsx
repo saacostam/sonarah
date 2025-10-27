@@ -183,8 +183,8 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 						<Box p="1" mt="4" style={{ maxHeight: "400px", overflowY: "auto" }}>
 							{queryTrackRecommendations.isLoading ? (
 								<Flex direction="column" gap="2">
-									{new Array(5).fill(null).map((_, index) => (
-										<Skeleton key={+index} height="56px" width="100%" />
+									{new Array(4).fill(null).map((_, index) => (
+										<Skeleton key={+index} height="74px" width="100%" />
 									))}
 								</Flex>
 							) : queryTrackRecommendations.isSuccess ? (
