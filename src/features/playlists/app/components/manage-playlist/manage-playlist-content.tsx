@@ -1,8 +1,7 @@
 import { Flex, Heading } from "@radix-ui/themes";
 import type { IPlaylist } from "@/features/playlists/domain";
 import { EmptyQuery } from "@/shared/components";
-import { PlaylistBrief } from "../shared";
-import { TrackItem } from "./track-item";
+import { PlaylistBrief, TrackItem } from "../shared";
 
 export interface ManagePlaylistContentProps {
 	playlist: IPlaylist;

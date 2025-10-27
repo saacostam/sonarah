@@ -5,7 +5,7 @@ import type { IPlaylistRepositoryPayload } from "../../domain";
 
 export interface UseQuerySearchPlaylistsArgs {
 	req: Pick<IPlaylistRepositoryPayload["SearchIn"], "limit" | "q">;
-	enabled: boolean;
+	enabled?: boolean;
 }
 
 export function useQuerySearchPlaylists({
