@@ -16,20 +16,22 @@ export class TrackRepository implements ITrackRepository {
 		const params = new URLSearchParams({
 			q: name,
 			type: "playlist",
-			limit: "1",
+			limit: String(10),
 		});
 
 		const searchResponse = await this.spotifyAuthClient.get<{
 			playlists: {
-				items: {
+				items: ({
 					id: string;
 					name: string;
 					images: { url: string }[];
-				}[];
+				} | null)[];
 			};
 		}>(`/v1/search?${params.toString()}`);
 
-		const playlist = searchResponse.playlists.items.at(0);
+		const playlist = searchResponse.playlists.items.find(
+			(item) => item !== null,
+		);
 		if (!playlist) {
 			return { tracks: [] };
 		}
