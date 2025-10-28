@@ -10,6 +10,7 @@ import {
 } from "@radix-ui/themes";
 import {
 	type MouseEventHandler,
+	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
@@ -31,28 +32,78 @@ export interface IMatchedTrack {
 }
 
 export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
-	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(1);
-	const [matchingTracks] = useState<IMatchedTrack[]>([]);
-
-	const tracksContainerRef = useRef<HTMLDivElement>(null);
-	const searchContainerRef = useRef<HTMLDivElement>(null);
+	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
+	const [matchingTracks, setMatchingTracks] = useState<IMatchedTrack[]>([]);
 
 	const currentMatchingTrack = useMemo(() => {
-		return playlist.tracks.find((_, index) => {
-			const position = index + 1;
-			return position === currentMatchingPosition;
-		});
+		return playlist.tracks.find(
+			(_, index) => index === currentMatchingPosition,
+		);
 	}, [currentMatchingPosition, playlist.tracks]);
-
-	const [deltaY, setDeltaY] = useState(0);
 
 	const queryTrackRecommendations = useQueryTrackRecommendations({
 		enabled: !!currentMatchingTrack,
 		req: {
-			name: currentMatchingTrack?.name || "", // Only called when current matching track is defined
+			name: currentMatchingTrack?.name || "",
 			artists: currentMatchingTrack?.artistNames || [],
 		},
 	});
+
+	const onClickRecommendation = useCallback(
+		(track: ITrack, position: number) => {
+			setMatchingTracks((oldMatchingTracks) => {
+				const hasPosition = oldMatchingTracks.find(
+					(match) => match.position === position,
+				);
+
+				const newMatchingTracks = hasPosition
+					? oldMatchingTracks.map((match) =>
+							match.position === position
+								? {
+										...match,
+										track,
+									}
+								: match,
+						)
+					: [...oldMatchingTracks, { track, position }];
+
+				const positions = new Set(
+					new Array(newMatchingTracks.length)
+						.fill(null)
+						.map((_, index) => index),
+				);
+				newMatchingTracks.forEach((match) => {
+					positions.delete(match.position);
+				});
+				const areAllTracksMatched = positions.size === 0;
+
+				console.log("areAllTracksMatched", areAllTracksMatched, positions);
+				if (areAllTracksMatched) {
+					setCurrentMatchingPosition(0);
+				} else {
+					// Find the next unmatched position (0-indexed)
+					for (let i = 1; i < playlist.tracks.length; i++) {
+						const nextPosition =
+							(currentMatchingPosition + i) % playlist.tracks.length;
+
+						if (
+							!matchingTracks.find((match) => match.position === nextPosition)
+						) {
+							setCurrentMatchingPosition(nextPosition);
+							break;
+						}
+					}
+				}
+
+				return newMatchingTracks;
+			});
+		},
+		[currentMatchingPosition, matchingTracks, playlist.tracks],
+	);
+
+	const [deltaY, setDeltaY] = useState(0);
+	const tracksContainerRef = useRef<HTMLDivElement>(null);
+	const searchContainerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const onScrollHandler = () => {
@@ -89,9 +140,9 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 			);
 		};
 
-		onScrollHandler(); // init
-		window.addEventListener("scroll", onScrollHandler); // on events/change
-		return () => window.removeEventListener("scroll", onScrollHandler); // cleanup
+		onScrollHandler();
+		window.addEventListener("scroll", onScrollHandler);
+		return () => window.removeEventListener("scroll", onScrollHandler);
 	}, [currentMatchingTrack]);
 
 	return (
@@ -103,17 +154,16 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 			<Grid columns="60% 40%" gap="4" my="4">
 				<Flex direction="column" gap="2" ref={tracksContainerRef}>
 					{playlist.tracks.map((track, index) => {
-						const position = index + 1;
+						const position = index;
 						const isMatching = position === currentMatchingPosition;
 
 						const matchedTrack = matchingTracks.find(
-							(track) => track.position === position,
+							(match) => match.position === position,
 						);
 
 						const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
 							setCurrentMatchingPosition(position);
 							const { currentTarget } = e;
-
 							nestedRequestAnimationFrame(
 								() => scrollToElement(currentTarget, 16),
 								10,
@@ -127,12 +177,14 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 									onClick={onClick}
 									type="button"
 								>
+									{/* Displayed order stays 1-indexed */}
 									<TrackItem
-										order={position}
+										order={index + 1}
 										track={track}
 										hightlighted={isMatching}
 									/>
 								</button>
+
 								<button
 									className="btn-reset clickable"
 									onClick={onClick}
@@ -147,9 +199,7 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 										/>
 									) : (
 										<TrackItemLayout
-											avatar={{
-												fallback: String(position),
-											}}
+											avatar={{ fallback: String(index + 1) }}
 											header="▶"
 											subheader="•"
 											highlighted={isMatching}
@@ -166,12 +216,9 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 						);
 					})}
 				</Flex>
+
 				<div style={{ width: "100%", padding: 0 }} ref={searchContainerRef}>
-					<Card
-						style={{
-							marginTop: deltaY,
-						}}
-					>
+					<Card style={{ marginTop: deltaY }}>
 						<Heading>Match Track</Heading>
 						{currentMatchingTrack && (
 							<>
@@ -181,6 +228,7 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 								</Text>
 							</>
 						)}
+
 						<Box p="1" mt="4" style={{ maxHeight: "400px", overflowY: "auto" }}>
 							{queryTrackRecommendations.isLoading ? (
 								<Flex direction="column" gap="2">
@@ -197,6 +245,12 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 													key={+index}
 													className="clickable btn-reset"
 													type="button"
+													onClick={() =>
+														onClickRecommendation(
+															track,
+															currentMatchingPosition,
+														)
+													}
 												>
 													<TrackItem track={track} order={index + 1} />
 												</button>
