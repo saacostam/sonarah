@@ -8,3 +8,4 @@
 - [x] Create Empty-Search for manage-playlist (playlist-by-id)
 - [x] Create custom Suspense-Boundary for lazy-loaded routes
 - [ ] Create error page for auth-guard
+- [ ] Create playlist options with tabs, for recommendations card
