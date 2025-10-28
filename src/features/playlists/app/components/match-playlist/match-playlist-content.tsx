@@ -200,8 +200,8 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 									) : (
 										<TrackItemLayout
 											avatar={{ fallback: String(index + 1) }}
-											header="▶"
-											subheader="•"
+											header="Empty slot"
+											subheader="Select a suitable track"
 											highlighted={isMatching}
 										/>
 									)}
