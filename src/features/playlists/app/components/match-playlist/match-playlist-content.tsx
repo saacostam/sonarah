@@ -68,9 +68,7 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 					: [...oldMatchingTracks, { track, position }];
 
 				const positions = new Set(
-					new Array(newMatchingTracks.length)
-						.fill(null)
-						.map((_, index) => index),
+					new Array(playlist.tracks.length).fill(null).map((_, index) => index),
 				);
 				newMatchingTracks.forEach((match) => {
 					positions.delete(match.position);
