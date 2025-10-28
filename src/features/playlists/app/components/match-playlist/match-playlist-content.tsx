@@ -75,7 +75,6 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 				});
 				const areAllTracksMatched = positions.size === 0;
 
-				console.log("areAllTracksMatched", areAllTracksMatched, positions);
 				if (areAllTracksMatched) {
 					setCurrentMatchingPosition(0);
 				} else {
