@@ -1,14 +1,14 @@
 import { useMemo } from "react";
+import { useAdapters } from "@/features/adapters/app";
 import {
 	useMutationLogout,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/features/auth/app";
-import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 
 export function useNavbar() {
-	const router = useRouter();
+	const { routerAdapter } = useAdapters();
 
 	const session = useQuerySession();
 
@@ -19,8 +19,8 @@ export function useNavbar() {
 		() => ({
 			logoHref:
 				session.isSuccess && session.data.type === "authenticated"
-					? router.generateRoute({ name: RouteName.DASHBOARD })
-					: router.generateRoute({ name: RouteName.HOME }),
+					? routerAdapter.generateRoute({ name: RouteName.DASHBOARD })
+					: routerAdapter.generateRoute({ name: RouteName.HOME }),
 			loader: session.isLoading
 				? {
 						status: "loading" as const,
@@ -51,7 +51,7 @@ export function useNavbar() {
 		}),
 		[
 			logout,
-			router,
+			routerAdapter,
 			session.data,
 			session.isLoading,
 			session.isSuccess,
