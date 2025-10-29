@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter, useLocation, useNavigate } from "react-router";
 import { SpotifyAuthAdapter } from "@/features/auth/infra";
+import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
 import { ErrorsProvider } from "@/features/errors/ui";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
@@ -60,9 +61,11 @@ function AdaptersProviderDI() {
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
 			<ErrorsProvider>
-				<RepositoriesProvider>
-					<RouterProvider />
-				</RepositoriesProvider>
+				<AuthProvider>
+					<RepositoriesProvider>
+						<RouterProvider />
+					</RepositoriesProvider>
+				</AuthProvider>
 			</ErrorsProvider>
 		</AdaptersContext.Provider>
 	);
