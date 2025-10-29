@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
+import path from "node:path";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,4 +10,9 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+	test: {  
+		globals: true,  
+		environment: 'jsdom',  
+		setupFiles: ['./src/shared/tests/setup.ts'],  
+	}, 
 });
