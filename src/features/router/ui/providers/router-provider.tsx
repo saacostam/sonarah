@@ -4,7 +4,6 @@ import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
-import { RouterContext } from "../../app";
 import { RouteName } from "../../domain";
 import { LazyLoadingRouteSkeleton } from "../components";
 
@@ -29,42 +28,40 @@ export function RouterProvider() {
 	const { routerAdapter } = useAdapters();
 
 	return (
-		<RouterContext.Provider value={routerAdapter}>
-			<Suspense fallback={<LazyLoadingRouteSkeleton />}>
-				<Routes>
+		<Suspense fallback={<LazyLoadingRouteSkeleton />}>
+			<Routes>
+				<Route
+					element={
+						<AppLayout>
+							<Outlet />
+						</AppLayout>
+					}
+				>
+					<Route index element={<HomeScreen />} />
 					<Route
-						element={
-							<AppLayout>
-								<Outlet />
-							</AppLayout>
-						}
-					>
-						<Route index element={<HomeScreen />} />
-						<Route
-							path={routerAdapter.defineRoute(RouteName.DASHBOARD)}
-							element={<DashboardScreen />}
-						/>
-						<Route
-							path={routerAdapter.defineRoute(RouteName.PLAYLIST_BY_ID)}
-							element={<ManagePlaylistScreen />}
-						/>
-						<Route
-							path={routerAdapter.defineRoute(RouteName.MATCH_PLAYLIST_BY_ID)}
-							element={<MatchPlaylistScreen />}
-						/>
-					</Route>
-					<Route
-						path="*"
-						element={
-							<ErrorScreen
-								resetHref={routerAdapter.generateRoute({
-									name: RouteName.HOME,
-								})}
-							/>
-						}
+						path={routerAdapter.defineRoute(RouteName.DASHBOARD)}
+						element={<DashboardScreen />}
 					/>
-				</Routes>
-			</Suspense>
-		</RouterContext.Provider>
+					<Route
+						path={routerAdapter.defineRoute(RouteName.PLAYLIST_BY_ID)}
+						element={<ManagePlaylistScreen />}
+					/>
+					<Route
+						path={routerAdapter.defineRoute(RouteName.MATCH_PLAYLIST_BY_ID)}
+						element={<MatchPlaylistScreen />}
+					/>
+				</Route>
+				<Route
+					path="*"
+					element={
+						<ErrorScreen
+							resetHref={routerAdapter.generateRoute({
+								name: RouteName.HOME,
+							})}
+						/>
+					}
+				/>
+			</Routes>
+		</Suspense>
 	);
 }

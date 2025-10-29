@@ -1,14 +1,14 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
+import { useAdapters } from "@/features/adapters/app";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 import { XIcon } from "@/shared/icons";
 import { useDashboardModalManager } from "../../contexts";
 
 export function DashboardModalManager() {
-	const router = useRouter();
+	const { routerAdapter } = useAdapters();
 
 	const { setStatus, status } = useDashboardModalManager();
 
@@ -17,27 +17,27 @@ export function DashboardModalManager() {
 	const onCreatePlaylistSuccess = useCallback(
 		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
 			onClose();
-			router.push(
-				router.generateRoute({
+			routerAdapter.push(
+				routerAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: args.id },
 				}),
 			);
 		},
-		[onClose, router],
+		[onClose, routerAdapter],
 	);
 
 	const onSavePlaylistSuccess = useCallback(
 		(args: IPlaylistRepositoryPayload["SaveOut"]) => {
 			onClose();
-			router.push(
-				router.generateRoute({
+			routerAdapter.push(
+				routerAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: args.id },
 				}),
 			);
 		},
-		[onClose, router],
+		[onClose, routerAdapter],
 	);
 
 	return (

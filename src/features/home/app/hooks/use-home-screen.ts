@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
+import { useAdapters } from "@/features/adapters/app";
 import {
 	useMutationRequestAccessToken,
 	useMutationSetSession,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/features/auth/app";
-import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 import type { IButtonAction } from "@/shared/types";
 
@@ -14,14 +14,14 @@ enum UrlSearchParam {
 }
 
 export function useHomeScreen() {
-	const router = useRouter();
+	const { routerAdapter } = useAdapters();
 	const session = useQuerySession();
 
 	const { mutate: setSession } = useMutationSetSession();
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
 	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
 
-	const urlSearchParams = router.getUrlSearchParams();
+	const urlSearchParams = routerAdapter.getUrlSearchParams();
 	const code = urlSearchParams.get(UrlSearchParam.CODE);
 
 	const isAuth = session.isSuccess && session.data.type === "authenticated";
@@ -30,7 +30,7 @@ export function useHomeScreen() {
 			action: isAuth
 				? {
 						type: "href",
-						href: router.generateRoute({ name: RouteName.DASHBOARD }),
+						href: routerAdapter.generateRoute({ name: RouteName.DASHBOARD }),
 					}
 				: {
 						type: "button",
@@ -38,12 +38,12 @@ export function useHomeScreen() {
 					},
 			label: isAuth ? "Start Now" : "Login",
 		}),
-		[isAuth, router, startAuthFlow],
+		[isAuth, routerAdapter, startAuthFlow],
 	);
 
 	useEffect(() => {
 		if (code) {
-			const reset = () => router.replace(router.getPathname());
+			const reset = () => routerAdapter.replace(routerAdapter.getPathname());
 
 			requestAccessToken(
 				{ code },
@@ -52,7 +52,7 @@ export function useHomeScreen() {
 						setSession(
 							{ token },
 							{
-								onSettled: () => router.reset(),
+								onSettled: () => routerAdapter.reset(),
 							},
 						);
 					},
@@ -63,7 +63,7 @@ export function useHomeScreen() {
 				},
 			);
 		}
-	}, [code, requestAccessToken, router, setSession]);
+	}, [code, requestAccessToken, routerAdapter, setSession]);
 
 	return useMemo(
 		() =>

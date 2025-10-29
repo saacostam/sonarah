@@ -1,7 +1,7 @@
 import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
+import { useAdapters } from "@/features/adapters/app";
 import type { ILeanPlaylist } from "@/features/playlists/domain";
-import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 
 export interface PlaylistItemProps {
@@ -9,12 +9,12 @@ export interface PlaylistItemProps {
 }
 
 export function PlaylistItem({ playlist }: PlaylistItemProps) {
-	const router = useRouter();
+	const { routerAdapter } = useAdapters();
 
 	return (
 		<Tooltip content={`${playlist.name} by ${playlist.creatorName}`}>
 			<Link
-				to={router.generateRoute({
+				to={routerAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: playlist.id },
 				})}

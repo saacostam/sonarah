@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
-import { useRouter } from "@/features/router/app";
 import { RouteName } from "@/features/router/domain";
 import {
 	ManagePlaylist,
@@ -9,15 +8,14 @@ import {
 } from "../components/manage-playlist";
 
 export function ManagePlaylistScreen() {
-	const { notificationsAdapter } = useAdapters();
+	const { notificationsAdapter, routerAdapter } = useAdapters();
 
-	const router = useRouter();
-	const { id } = router.getParams();
+	const { id } = routerAdapter.getParams();
 
 	const onNotFound = useCallback(
 		() =>
-			router
-				.push(router.generateRoute({ name: RouteName.DASHBOARD }))
+			routerAdapter
+				.push(routerAdapter.generateRoute({ name: RouteName.DASHBOARD }))
 				.finally(() =>
 					notificationsAdapter.notify(
 						INotificationAdapterType.ERROR,
@@ -25,7 +23,7 @@ export function ManagePlaylistScreen() {
 						"We couldn't find a playlist with that ID.",
 					),
 				),
-		[notificationsAdapter, router],
+		[notificationsAdapter, routerAdapter],
 	);
 
 	useEffect(() => {
@@ -35,7 +33,7 @@ export function ManagePlaylistScreen() {
 	return id ? (
 		<ManagePlaylist
 			id={id}
-			onNextHref={router.generateRoute({
+			onNextHref={routerAdapter.generateRoute({
 				name: RouteName.MATCH_PLAYLIST_BY_ID,
 				payload: { id },
 			})}
