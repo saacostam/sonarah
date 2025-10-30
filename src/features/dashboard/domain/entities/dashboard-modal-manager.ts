@@ -1,5 +1,3 @@
-import { createContext } from "react";
-
 export interface IDashboardModalManager {
 	status:
 		| {
@@ -13,7 +11,3 @@ export interface IDashboardModalManager {
 		  };
 	setStatus: (status: IDashboardModalManager["status"]) => void;
 }
-
-export const DashboardModalManagerContext = createContext(
-	null as unknown as IDashboardModalManager,
-);

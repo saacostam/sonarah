@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
-import { DashboardModalManagerContext } from "./modal-manager-context";
-import { useDashboardModalManagerImpl } from "./use-dashboard-modal-manager";
+import { DashboardModalManagerContext } from "../../app";
+import { useDashboardModalManagerImpl } from "../../infra";
 
 export function DashboardModalManagerProvider({ children }: PropsWithChildren) {
 	return (

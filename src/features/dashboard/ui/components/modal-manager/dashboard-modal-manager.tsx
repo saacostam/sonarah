@@ -1,11 +1,11 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useAdapters } from "@/features/adapters/app";
+import { useDashboardModalManager } from "@/features/dashboard/app";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { RouteName } from "@/features/router/domain";
 import { XIcon } from "@/shared/icons";
-import { useDashboardModalManager } from "../../contexts";
 
 export function DashboardModalManager() {
 	const { routerAdapter } = useAdapters();
