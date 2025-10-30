@@ -7,7 +7,7 @@ import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { RouteName } from "@/features/router/domain";
 import { XIcon } from "@/shared/icons";
 
-export function DashboardModalManager() {
+export function DashboardModalManagerRenderer() {
 	const { routerAdapter } = useAdapters();
 
 	const { setStatus, status } = useDashboardModalManager();

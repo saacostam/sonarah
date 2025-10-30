@@ -1,14 +1,14 @@
 import { useCallback } from "react";
 import { MyPlaylists } from "@/features/playlists/app";
 import { useDashboardModalManager } from "../../app";
-import { DashboardModalManager } from "../components";
+import { DashboardModalManagerRenderer } from "../components";
 import { DashboardModalManagerProvider } from "../providers";
 
 export function DashboardScreen() {
 	return (
 		<DashboardModalManagerProvider>
 			<DashboardScreenContent />
-			<DashboardModalManager />
+			<DashboardModalManagerRenderer />
 		</DashboardModalManagerProvider>
 	);
 }
