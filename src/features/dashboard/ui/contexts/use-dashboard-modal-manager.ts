@@ -4,7 +4,7 @@ import {
 	type IDashboardModalManager,
 } from "./modal-manager-context";
 
-export function usePrivateDashboardModalManager(): IDashboardModalManager {
+export function useDashboardModalManagerImpl(): IDashboardModalManager {
 	const [status, setStatus] = useState<IDashboardModalManager["status"]>({
 		type: "browse",
 	});
