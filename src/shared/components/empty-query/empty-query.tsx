@@ -1,5 +1,5 @@
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
-import { CubeTransparentIcon } from "../icons";
+import { CubeTransparentIcon } from "@/shared/icons";
 
 export interface EmptyQueryProps {
 	title?: string;

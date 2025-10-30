@@ -1,6 +1,6 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { renderWithProviders } from "../tests";
+import { renderWithProviders } from "@/shared/tests";
 import { PolymorphicButton } from "./polymorphic-button";
 
 describe("PolymorphicButton", () => {

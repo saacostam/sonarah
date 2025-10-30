@@ -1,5 +1,5 @@
 import { Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
-import { getErrorMessage } from "../utils";
+import { getErrorMessage } from "@/shared/utils";
 
 export interface QueryErrorProps {
 	title: string;

@@ -1,5 +1,5 @@
 import { screen } from "@testing-library/react";
-import { renderWithProviders } from "../tests";
+import { renderWithProviders } from "@/shared/tests";
 import { Input } from "./input";
 
 const mockRegister = () => ({

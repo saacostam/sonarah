@@ -1,6 +1,6 @@
 import { Text, TextField } from "@radix-ui/themes";
 import type { useForm } from "react-hook-form";
-import { InlineErrorMessage } from "./inline-error-message";
+import { InlineErrorMessage } from "../inline-error-message";
 
 export type InputProps = ReturnType<ReturnType<typeof useForm>["register"]> & {
 	label: string;

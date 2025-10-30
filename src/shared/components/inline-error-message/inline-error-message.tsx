@@ -1,6 +1,6 @@
 import { Text } from "@radix-ui/themes";
 import type { PropsWithChildren } from "react";
-import { ExclamationTriangleIcon } from "../icons";
+import { ExclamationTriangleIcon } from "@/shared/icons";
 
 export function InlineErrorMessage({ children }: PropsWithChildren) {
 	return (
