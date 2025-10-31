@@ -10,7 +10,7 @@ import { Logo } from "@/shared/components";
 
 export function AuthGuardSkeleton() {
 	return (
-		<Container size="1">
+		<Container size="1" data-testid="auth-guard-skeleton">
 			<Card my="4">
 				<Flex align="center" direction="column" gap="4">
 					<Logo />
