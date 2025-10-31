@@ -7,6 +7,7 @@ import { AuthGuard } from "./ui";
 describe("AuthGuard [Integration]", () => {
 	it("should render children if accessing a public route and unauthenticated", async () => {
 		const push = vi.fn();
+
 		renderWithProviders(
 			<AuthGuard>
 				<div data-testid="content" />
@@ -16,37 +17,34 @@ describe("AuthGuard [Integration]", () => {
 					routerAdapter: {
 						generateRoute: (action) => {
 							switch (action.name) {
-								case RouteName.DASHBOARD: {
+								case RouteName.DASHBOARD:
 									return "/dashboard";
-								}
-								case RouteName.HOME: {
+								case RouteName.HOME:
 									return "/home";
-								}
+								default:
+									return "/other";
 							}
-							return "/other";
 						},
 						getPathname: () => "/home",
 						push,
 					},
 					authAdapter: {
-						getToken: async () => ({
-							type: "unauthenticated",
-						}),
+						getToken: async () => ({ type: "unauthenticated" }),
 					},
 				},
 			},
 		);
 
-		screen.getByTestId("auth-guard-skeleton");
+		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
 
-		await waitFor(() => {
-			screen.getByTestId("content");
-			expect(push).not.toHaveBeenCalled();
-		});
+		const content = await screen.findByTestId("content");
+		expect(content).toBeInTheDocument();
+		expect(push).not.toHaveBeenCalled();
 	});
 
 	it("should render children if accessing a private route and authenticated", async () => {
 		const push = vi.fn();
+
 		renderWithProviders(
 			<AuthGuard>
 				<div data-testid="content" />
@@ -56,14 +54,13 @@ describe("AuthGuard [Integration]", () => {
 					routerAdapter: {
 						generateRoute: (action) => {
 							switch (action.name) {
-								case RouteName.DASHBOARD: {
+								case RouteName.DASHBOARD:
 									return "/dashboard";
-								}
-								case RouteName.HOME: {
+								case RouteName.HOME:
 									return "/home";
-								}
+								default:
+									return "/other";
 							}
-							return "/other";
 						},
 						getPathname: () => "/dashboard",
 						push,
@@ -78,16 +75,16 @@ describe("AuthGuard [Integration]", () => {
 			},
 		);
 
-		screen.getByTestId("auth-guard-skeleton");
+		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
 
-		await waitFor(() => {
-			screen.getByTestId("content");
-			expect(push).not.toHaveBeenCalled();
-		});
+		const content = await screen.findByTestId("content");
+		expect(content).toBeInTheDocument();
+		expect(push).not.toHaveBeenCalled();
 	});
 
-	it("should redirect to home if unauthenticated", async () => {
+	it("should redirect to home if unauthenticated on private route", async () => {
 		const push = vi.fn();
+
 		renderWithProviders(
 			<AuthGuard>
 				<div data-testid="content" />
@@ -97,37 +94,35 @@ describe("AuthGuard [Integration]", () => {
 					routerAdapter: {
 						generateRoute: (action) => {
 							switch (action.name) {
-								case RouteName.DASHBOARD: {
+								case RouteName.DASHBOARD:
 									return "/dashboard";
-								}
-								case RouteName.HOME: {
+								case RouteName.HOME:
 									return "/home";
-								}
+								default:
+									return "/other";
 							}
-							return "/other";
 						},
 						getPathname: () => "/requires-auth",
 						push,
 					},
 					authAdapter: {
-						getToken: async () => ({
-							type: "unauthenticated",
-						}),
+						getToken: async () => ({ type: "unauthenticated" }),
 					},
 				},
 			},
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeDefined();
-		expect(screen.queryByTestId("content")).toBe(null);
+		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith("/home");
 		});
 	});
 
-	it("should redirect to dashboard if authenticated and trying to access auth route", async () => {
+	it("should redirect to dashboard if authenticated and accessing auth route", async () => {
 		const push = vi.fn();
+
 		renderWithProviders(
 			<AuthGuard>
 				<div data-testid="content" />
@@ -137,14 +132,13 @@ describe("AuthGuard [Integration]", () => {
 					routerAdapter: {
 						generateRoute: (action) => {
 							switch (action.name) {
-								case RouteName.DASHBOARD: {
+								case RouteName.DASHBOARD:
 									return "/dashboard";
-								}
-								case RouteName.HOME: {
+								case RouteName.HOME:
 									return "/home";
-								}
+								default:
+									return "/other";
 							}
-							return "/other";
 						},
 						getPathname: () => "/home",
 						push,
@@ -159,8 +153,8 @@ describe("AuthGuard [Integration]", () => {
 			},
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeDefined();
-		expect(screen.queryByTestId("content")).toBe(null);
+		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith("/dashboard");
@@ -169,6 +163,7 @@ describe("AuthGuard [Integration]", () => {
 
 	it("should render skeleton in case of session error", async () => {
 		const push = vi.fn();
+
 		renderWithProviders(
 			<AuthGuard>
 				<div data-testid="content" />
@@ -178,14 +173,13 @@ describe("AuthGuard [Integration]", () => {
 					routerAdapter: {
 						generateRoute: (action) => {
 							switch (action.name) {
-								case RouteName.DASHBOARD: {
+								case RouteName.DASHBOARD:
 									return "/dashboard";
-								}
-								case RouteName.HOME: {
+								case RouteName.HOME:
 									return "/home";
-								}
+								default:
+									return "/other";
 							}
-							return "/other";
 						},
 						getPathname: () => "/home",
 						push,
@@ -199,8 +193,8 @@ describe("AuthGuard [Integration]", () => {
 			},
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeDefined();
-		expect(screen.queryByTestId("content")).toBe(null);
+		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
 			expect(push).not.toHaveBeenCalled();
