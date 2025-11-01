@@ -8,7 +8,9 @@ export function useMutationRequestAccessToken() {
 
 	return useMutation({
 		mutationKey: [MutationKey.REQUEST_ACCESS_TOKEN],
-		mutationFn: (args: IAuthAdapterPayload["IRequestAccessTokenIn"]) =>
-			authAdapter.requestAccessToken(args),
+		mutationFn: async (args: IAuthAdapterPayload["IRequestAccessTokenIn"]) => {
+			const token = await authAdapter.requestAccessToken(args);
+			return authAdapter.setToken({ token });
+		},
 	});
 }

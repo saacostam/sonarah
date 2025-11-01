@@ -2,7 +2,6 @@ import { useEffect, useMemo } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import {
 	useMutationRequestAccessToken,
-	useMutationSetSession,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/features/auth/app";
@@ -17,7 +16,6 @@ export function useHomeScreen() {
 	const { routerAdapter } = useAdapters();
 	const session = useQuerySession();
 
-	const { mutate: setSession } = useMutationSetSession();
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
 	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
 
@@ -48,22 +46,15 @@ export function useHomeScreen() {
 			requestAccessToken(
 				{ code },
 				{
-					onSuccess: (token) => {
-						setSession(
-							{ token },
-							{
-								onSettled: () => routerAdapter.reset(),
-							},
-						);
-					},
 					onError: (e) => {
 						console.error(e);
 						reset();
 					},
+					onSettled: () => routerAdapter.reset(),
 				},
 			);
 		}
-	}, [code, requestAccessToken, routerAdapter, setSession]);
+	}, [code, requestAccessToken, routerAdapter]);
 
 	return useMemo(
 		() =>
