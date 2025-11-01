@@ -4,7 +4,6 @@ import { HashRouter, useLocation, useNavigate } from "react-router";
 import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
-import { ErrorsProvider } from "@/features/errors/ui";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
 import { RepositoriesProvider } from "@/features/repositories/ui";
 import { RouterAdapter } from "@/features/router/infra";
@@ -60,13 +59,11 @@ function AdaptersProviderDI() {
 
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
-			<ErrorsProvider>
-				<AuthProvider>
-					<RepositoriesProvider>
-						<RouterProvider />
-					</RepositoriesProvider>
-				</AuthProvider>
-			</ErrorsProvider>
+			<AuthProvider>
+				<RepositoriesProvider>
+					<RouterProvider />
+				</RepositoriesProvider>
+			</AuthProvider>
 		</AdaptersContext.Provider>
 	);
 }
