@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import { getErrorMessage } from "./error.utils";
 
-describe("getErrorMessage", () => {
+describe("getErrorMessage [Unit]", () => {
 	it("should return the message from a DomainError", () => {
 		const error = new DomainError(DomainErrorType.NOT_FOUND, "User not found");
 		const result = getErrorMessage(error, "Default message");
