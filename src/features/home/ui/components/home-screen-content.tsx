@@ -12,6 +12,7 @@ export function HomeScreenContent({ mainCta }: HomeScreenContentProps) {
 			direction="column"
 			align="center"
 			style={{ maxWidth: 720, margin: "3rem auto" }}
+			data-testid="home-screen-content"
 		>
 			<Heading align="center" size="9">
 				Smart playlists, your personal soundtrack.

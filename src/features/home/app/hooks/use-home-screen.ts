@@ -41,15 +41,10 @@ export function useHomeScreen() {
 
 	useEffect(() => {
 		if (code) {
-			const reset = () => routerAdapter.replace(routerAdapter.getPathname());
-
 			requestAccessToken(
 				{ code },
 				{
-					onError: (e) => {
-						console.error(e);
-						reset();
-					},
+					// We rely on the authentication logic to re-direct to auth pages
 					onSettled: () => routerAdapter.reset(),
 				},
 			);
