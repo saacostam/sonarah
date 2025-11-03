@@ -1,6 +1,10 @@
 import type { ILeanPlaylist, IPlaylist } from "../entities";
 
 export interface IPlaylistRepository {
+	addItems(
+		args: IPlaylistRepositoryPayload["AddItemsToPlaylistIn"],
+	): Promise<void>;
+
 	create(
 		args: IPlaylistRepositoryPayload["CreatePlaylistIn"],
 	): Promise<IPlaylistRepositoryPayload["CreatePlaylistOut"]>;
@@ -23,6 +27,11 @@ export interface IPlaylistRepository {
 }
 
 export interface IPlaylistRepositoryPayload {
+	AddItemsToPlaylistIn: {
+		id: string;
+		uris: string[];
+	};
+
 	CreatePlaylistIn: {
 		userId: string;
 		name: string;

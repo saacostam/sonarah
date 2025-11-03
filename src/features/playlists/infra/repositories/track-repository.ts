@@ -45,6 +45,7 @@ export class TrackRepository implements ITrackRepository {
 			items: {
 				track?: {
 					id: string;
+					uri: string;
 					name: string;
 					artists: { id: string; name: string }[];
 					duration_ms: number;
@@ -63,6 +64,7 @@ export class TrackRepository implements ITrackRepository {
 				durationInMs: track.duration_ms,
 				pictureUrl:
 					track.album.images?.[0]?.url ?? playlist.images?.[0]?.url ?? null,
+				uri: track.uri,
 			}));
 
 		return { tracks };

@@ -4,8 +4,11 @@ import { INotificationAdapterType } from "@/features/notifications/domain";
 import { RouteName } from "@/features/router/domain";
 import {
 	MatchPlaylist,
+	MatchPlaylistModalManagerContext,
+	MatchPlaylistModalManagerRenderer,
 	MatchPlaylistSkeleton,
-} from "../components/match-playlist";
+} from "../../app";
+import { useMatchPlaylistModalManagerImpl } from "../../infra";
 
 export function MatchPlaylistScreen() {
 	const { notificationsAdapter, routerAdapter } = useAdapters();
@@ -30,9 +33,16 @@ export function MatchPlaylistScreen() {
 		if (id === undefined) onNotFound();
 	}, [id, onNotFound]);
 
-	return id ? (
-		<MatchPlaylist id={id} onNotFound={onNotFound} />
-	) : (
-		<MatchPlaylistSkeleton />
+	return (
+		<MatchPlaylistModalManagerContext.Provider
+			value={useMatchPlaylistModalManagerImpl()}
+		>
+			{id ? (
+				<MatchPlaylist id={id} onNotFound={onNotFound} />
+			) : (
+				<MatchPlaylistSkeleton />
+			)}
+			<MatchPlaylistModalManagerRenderer />
+		</MatchPlaylistModalManagerContext.Provider>
 	);
 }

@@ -2,10 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import { RouteName } from "@/features/router/domain";
-import {
-	ManagePlaylist,
-	ManagePlaylistSkeleton,
-} from "../components/manage-playlist";
+import { ManagePlaylist, ManagePlaylistSkeleton } from "../../app";
 
 export function ManagePlaylistScreen() {
 	const { notificationsAdapter, routerAdapter } = useAdapters();

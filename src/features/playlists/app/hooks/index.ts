@@ -1,4 +1,6 @@
 export * from "./use-create-playlist-form";
+export * from "./use-match-playlist-modal-manager";
+export * from "./use-mutation-add-item-to-playlist";
 export * from "./use-mutation-create-playlist";
 export * from "./use-mutation-save-playlist";
 export * from "./use-query-my-playlists";

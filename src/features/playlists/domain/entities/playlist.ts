@@ -16,4 +16,5 @@ export interface ITrack {
 	pictureUrl?: string;
 	artistNames: string[];
 	durationInMs: number;
+	uri: string;
 }

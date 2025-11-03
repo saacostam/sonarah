@@ -1,4 +1,3 @@
-import { Flex, Heading } from "@radix-ui/themes";
 import { useEffect } from "react";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import { QueryError } from "@/shared/components";
@@ -34,9 +33,6 @@ export function MatchPlaylist({ id, onNotFound }: MatchPlaylistProps) {
 
 	return (
 		<>
-			<Flex align="end" direction="row" justify="between" mb="4">
-				<Heading>Match Playlist</Heading>
-			</Flex>
 			{playlistById.isError && (
 				<QueryError
 					title="Unable to fetch playlist"

@@ -8,6 +8,7 @@ export enum QueryKey {
 }
 
 export enum MutationKey {
+	ADD_ITEM_TO_PLAYLIST = "Add Item To Playlist",
 	CREATE_PLAYLIST = "Create Playlist",
 	LOGOUT = "Logout",
 	REQUEST_ACCESS_TOKEN = "Request Access Token",

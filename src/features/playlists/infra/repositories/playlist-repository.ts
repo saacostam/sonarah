@@ -7,6 +7,16 @@ import type {
 export class PlaylistRepository implements IPlaylistRepository {
 	constructor(private spotifyAuthClient: IClientAdapter) {}
 
+	async addItems(
+		args: IPlaylistRepositoryPayload["AddItemsToPlaylistIn"],
+	): Promise<void> {
+		const { id, uris } = args;
+
+		await this.spotifyAuthClient.post<void>(`/v1/playlists/${id}/tracks`, {
+			uris,
+		});
+	}
+
 	async create(
 		args: IPlaylistRepositoryPayload["CreatePlaylistIn"],
 	): Promise<IPlaylistRepositoryPayload["CreatePlaylistOut"]> {
@@ -86,6 +96,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				items: {
 					track: {
 						id: string;
+						uri: string;
 						name: string;
 						artists: {
 							id: string;
@@ -119,6 +130,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 						artistNames: item.track.artists.map((artist) => artist.name),
 						durationInMs: item.track.duration_ms,
 						pictureUrl: item.track.album.images?.at(0)?.url,
+						uri: item.track.uri,
 					})),
 			},
 		};

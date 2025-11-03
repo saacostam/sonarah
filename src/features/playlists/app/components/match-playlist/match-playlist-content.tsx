@@ -17,9 +17,13 @@ import {
 	useState,
 } from "react";
 import type { IPlaylist, ITrack } from "@/features/playlists/domain";
-import { EmptyQuery, QueryError } from "@/shared/components";
+import { EmptyQuery, PolymorphicButton, QueryError } from "@/shared/components";
+import { PlayIcon } from "@/shared/icons";
 import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
-import { useQueryTrackRecommendations } from "../../hooks";
+import {
+	useMatchPlaylistModalManger,
+	useQueryTrackRecommendations,
+} from "../../hooks";
 import { PlaylistBrief, TrackItem, TrackItemLayout } from "../shared";
 
 export interface MatchPlaylistContentProps {
@@ -32,6 +36,8 @@ export interface IMatchedTrack {
 }
 
 export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
+	const { setStatus } = useMatchPlaylistModalManger();
+
 	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
 	const [matchingTracks, setMatchingTracks] = useState<IMatchedTrack[]>([]);
 
@@ -142,8 +148,41 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 		return () => window.removeEventListener("scroll", onScrollHandler);
 	}, [currentMatchingTrack]);
 
+	const onClickCreateHandler = useCallback(() => {
+		setStatus({
+			type: "create-playlist",
+			uris: matchingTracks.map((match) => match.track.uri),
+		});
+	}, [matchingTracks, setStatus]);
+
 	return (
 		<>
+			<Flex align="end" direction="row" justify="between" mb="4">
+				<Heading>Match Playlist</Heading>
+				<PolymorphicButton
+					action={{
+						action: {
+							type: "button",
+							onClick: onClickCreateHandler,
+						},
+						label: (
+							<>
+								<PlayIcon width={16} height={16} />
+								Next: Create Playlist {matchingTracks.length}/
+								{playlist.tracks.length}
+							</>
+						),
+					}}
+					color={
+						matchingTracks.length < playlist.tracks.length
+							? "yellow"
+							: undefined
+					}
+					variant={
+						matchingTracks.length < playlist.tracks.length ? "outline" : "solid"
+					}
+				/>
+			</Flex>
 			<PlaylistBrief playlist={playlist} />
 			<Heading size="5" mt="6">
 				Reference Playlist

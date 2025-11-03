@@ -9,14 +9,14 @@ import { LazyLoadingRouteSkeleton } from "../components";
 
 // Lazy imports
 const ManagePlaylistScreen = lazy(() =>
-	import("@/features/playlists/app/screens/manage-playlist-screen").then(
+	import("@/features/playlists/ui/screens/manage-playlist-screen").then(
 		(m) => ({ default: m.ManagePlaylistScreen }),
 	),
 );
 const MatchPlaylistScreen = lazy(() =>
-	import("@/features/playlists/app/screens/match-playlist-screen").then(
-		(m) => ({ default: m.MatchPlaylistScreen }),
-	),
+	import("@/features/playlists/ui/screens/match-playlist-screen").then((m) => ({
+		default: m.MatchPlaylistScreen,
+	})),
 );
 const DashboardScreen = lazy(() =>
 	import("@/features/dashboard/ui/screens/dashboard-screen").then((m) => ({
