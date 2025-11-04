@@ -12,3 +12,5 @@
 - [ ] Create error page for home screen (and add unit test)
 - [ ] Move add-item logic from modal-manager to component (app layer), in match-playlist
 - [ ] Clean-up (double) notifications for create playlist logic in match-playlist
+- [ ] Break-down my-playlists into components (Maybe, guide by data-testid)
+- [ ] Validate integration tests written for my-playlists
