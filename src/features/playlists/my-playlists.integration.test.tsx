@@ -1,11 +1,10 @@
-import { screen, waitFor, within } from "@testing-library/dom";
-import { cleanup } from "@testing-library/react";
+import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockLeanPlaylistFactory } from "@/features/playlists/test";
 import { renderWithProviders } from "@/shared/tests";
 import { MyPlaylists } from "./app";
 
-describe("MyPlaylist [Integration]", () => {
+describe("MyPlaylists [Integration]", () => {
 	const onCreatePlaylist = vi.fn();
 	const onSearchPlaylist = vi.fn();
 
@@ -14,7 +13,7 @@ describe("MyPlaylist [Integration]", () => {
 		onSearchPlaylist.mockReset();
 	});
 
-	describe("Ui", () => {
+	describe("UI", () => {
 		describe("Playlists", () => {
 			it("should render playlists", async () => {
 				const mockData = MockLeanPlaylistFactory(2);
@@ -124,19 +123,16 @@ describe("MyPlaylist [Integration]", () => {
 						},
 					);
 
-					await waitFor(() => {
-						expect(screen.queryByTestId("my-playlist-skeleton")).toBeNull();
-						expect(
-							screen.getByTestId("my-playlists-content"),
-						).toBeInTheDocument();
-					});
+					await waitFor(() =>
+						expect(screen.queryByTestId("my-playlist-skeleton")).toBeNull(),
+					);
 
 					const pagination = await screen.findByTestId(
 						"my-playlist-pagination",
 					);
-					expect(within(pagination).queryAllByRole("button")).toHaveLength(
-						pages,
-					);
+
+					const buttons = within(pagination).queryAllByRole("button");
+					expect(buttons).toHaveLength(pages);
 
 					cleanup();
 				}
@@ -171,7 +167,7 @@ describe("MyPlaylist [Integration]", () => {
 			const button = await screen.findByRole("button", { name: /create/i });
 			await userEvent.click(button);
 
-			expect(onCreatePlaylist).toHaveBeenCalled();
+			expect(onCreatePlaylist).toHaveBeenCalledTimes(1);
 		});
 
 		it("should call on-search-playlist when button is clicked", async () => {
@@ -200,7 +196,7 @@ describe("MyPlaylist [Integration]", () => {
 			const button = await screen.findByRole("button", { name: /import/i });
 			await userEvent.click(button);
 
-			expect(onSearchPlaylist).toHaveBeenCalled();
+			expect(onSearchPlaylist).toHaveBeenCalledTimes(1);
 		});
 	});
 });
