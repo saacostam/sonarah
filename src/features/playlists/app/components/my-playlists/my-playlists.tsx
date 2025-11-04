@@ -22,7 +22,7 @@ export function MyPlaylists({
 	const myPlaylists = useQueryMyPlaylists({ req: { page, limit: LIMIT } });
 
 	return (
-		<main data-testid="my-playlists">
+		<main>
 			<Flex
 				mb="6"
 				direction={{ initial: "column", xs: "row" }}
@@ -61,42 +61,46 @@ export function MyPlaylists({
 				/>
 			)}
 			{myPlaylists.isLoading && <MyPlaylistsSkeleton />}
-			{myPlaylists.isSuccess &&
-				(myPlaylists.data.total > 0 ? (
-					<>
-						<Flex wrap="wrap" gap="6" width="100%" mb="6" justify="center">
-							{myPlaylists.data.playlists.map((playlist) => (
-								<PlaylistItem key={playlist.id} playlist={playlist} />
-							))}
-						</Flex>
-						<Flex
-							gap="1"
-							justify="center"
-							style={{ margin: "auto" }}
-							width="50%"
-							wrap="wrap"
-						>
-							{new Array(Math.ceil(myPlaylists.data.total / LIMIT))
-								.fill(null)
-								.map((_, index) => {
-									const buttonPage = index + 1;
+			{myPlaylists.isSuccess && (
+				<main data-testid="my-playlists-content">
+					{myPlaylists.data.total > 0 ? (
+						<>
+							<Flex wrap="wrap" gap="6" width="100%" mb="6" justify="center">
+								{myPlaylists.data.playlists.map((playlist) => (
+									<PlaylistItem key={playlist.id} playlist={playlist} />
+								))}
+							</Flex>
+							<Flex
+								gap="1"
+								justify="center"
+								style={{ margin: "auto" }}
+								width="50%"
+								wrap="wrap"
+								data-testid="my-playlist-pagination"
+							>
+								{new Array(Math.ceil(myPlaylists.data.total / LIMIT))
+									.fill(null)
+									.map((_, index) => {
+										const buttonPage = index + 1;
 
-									return (
-										<Button
-											key={+buttonPage}
-											variant={buttonPage === page ? "solid" : "outline"}
-											onClick={() => setPage(buttonPage)}
-											style={{ cursor: "pointer" }}
-										>
-											{buttonPage}
-										</Button>
-									);
-								})}
-						</Flex>
-					</>
-				) : (
-					<EmptyQuery />
-				))}
+										return (
+											<Button
+												key={+buttonPage}
+												variant={buttonPage === page ? "solid" : "outline"}
+												onClick={() => setPage(buttonPage)}
+												style={{ cursor: "pointer" }}
+											>
+												{buttonPage}
+											</Button>
+										);
+									})}
+							</Flex>
+						</>
+					) : (
+						<EmptyQuery />
+					)}
+				</main>
+			)}
 		</main>
 	);
 }

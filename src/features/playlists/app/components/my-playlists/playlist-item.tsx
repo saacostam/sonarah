@@ -20,6 +20,7 @@ export function PlaylistItem({ playlist }: PlaylistItemProps) {
 				})}
 				style={{ textDecoration: "none", color: "inherit" }}
 				className="clickable"
+				data-testid="playlist-item"
 			>
 				<Flex direction="column" gap="2" width="8rem">
 					<Avatar fallback={playlist.name} src={playlist.pictureUrl} size="8" />

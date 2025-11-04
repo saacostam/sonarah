@@ -11,7 +11,7 @@ export function EmptyQuery({
 	description = "Once something is available, it will be visible here",
 }: EmptyQueryProps) {
 	return (
-		<Card>
+		<Card data-testid="empty-query">
 			<Flex align="center" direction="column" gap="2">
 				<CubeTransparentIcon height={64} width={64} />
 				<Heading size="6">{title}</Heading>
