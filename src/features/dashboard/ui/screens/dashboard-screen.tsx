@@ -13,7 +13,7 @@ export function DashboardScreen() {
 	);
 }
 
-function DashboardScreenContent() {
+export function DashboardScreenContent() {
 	const { setStatus } = useDashboardModalManager();
 
 	const onCreatePlaylist = useCallback(
