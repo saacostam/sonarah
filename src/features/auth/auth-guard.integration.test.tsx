@@ -1,12 +1,12 @@
 import { screen, waitFor } from "@testing-library/dom";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
-import { RouteName } from "@/features/routes/domain";
-import { RoutesAdapter } from "@/features/routes/infra";
+import { RouteName } from "@/features/navigation/domain";
+import { NavigationAdapter } from "@/features/navigation/infra";
 import { renderWithProviders } from "@/shared/tests";
 import type { ISession } from "./domain";
 import { AuthGuard } from "./ui";
 
-const routesAdapter = new RoutesAdapter();
+const navigationAdapter = new NavigationAdapter();
 
 function setupAuthGuard({
 	pathname = "/home",
@@ -30,7 +30,7 @@ function setupAuthGuard({
 				return authState;
 			},
 		},
-		routesAdapter,
+		navigationAdapter,
 	};
 
 	return { push, adapters };
@@ -39,7 +39,7 @@ function setupAuthGuard({
 describe("AuthGuard [Integration]", () => {
 	it("should render children if accessing a public route and unauthenticated", async () => {
 		const { push, adapters } = setupAuthGuard({
-			pathname: routesAdapter.generateRoute({
+			pathname: navigationAdapter.generateRoute({
 				name: RouteName.HOME,
 			}),
 			authState: { type: "unauthenticated" },
@@ -61,7 +61,7 @@ describe("AuthGuard [Integration]", () => {
 
 	it("should render children if accessing a private route and authenticated", async () => {
 		const { push, adapters } = setupAuthGuard({
-			pathname: routesAdapter.generateRoute({
+			pathname: navigationAdapter.generateRoute({
 				name: RouteName.DASHBOARD,
 			}),
 			authState: { type: "authenticated", token: "token" },
@@ -83,7 +83,7 @@ describe("AuthGuard [Integration]", () => {
 
 	it("should redirect to home if unauthenticated on private route", async () => {
 		const { push, adapters } = setupAuthGuard({
-			pathname: routesAdapter.generateRoute({
+			pathname: navigationAdapter.generateRoute({
 				name: RouteName.DASHBOARD,
 			}),
 			authState: { type: "unauthenticated" },
@@ -101,7 +101,7 @@ describe("AuthGuard [Integration]", () => {
 
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith(
-				routesAdapter.generateRoute({
+				navigationAdapter.generateRoute({
 					name: RouteName.HOME,
 				}),
 			);
@@ -110,7 +110,7 @@ describe("AuthGuard [Integration]", () => {
 
 	it("should redirect to dashboard if authenticated and accessing auth route", async () => {
 		const { push, adapters } = setupAuthGuard({
-			pathname: routesAdapter.generateRoute({
+			pathname: navigationAdapter.generateRoute({
 				name: RouteName.HOME,
 			}),
 			authState: { type: "authenticated", token: "token" },
@@ -128,7 +128,7 @@ describe("AuthGuard [Integration]", () => {
 
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith(
-				routesAdapter.generateRoute({
+				navigationAdapter.generateRoute({
 					name: RouteName.DASHBOARD,
 				}),
 			);
@@ -137,7 +137,7 @@ describe("AuthGuard [Integration]", () => {
 
 	it("should render skeleton in case of session error", async () => {
 		const { push, adapters } = setupAuthGuard({
-			pathname: routesAdapter.generateRoute({
+			pathname: navigationAdapter.generateRoute({
 				name: RouteName.HOME,
 			}),
 			authError: new DomainError(DomainErrorType.BAD_REQUEST, "Bad Request"),

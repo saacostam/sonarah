@@ -1,10 +1,10 @@
 import {
 	type GenerateRouteAction,
-	type IRoutesAdapter,
+	type INavigationAdapter,
 	RouteName,
 } from "../../domain";
 
-export class RoutesAdapter implements IRoutesAdapter {
+export class NavigationAdapter implements INavigationAdapter {
 	defineRoute(name: RouteName): string {
 		switch (name) {
 			case RouteName.DASHBOARD: {

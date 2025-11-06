@@ -4,11 +4,11 @@ import { HashRouter, useLocation, useNavigate } from "react-router";
 import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { MockErrorLoggerAdapter } from "@/features/errors/infra";
+import { NavigationAdapter } from "@/features/navigation/infra";
+import { NavigationProvider } from "@/features/navigation/ui";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
 import { RepositoriesProvider } from "@/features/repositories/ui";
 import { RouterAdapter } from "@/features/router/infra";
-import { RoutesAdapter } from "@/features/routes/infra";
-import { RoutesProvider } from "@/features/routes/ui";
 import { LocalStorageAdapter } from "@/features/storage/infra";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
@@ -31,7 +31,7 @@ function AdaptersProviderDI() {
 		() => new RouterAdapter(navigate, location),
 		[location, navigate],
 	);
-	const routesAdapter = useMemo(() => new RoutesAdapter(), []);
+	const navigationAdapter = useMemo(() => new NavigationAdapter(), []);
 	const authAdapter = useMemo(
 		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),
 		[routerAdapter, storageAdapter],
@@ -48,7 +48,7 @@ function AdaptersProviderDI() {
 			errorLoggerAdapter: errorLoggerAdapter,
 			notificationsAdapter: reactHotToastNotificationAdapter,
 			routerAdapter: routerAdapter,
-			routesAdapter: routesAdapter,
+			navigationAdapter,
 			storageAdapter: storageAdapter,
 		}),
 		[
@@ -56,7 +56,7 @@ function AdaptersProviderDI() {
 			errorLoggerAdapter,
 			reactHotToastNotificationAdapter,
 			routerAdapter,
-			routesAdapter,
+			navigationAdapter,
 			storageAdapter,
 		],
 	);
@@ -65,7 +65,7 @@ function AdaptersProviderDI() {
 		<AdaptersContext.Provider value={allAdapters}>
 			<AuthProvider>
 				<RepositoriesProvider>
-					<RoutesProvider />
+					<NavigationProvider />
 				</RepositoriesProvider>
 			</AuthProvider>
 		</AdaptersContext.Provider>

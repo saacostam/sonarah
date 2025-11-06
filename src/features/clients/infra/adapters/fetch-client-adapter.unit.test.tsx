@@ -1,16 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { IAuthAdapter } from "@/features/auth/domain";
 import { DomainErrorType } from "@/features/errors/domain";
+import {
+	type INavigationAdapter,
+	RouteName,
+} from "@/features/navigation/domain";
+import { NavigationAdapter } from "@/features/navigation/infra";
 import type { IRouterAdapter } from "@/features/router/domain";
-import { type IRoutesAdapter, RouteName } from "@/features/routes/domain";
-import { RoutesAdapter } from "@/features/routes/infra";
 import { FetchClientAdapter } from "./fetch-client-adapter";
 
 describe("FetchClientAdapter [Unit]", () => {
 	let fetchMock: ReturnType<typeof vi.fn>;
 	let authAdapter: IAuthAdapter;
 	let routerAdapter: IRouterAdapter;
-	let routesAdapter: IRoutesAdapter;
+	let navigationAdapter: INavigationAdapter;
 	let adapter: FetchClientAdapter;
 
 	beforeEach(() => {
@@ -22,12 +25,12 @@ describe("FetchClientAdapter [Unit]", () => {
 		routerAdapter = {
 			push: vi.fn(),
 		} as unknown as IRouterAdapter;
-		routesAdapter = new RoutesAdapter();
+		navigationAdapter = new NavigationAdapter();
 
 		adapter = new FetchClientAdapter(
 			authAdapter,
 			routerAdapter,
-			routesAdapter,
+			navigationAdapter,
 			{
 				baseUrl: "https://api.example.com",
 				defaultHeaders: { Authorization: "Bearer token" },
@@ -121,7 +124,7 @@ describe("FetchClientAdapter [Unit]", () => {
 
 		expect(authAdapter.removeToken).toHaveBeenCalled();
 		expect(routerAdapter.push).toHaveBeenCalledWith(
-			routesAdapter.generateRoute({
+			navigationAdapter.generateRoute({
 				name: RouteName.HOME,
 			}),
 		);

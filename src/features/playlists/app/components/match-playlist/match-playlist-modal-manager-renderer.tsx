@@ -1,9 +1,9 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useAdapters } from "@/features/adapters/app";
+import { RouteName } from "@/features/navigation/domain";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { RouteName } from "@/features/routes/domain";
 import { XIcon } from "@/shared/icons";
 import {
 	useMatchPlaylistModalManger,
@@ -16,7 +16,7 @@ export function MatchPlaylistModalManagerRenderer() {
 		errorLoggerAdapter,
 		notificationsAdapter,
 		routerAdapter,
-		routesAdapter,
+		navigationAdapter,
 	} = useAdapters();
 
 	const { mutate: addItemToPlaylistMutate } = useMutationAddItemToPlaylist();
@@ -50,7 +50,7 @@ export function MatchPlaylistModalManagerRenderer() {
 						);
 
 						routerAdapter.push(
-							routesAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+							navigationAdapter.generateRoute({ name: RouteName.DASHBOARD }),
 						);
 					},
 					onError: (e) => {
@@ -71,7 +71,7 @@ export function MatchPlaylistModalManagerRenderer() {
 			notificationsAdapter,
 			onClose,
 			routerAdapter,
-			routesAdapter,
+			navigationAdapter,
 			status,
 		],
 	);

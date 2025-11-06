@@ -19,19 +19,19 @@ import type { IRepositories } from "../../domain";
 const SPOTIFY_URL = "https://api.spotify.com";
 
 export function RepositoriesProvider({ children }: PropsWithChildren) {
-	const { authAdapter, routerAdapter, routesAdapter } = useAdapters();
+	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
 
 	const session = useQuerySession();
 
 	const spotifyFetchClientAdapter: IClientAdapter = useMemo(
 		() =>
-			new FetchClientAdapter(authAdapter, routerAdapter, routesAdapter, {
+			new FetchClientAdapter(authAdapter, routerAdapter, navigationAdapter, {
 				baseUrl: SPOTIFY_URL,
 				defaultHeaders: {
 					Authorization: `Bearer ${session.data?.type === "authenticated" ? session.data.token : ""}`,
 				},
 			}),
-		[authAdapter, routerAdapter, routesAdapter, session.data],
+		[authAdapter, routerAdapter, navigationAdapter, session.data],
 	);
 
 	const playlistRepository: IPlaylistRepository = useMemo(

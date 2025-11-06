@@ -1,12 +1,12 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type { IAuthAdapterPayload, ISession } from "@/features/auth/domain";
-import { RouteName } from "@/features/routes/domain";
-import { RoutesAdapter } from "@/features/routes/infra";
+import { RouteName } from "@/features/navigation/domain";
+import { NavigationAdapter } from "@/features/navigation/infra";
 import { renderWithProviders } from "@/shared/tests";
 import { HomeScreen } from "./ui";
 
-const routesAdapter = new RoutesAdapter();
+const navigationAdapter = new NavigationAdapter();
 
 const diFactory = (args: {
 	token: "auth" | "unauth" | "pending";
@@ -34,7 +34,7 @@ const diFactory = (args: {
 				getUrlSearchParams: () =>
 					new URLSearchParams({ code: args.code ?? "" }),
 			},
-			routesAdapter,
+			navigationAdapter,
 		},
 	};
 };
@@ -154,7 +154,7 @@ describe("HomeScreen [Integration]", () => {
 			name: /start now/i,
 		});
 		expect(new URL(button.href).pathname).toBe(
-			routesAdapter.generateRoute({
+			navigationAdapter.generateRoute({
 				name: RouteName.DASHBOARD,
 			}),
 		);

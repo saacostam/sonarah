@@ -5,7 +5,7 @@ import {
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/features/auth/app";
-import { RouteName } from "@/features/routes/domain";
+import { RouteName } from "@/features/navigation/domain";
 import type { IButtonAction } from "@/shared/types";
 
 enum UrlSearchParam {
@@ -13,7 +13,7 @@ enum UrlSearchParam {
 }
 
 export function useHomeScreen() {
-	const { routerAdapter, routesAdapter } = useAdapters();
+	const { routerAdapter, navigationAdapter } = useAdapters();
 	const session = useQuerySession();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
@@ -28,7 +28,9 @@ export function useHomeScreen() {
 			action: isAuth
 				? {
 						type: "href",
-						href: routesAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+						href: navigationAdapter.generateRoute({
+							name: RouteName.DASHBOARD,
+						}),
 					}
 				: {
 						type: "button",
@@ -36,7 +38,7 @@ export function useHomeScreen() {
 					},
 			label: isAuth ? "Start Now" : "Login",
 		}),
-		[isAuth, routesAdapter, startAuthFlow],
+		[isAuth, navigationAdapter, startAuthFlow],
 	);
 
 	useEffect(() => {

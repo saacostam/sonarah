@@ -1,11 +1,11 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { RouteName } from "@/features/routes/domain";
-import { RoutesAdapter } from "@/features/routes/infra";
+import { RouteName } from "@/features/navigation/domain";
+import { NavigationAdapter } from "@/features/navigation/infra";
 import { renderWithProviders } from "@/shared/tests";
 import { Navbar } from "./ui";
 
-const routesAdapter = new RoutesAdapter();
+const navigationAdapter = new NavigationAdapter();
 
 // Helper to create auth mock with shared shape
 const makeAuthAdapter = (state: "authenticated" | "unauthenticated") => {
@@ -29,7 +29,7 @@ describe("Navbar [Integration]", () => {
 		renderWithProviders(<Navbar />, {
 			adapters: {
 				authAdapter,
-				routesAdapter,
+				navigationAdapter,
 			},
 		});
 
@@ -46,7 +46,7 @@ describe("Navbar [Integration]", () => {
 		renderWithProviders(<Navbar />, {
 			adapters: {
 				authAdapter,
-				routesAdapter,
+				navigationAdapter,
 			},
 		});
 
@@ -61,14 +61,14 @@ describe("Navbar [Integration]", () => {
 		renderWithProviders(<Navbar />, {
 			adapters: {
 				authAdapter: makeAuthAdapter("unauthenticated"),
-				routesAdapter,
+				navigationAdapter,
 			},
 		});
 
 		const logo: HTMLAnchorElement = await screen.findByRole("link");
 		await waitFor(() => {
 			expect(new URL(logo.href).pathname).toBe(
-				routesAdapter.generateRoute({ name: RouteName.HOME }),
+				navigationAdapter.generateRoute({ name: RouteName.HOME }),
 			);
 		});
 	});
@@ -77,14 +77,14 @@ describe("Navbar [Integration]", () => {
 		renderWithProviders(<Navbar />, {
 			adapters: {
 				authAdapter: makeAuthAdapter("authenticated"),
-				routesAdapter,
+				navigationAdapter,
 			},
 		});
 
 		const logo: HTMLAnchorElement = await screen.findByRole("link");
 		await waitFor(() => {
 			expect(new URL(logo.href).pathname).toBe(
-				routesAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+				navigationAdapter.generateRoute({ name: RouteName.DASHBOARD }),
 			);
 		});
 	});

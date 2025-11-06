@@ -20,7 +20,7 @@ export type GenerateRouteAction =
 			};
 	  };
 
-export interface IRoutesAdapter {
+export interface INavigationAdapter {
 	defineRoute(name: RouteName): string;
 	generateRoute(action: GenerateRouteAction): string;
 }

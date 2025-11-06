@@ -5,10 +5,10 @@ import {
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/features/auth/app";
-import { RouteName } from "@/features/routes/domain";
+import { RouteName } from "@/features/navigation/domain";
 
 export function useNavbar() {
-	const { routesAdapter } = useAdapters();
+	const { navigationAdapter } = useAdapters();
 
 	const session = useQuerySession();
 
@@ -19,8 +19,8 @@ export function useNavbar() {
 		() => ({
 			logoHref:
 				session.isSuccess && session.data.type === "authenticated"
-					? routesAdapter.generateRoute({ name: RouteName.DASHBOARD })
-					: routesAdapter.generateRoute({ name: RouteName.HOME }),
+					? navigationAdapter.generateRoute({ name: RouteName.DASHBOARD })
+					: navigationAdapter.generateRoute({ name: RouteName.HOME }),
 			loader: session.isLoading
 				? {
 						status: "loading" as const,
@@ -51,7 +51,7 @@ export function useNavbar() {
 		}),
 		[
 			logout,
-			routesAdapter,
+			navigationAdapter,
 			session.data,
 			session.isLoading,
 			session.isSuccess,

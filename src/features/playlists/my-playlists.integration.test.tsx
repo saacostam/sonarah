@@ -1,12 +1,12 @@
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { RouteName } from "@/features/navigation/domain";
+import { NavigationAdapter } from "@/features/navigation/infra";
 import { MockLeanPlaylistFactory } from "@/features/playlists/test";
-import { RouteName } from "@/features/routes/domain";
-import { RoutesAdapter } from "@/features/routes/infra";
 import { renderWithProviders } from "@/shared/tests";
 import { MyPlaylists } from "./app";
 
-const routesAdapter = new RoutesAdapter();
+const navigationAdapter = new NavigationAdapter();
 
 describe("MyPlaylists [Integration]", () => {
 	const onCreatePlaylist = vi.fn();
@@ -29,7 +29,7 @@ describe("MyPlaylists [Integration]", () => {
 					/>,
 					{
 						adapters: {
-							routesAdapter,
+							navigationAdapter,
 						},
 						repositories: {
 							playlist: {
@@ -60,7 +60,7 @@ describe("MyPlaylists [Integration]", () => {
 						within(el).getByRole("heading", { name: playlist.name }),
 					).toBeInTheDocument();
 					expect(new URL(el.href).pathname).toBe(
-						routesAdapter.generateRoute({
+						navigationAdapter.generateRoute({
 							name: RouteName.PLAYLIST_BY_ID,
 							payload: { id: playlist.id },
 						}),
@@ -76,7 +76,7 @@ describe("MyPlaylists [Integration]", () => {
 					/>,
 					{
 						adapters: {
-							routesAdapter,
+							navigationAdapter,
 						},
 						repositories: {
 							playlist: {
@@ -117,7 +117,7 @@ describe("MyPlaylists [Integration]", () => {
 						/>,
 						{
 							adapters: {
-								routesAdapter,
+								navigationAdapter,
 							},
 							repositories: {
 								playlist: {

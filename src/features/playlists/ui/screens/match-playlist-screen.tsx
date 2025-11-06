@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useAdapters } from "@/features/adapters/app";
+import { RouteName } from "@/features/navigation/domain";
 import { INotificationAdapterType } from "@/features/notifications/domain";
-import { RouteName } from "@/features/routes/domain";
 import {
 	MatchPlaylist,
 	MatchPlaylistModalManagerContext,
@@ -11,14 +11,15 @@ import {
 import { useMatchPlaylistModalManagerImpl } from "../../infra";
 
 export function MatchPlaylistScreen() {
-	const { notificationsAdapter, routerAdapter, routesAdapter } = useAdapters();
+	const { notificationsAdapter, routerAdapter, navigationAdapter } =
+		useAdapters();
 
 	const { id } = routerAdapter.getParams();
 
 	const onNotFound = useCallback(
 		() =>
 			routerAdapter
-				.push(routesAdapter.generateRoute({ name: RouteName.DASHBOARD }))
+				.push(navigationAdapter.generateRoute({ name: RouteName.DASHBOARD }))
 				.finally(() =>
 					notificationsAdapter.notify(
 						INotificationAdapterType.ERROR,
@@ -26,7 +27,7 @@ export function MatchPlaylistScreen() {
 						"We couldn't find a playlist with that ID",
 					),
 				),
-		[notificationsAdapter, routerAdapter, routesAdapter],
+		[notificationsAdapter, routerAdapter, navigationAdapter],
 	);
 
 	useEffect(() => {

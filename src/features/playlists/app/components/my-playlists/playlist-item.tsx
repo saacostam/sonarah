@@ -1,20 +1,20 @@
 import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
 import { useAdapters } from "@/features/adapters/app";
+import { RouteName } from "@/features/navigation/domain";
 import type { ILeanPlaylist } from "@/features/playlists/domain";
-import { RouteName } from "@/features/routes/domain";
 
 export interface PlaylistItemProps {
 	playlist: ILeanPlaylist;
 }
 
 export function PlaylistItem({ playlist }: PlaylistItemProps) {
-	const { routesAdapter } = useAdapters();
+	const { navigationAdapter } = useAdapters();
 
 	return (
 		<Tooltip content={`${playlist.name} by ${playlist.creatorName}`}>
 			<Link
-				to={routesAdapter.generateRoute({
+				to={navigationAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: playlist.id },
 				})}
