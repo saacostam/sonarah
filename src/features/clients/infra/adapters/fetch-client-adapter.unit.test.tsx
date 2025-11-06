@@ -1,13 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { IAuthAdapter } from "@/features/auth/domain";
 import { DomainErrorType } from "@/features/errors/domain";
-import { type IRouterAdapter, RouteName } from "@/features/router/domain";
+import type { IRouterAdapter } from "@/features/router/domain";
+import { type IRoutesAdapter, RouteName } from "@/features/routes/domain";
+import { RoutesAdapter } from "@/features/routes/infra";
 import { FetchClientAdapter } from "./fetch-client-adapter";
 
 describe("FetchClientAdapter [Unit]", () => {
 	let fetchMock: ReturnType<typeof vi.fn>;
 	let authAdapter: IAuthAdapter;
 	let routerAdapter: IRouterAdapter;
+	let routesAdapter: IRoutesAdapter;
 	let adapter: FetchClientAdapter;
 
 	beforeEach(() => {
@@ -18,13 +21,18 @@ describe("FetchClientAdapter [Unit]", () => {
 		authAdapter = { removeToken: vi.fn() } as unknown as IAuthAdapter;
 		routerAdapter = {
 			push: vi.fn(),
-			generateRoute: vi.fn().mockReturnValue("/home"),
 		} as unknown as IRouterAdapter;
+		routesAdapter = new RoutesAdapter();
 
-		adapter = new FetchClientAdapter(authAdapter, routerAdapter, {
-			baseUrl: "https://api.example.com",
-			defaultHeaders: { Authorization: "Bearer token" },
-		});
+		adapter = new FetchClientAdapter(
+			authAdapter,
+			routerAdapter,
+			routesAdapter,
+			{
+				baseUrl: "https://api.example.com",
+				defaultHeaders: { Authorization: "Bearer token" },
+			},
+		);
 	});
 
 	it("builds URL with query params", async () => {
@@ -112,10 +120,11 @@ describe("FetchClientAdapter [Unit]", () => {
 		);
 
 		expect(authAdapter.removeToken).toHaveBeenCalled();
-		expect(routerAdapter.generateRoute).toHaveBeenCalledWith({
-			name: RouteName.HOME,
-		});
-		expect(routerAdapter.push).toHaveBeenCalledWith("/home");
+		expect(routerAdapter.push).toHaveBeenCalledWith(
+			routesAdapter.generateRoute({
+				name: RouteName.HOME,
+			}),
+		);
 	});
 
 	it("throws for invalid JSON responses", async () => {

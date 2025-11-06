@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { RouteName } from "@/features/router/domain";
+import { RouteName } from "@/features/routes/domain";
 import { XIcon } from "@/shared/icons";
 import {
 	useMatchPlaylistModalManger,
@@ -12,8 +12,12 @@ import {
 import { CreatePlaylist } from "../create-playlist";
 
 export function MatchPlaylistModalManagerRenderer() {
-	const { errorLoggerAdapter, notificationsAdapter, routerAdapter } =
-		useAdapters();
+	const {
+		errorLoggerAdapter,
+		notificationsAdapter,
+		routerAdapter,
+		routesAdapter,
+	} = useAdapters();
 
 	const { mutate: addItemToPlaylistMutate } = useMutationAddItemToPlaylist();
 
@@ -46,7 +50,7 @@ export function MatchPlaylistModalManagerRenderer() {
 						);
 
 						routerAdapter.push(
-							routerAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+							routesAdapter.generateRoute({ name: RouteName.DASHBOARD }),
 						);
 					},
 					onError: (e) => {
@@ -67,6 +71,7 @@ export function MatchPlaylistModalManagerRenderer() {
 			notificationsAdapter,
 			onClose,
 			routerAdapter,
+			routesAdapter,
 			status,
 		],
 	);

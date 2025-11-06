@@ -1,8 +1,12 @@
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockLeanPlaylistFactory } from "@/features/playlists/test";
+import { RouteName } from "@/features/routes/domain";
+import { RoutesAdapter } from "@/features/routes/infra";
 import { renderWithProviders } from "@/shared/tests";
 import { MyPlaylists } from "./app";
+
+const routesAdapter = new RoutesAdapter();
 
 describe("MyPlaylists [Integration]", () => {
 	const onCreatePlaylist = vi.fn();
@@ -25,9 +29,7 @@ describe("MyPlaylists [Integration]", () => {
 					/>,
 					{
 						adapters: {
-							routerAdapter: {
-								generateRoute: () => "/route",
-							},
+							routesAdapter,
 						},
 						repositories: {
 							playlist: {
@@ -57,7 +59,12 @@ describe("MyPlaylists [Integration]", () => {
 					expect(
 						within(el).getByRole("heading", { name: playlist.name }),
 					).toBeInTheDocument();
-					expect(new URL(el.href).pathname).toBe("/route");
+					expect(new URL(el.href).pathname).toBe(
+						routesAdapter.generateRoute({
+							name: RouteName.PLAYLIST_BY_ID,
+							payload: { id: playlist.id },
+						}),
+					);
 				});
 			});
 
@@ -68,6 +75,9 @@ describe("MyPlaylists [Integration]", () => {
 						onSearchPlaylist={onSearchPlaylist}
 					/>,
 					{
+						adapters: {
+							routesAdapter,
+						},
 						repositories: {
 							playlist: {
 								getAll: async () => ({
@@ -107,9 +117,7 @@ describe("MyPlaylists [Integration]", () => {
 						/>,
 						{
 							adapters: {
-								routerAdapter: {
-									generateRoute: () => "/route",
-								},
+								routesAdapter,
 							},
 							repositories: {
 								playlist: {

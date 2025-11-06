@@ -1,19 +1,19 @@
 import { useEffect, useMemo } from "react";
 import { useAdapters } from "@/features/adapters/app";
-import { RouteName } from "@/features/router/domain";
+import { RouteName } from "@/features/routes/domain";
 import { useQuerySession } from "../../app";
 import { PUBLIC_ROUTES } from "../../domain";
 
 export function useAuthGuard() {
-	const { routerAdapter } = useAdapters();
+	const { routerAdapter, routesAdapter } = useAdapters();
 	const session = useQuerySession();
 
 	const publicRoutesPaths = useMemo(
 		() =>
 			PUBLIC_ROUTES.map((route) =>
-				routerAdapter.generateRoute({ name: route }),
+				routesAdapter.generateRoute({ name: route }),
 			),
-		[routerAdapter],
+		[routesAdapter],
 	);
 
 	const location = routerAdapter.getPathname();
@@ -31,16 +31,16 @@ export function useAuthGuard() {
 	useEffect(() => {
 		if (shouldGoToApp) {
 			routerAdapter.push(
-				routerAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+				routesAdapter.generateRoute({ name: RouteName.DASHBOARD }),
 			);
 		}
-	}, [routerAdapter, shouldGoToApp]);
+	}, [routerAdapter, routesAdapter, shouldGoToApp]);
 
 	useEffect(() => {
 		if (shouldGoToHome) {
-			routerAdapter.push(routerAdapter.generateRoute({ name: RouteName.HOME }));
+			routerAdapter.push(routesAdapter.generateRoute({ name: RouteName.HOME }));
 		}
-	}, [routerAdapter, shouldGoToHome]);
+	}, [routerAdapter, routesAdapter, shouldGoToHome]);
 
 	const pending = !session.isSuccess || shouldGoToApp || shouldGoToHome;
 

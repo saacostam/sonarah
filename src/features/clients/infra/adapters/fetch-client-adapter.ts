@@ -1,6 +1,7 @@
 import type { IAuthAdapter } from "@/features/auth/domain";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
-import { type IRouterAdapter, RouteName } from "@/features/router/domain";
+import type { IRouterAdapter } from "@/features/router/domain";
+import { type IRoutesAdapter, RouteName } from "@/features/routes/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 
 export class FetchClientAdapter implements IClientAdapter {
@@ -10,6 +11,7 @@ export class FetchClientAdapter implements IClientAdapter {
 	constructor(
 		private authAdapter: IAuthAdapter,
 		private routerAdapter: IRouterAdapter,
+		private routesAdapter: IRoutesAdapter,
 		options?: {
 			baseUrl?: string;
 			defaultHeaders?: Record<string, string>;
@@ -63,7 +65,7 @@ export class FetchClientAdapter implements IClientAdapter {
 			if (response.status === 401) {
 				await this.authAdapter.removeToken();
 				await this.routerAdapter.push(
-					this.routerAdapter.generateRoute({ name: RouteName.HOME }),
+					this.routesAdapter.generateRoute({ name: RouteName.HOME }),
 				);
 			}
 

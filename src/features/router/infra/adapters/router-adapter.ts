@@ -1,49 +1,11 @@
 import { type useLocation, type useNavigate, useParams } from "react-router";
-import {
-	type GenerateRouteAction,
-	type IRouterAdapter,
-	RouteName,
-} from "../../domain";
+import type { IRouterAdapter } from "../../domain";
 
 export class RouterAdapter implements IRouterAdapter {
 	constructor(
 		private navigate: ReturnType<typeof useNavigate>,
 		private location: ReturnType<typeof useLocation>,
 	) {}
-
-	defineRoute(name: RouteName): string {
-		switch (name) {
-			case RouteName.DASHBOARD: {
-				return "/app";
-			}
-			case RouteName.HOME: {
-				return "/";
-			}
-			case RouteName.MATCH_PLAYLIST_BY_ID: {
-				return "/match/:id";
-			}
-			case RouteName.PLAYLIST_BY_ID: {
-				return "/playlist/:id";
-			}
-		}
-	}
-
-	generateRoute(action: GenerateRouteAction): string {
-		switch (action.name) {
-			case RouteName.DASHBOARD: {
-				return "/app";
-			}
-			case RouteName.HOME: {
-				return "/";
-			}
-			case RouteName.MATCH_PLAYLIST_BY_ID: {
-				return `/match/${action.payload.id}`;
-			}
-			case RouteName.PLAYLIST_BY_ID: {
-				return `/playlist/${action.payload.id}`;
-			}
-		}
-	}
 
 	getBaseUrl(): string {
 		return window.location.origin;

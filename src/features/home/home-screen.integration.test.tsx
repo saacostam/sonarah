@@ -1,8 +1,12 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type { IAuthAdapterPayload, ISession } from "@/features/auth/domain";
+import { RouteName } from "@/features/routes/domain";
+import { RoutesAdapter } from "@/features/routes/infra";
 import { renderWithProviders } from "@/shared/tests";
 import { HomeScreen } from "./ui";
+
+const routesAdapter = new RoutesAdapter();
 
 const diFactory = (args: {
 	token: "auth" | "unauth" | "pending";
@@ -30,6 +34,7 @@ const diFactory = (args: {
 				getUrlSearchParams: () =>
 					new URLSearchParams({ code: args.code ?? "" }),
 			},
+			routesAdapter,
 		},
 	};
 };
@@ -137,7 +142,6 @@ describe("HomeScreen [Integration]", () => {
 				...di?.adapters,
 				routerAdapter: {
 					...di?.adapters?.routerAdapter,
-					generateRoute: () => "/route",
 				},
 			},
 		});
@@ -149,6 +153,10 @@ describe("HomeScreen [Integration]", () => {
 		const button = await screen.findByRole<HTMLAnchorElement>("link", {
 			name: /start now/i,
 		});
-		expect(new URL(button.href).pathname).toBe("/route");
+		expect(new URL(button.href).pathname).toBe(
+			routesAdapter.generateRoute({
+				name: RouteName.DASHBOARD,
+			}),
+		);
 	});
 });

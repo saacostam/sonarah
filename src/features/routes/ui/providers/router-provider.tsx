@@ -4,7 +4,7 @@ import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
-import { RouteName } from "../../domain";
+import { RouteName } from "@/features/routes/domain";
 import { LazyLoadingRouteSkeleton } from "../components";
 
 // Lazy imports
@@ -24,8 +24,8 @@ const DashboardScreen = lazy(() =>
 	})),
 );
 
-export function RouterProvider() {
-	const { routerAdapter } = useAdapters();
+export function RoutesProvider() {
+	const { routesAdapter } = useAdapters();
 
 	return (
 		<Suspense fallback={<LazyLoadingRouteSkeleton />}>
@@ -39,15 +39,15 @@ export function RouterProvider() {
 				>
 					<Route index element={<HomeScreen />} />
 					<Route
-						path={routerAdapter.defineRoute(RouteName.DASHBOARD)}
+						path={routesAdapter.defineRoute(RouteName.DASHBOARD)}
 						element={<DashboardScreen />}
 					/>
 					<Route
-						path={routerAdapter.defineRoute(RouteName.PLAYLIST_BY_ID)}
+						path={routesAdapter.defineRoute(RouteName.PLAYLIST_BY_ID)}
 						element={<ManagePlaylistScreen />}
 					/>
 					<Route
-						path={routerAdapter.defineRoute(RouteName.MATCH_PLAYLIST_BY_ID)}
+						path={routesAdapter.defineRoute(RouteName.MATCH_PLAYLIST_BY_ID)}
 						element={<MatchPlaylistScreen />}
 					/>
 				</Route>
@@ -55,7 +55,7 @@ export function RouterProvider() {
 					path="*"
 					element={
 						<ErrorScreen
-							resetHref={routerAdapter.generateRoute({
+							resetHref={routesAdapter.generateRoute({
 								name: RouteName.HOME,
 							})}
 						/>

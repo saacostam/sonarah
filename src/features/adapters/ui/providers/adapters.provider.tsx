@@ -7,7 +7,8 @@ import { MockErrorLoggerAdapter } from "@/features/errors/infra";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
 import { RepositoriesProvider } from "@/features/repositories/ui";
 import { RouterAdapter } from "@/features/router/infra";
-import { RouterProvider } from "@/features/router/ui";
+import { RoutesAdapter } from "@/features/routes/infra";
+import { RoutesProvider } from "@/features/routes/ui";
 import { LocalStorageAdapter } from "@/features/storage/infra";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
@@ -30,6 +31,7 @@ function AdaptersProviderDI() {
 		() => new RouterAdapter(navigate, location),
 		[location, navigate],
 	);
+	const routesAdapter = useMemo(() => new RoutesAdapter(), []);
 	const authAdapter = useMemo(
 		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),
 		[routerAdapter, storageAdapter],
@@ -46,6 +48,7 @@ function AdaptersProviderDI() {
 			errorLoggerAdapter: errorLoggerAdapter,
 			notificationsAdapter: reactHotToastNotificationAdapter,
 			routerAdapter: routerAdapter,
+			routesAdapter: routesAdapter,
 			storageAdapter: storageAdapter,
 		}),
 		[
@@ -53,6 +56,7 @@ function AdaptersProviderDI() {
 			errorLoggerAdapter,
 			reactHotToastNotificationAdapter,
 			routerAdapter,
+			routesAdapter,
 			storageAdapter,
 		],
 	);
@@ -61,7 +65,7 @@ function AdaptersProviderDI() {
 		<AdaptersContext.Provider value={allAdapters}>
 			<AuthProvider>
 				<RepositoriesProvider>
-					<RouterProvider />
+					<RoutesProvider />
 				</RepositoriesProvider>
 			</AuthProvider>
 		</AdaptersContext.Provider>

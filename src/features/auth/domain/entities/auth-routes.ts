@@ -1,3 +1,3 @@
-import { RouteName } from "@/features/router/domain";
+import { RouteName } from "@/features/routes/domain";
 
 export const PUBLIC_ROUTES = [RouteName.HOME] as const;

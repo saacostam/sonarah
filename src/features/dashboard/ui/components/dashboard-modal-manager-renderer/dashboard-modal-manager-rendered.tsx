@@ -4,11 +4,11 @@ import { useAdapters } from "@/features/adapters/app";
 import { useDashboardModalManager } from "@/features/dashboard/app";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { RouteName } from "@/features/router/domain";
+import { RouteName } from "@/features/routes/domain";
 import { XIcon } from "@/shared/icons";
 
 export function DashboardModalManagerRenderer() {
-	const { routerAdapter } = useAdapters();
+	const { routerAdapter, routesAdapter } = useAdapters();
 
 	const { setStatus, status } = useDashboardModalManager();
 
@@ -18,26 +18,26 @@ export function DashboardModalManagerRenderer() {
 		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
 			onClose();
 			routerAdapter.push(
-				routerAdapter.generateRoute({
+				routesAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: args.id },
 				}),
 			);
 		},
-		[onClose, routerAdapter],
+		[onClose, routerAdapter, routesAdapter],
 	);
 
 	const onSavePlaylistSuccess = useCallback(
 		(args: IPlaylistRepositoryPayload["SaveOut"]) => {
 			onClose();
 			routerAdapter.push(
-				routerAdapter.generateRoute({
+				routesAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
 					payload: { id: args.id },
 				}),
 			);
 		},
-		[onClose, routerAdapter],
+		[onClose, routerAdapter, routesAdapter],
 	);
 
 	return (
