@@ -72,6 +72,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				pictureUrl: item.images?.at(0)?.url,
 				numberOfTracks: item.tracks.total,
 			})),
+			limit,
 		};
 	}
 
@@ -192,6 +193,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 					pictureUrl: item.images?.at(0)?.url,
 					numberOfTracks: item.tracks.total,
 				})),
+			limit,
 		};
 	}
 }

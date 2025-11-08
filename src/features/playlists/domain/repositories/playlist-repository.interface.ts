@@ -1,4 +1,8 @@
-import type { ILeanPlaylist, IPlaylist } from "../entities";
+import type {
+	ILeanPlaylist,
+	IPaginatedPlaylists,
+	IPlaylist,
+} from "../entities";
 
 export interface IPlaylistRepository {
 	addItems(
@@ -45,11 +49,7 @@ export interface IPlaylistRepositoryPayload {
 		page: number;
 		limit: number;
 	};
-	GetAllOut: {
-		page: number;
-		playlists: ILeanPlaylist[];
-		total: number;
-	};
+	GetAllOut: IPaginatedPlaylists;
 
 	GetByIdIn: {
 		id: string;
@@ -70,9 +70,5 @@ export interface IPlaylistRepositoryPayload {
 		q: string;
 		page: number;
 	};
-	SearchOut: {
-		page: number;
-		playlists: ILeanPlaylist[];
-		total: number;
-	};
+	SearchOut: IPaginatedPlaylists;
 }

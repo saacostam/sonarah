@@ -18,3 +18,10 @@ export interface ITrack {
 	durationInMs: number;
 	uri: string;
 }
+
+export interface IPaginatedPlaylists {
+	page: number;
+	playlists: ILeanPlaylist[];
+	total: number;
+	limit: number;
+}

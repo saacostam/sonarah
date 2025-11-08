@@ -7,10 +7,10 @@
 - [x] Create Empty-Search for playlists
 - [x] Create Empty-Search for manage-playlist (playlist-by-id)
 - [x] Create custom Suspense-Boundary for lazy-loaded routes
+- [x] Break-down my-playlists into components
 - [ ] Create error page for auth-guard
 - [ ] Create playlist options with tabs, for recommendations card
 - [ ] Create error page for home screen (and add unit test)
 - [ ] Move add-item logic from modal-manager to component (app layer), in match-playlist
 - [ ] Clean-up (double) notifications for create playlist logic in match-playlist
-- [ ] Break-down my-playlists into components (Maybe, guide by data-testid)
 - [ ] Validate integration tests written for my-playlists
