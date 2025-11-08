@@ -3,77 +3,45 @@ import { useCallback } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { RouteName } from "@/features/navigation/domain";
 import { INotificationAdapterType } from "@/features/notifications/domain";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { XIcon } from "@/shared/icons";
-import {
-	useMatchPlaylistModalManger,
-	useMutationAddItemToPlaylist,
-} from "../../hooks";
-import { CreatePlaylist } from "../create-playlist";
+import { getErrorMessage } from "@/shared/utils";
+import { useMatchPlaylistModalManger } from "../../hooks";
+import { CreateMatchedPlaylist } from "./create-matched-playlist";
 
 export function MatchPlaylistModalManagerRenderer() {
 	const {
 		errorLoggerAdapter,
+		navigationAdapter,
 		notificationsAdapter,
 		routerAdapter,
-		navigationAdapter,
 	} = useAdapters();
-
-	const { mutate: addItemToPlaylistMutate } = useMutationAddItemToPlaylist();
 
 	const { status, setStatus } = useMatchPlaylistModalManger();
 
 	const onClose = useCallback(() => setStatus({ type: "browse" }), [setStatus]);
 
-	const onCreatePlaylistSuccess = useCallback(
-		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
-			const { id } = args;
+	const onCreateMatchedPlaylistSuccess = useCallback(() => {
+		notificationsAdapter.notify(
+			INotificationAdapterType.SUCCESS,
+			"Added",
+			"Tracks added to playlist",
+		);
 
-			if (status.type !== "create-playlist") {
-				onClose();
-				notificationsAdapter.notify(
-					INotificationAdapterType.ERROR,
-					"Tracks not found",
-					"Create action was triggered without selecting tracks",
-				);
-				return;
-			}
+		routerAdapter.push(
+			navigationAdapter.generateRoute({ name: RouteName.DASHBOARD }),
+		);
+	}, [notificationsAdapter, navigationAdapter, routerAdapter]);
 
-			addItemToPlaylistMutate(
-				{ id, uris: status.uris },
-				{
-					onSuccess: () => {
-						notificationsAdapter.notify(
-							INotificationAdapterType.SUCCESS,
-							"Added",
-							"Tracks added to playlist",
-						);
-
-						routerAdapter.push(
-							navigationAdapter.generateRoute({ name: RouteName.DASHBOARD }),
-						);
-					},
-					onError: (e) => {
-						errorLoggerAdapter.logAny(e);
-						notificationsAdapter.notify(
-							INotificationAdapterType.ERROR,
-							"Error",
-							"Unnable to add tracks to playlist",
-						);
-					},
-					onSettled: () => onClose(),
-				},
+	const onCreateMatchedPlaylistError = useCallback(
+		(e: unknown) => {
+			errorLoggerAdapter.logAny(e);
+			notificationsAdapter.notify(
+				INotificationAdapterType.ERROR,
+				"Error",
+				getErrorMessage(e, "Unnable to add tracks to playlist"),
 			);
 		},
-		[
-			addItemToPlaylistMutate,
-			errorLoggerAdapter,
-			notificationsAdapter,
-			onClose,
-			routerAdapter,
-			navigationAdapter,
-			status,
-		],
+		[errorLoggerAdapter, notificationsAdapter],
 	);
 
 	return (
@@ -88,9 +56,11 @@ export function MatchPlaylistModalManagerRenderer() {
 						<XIcon height={20} width={20} />
 					</Button>
 				</Flex>
-				<CreatePlaylist
-					onCancel={onClose}
-					onSuccess={onCreatePlaylistSuccess}
+				<CreateMatchedPlaylist
+					onClose={onClose}
+					onError={onCreateMatchedPlaylistError}
+					onSuccess={onCreateMatchedPlaylistSuccess}
+					tracksUris={status.type === "create-playlist" ? status.uris : []}
 				/>
 			</Dialog.Content>
 		</Dialog.Root>
