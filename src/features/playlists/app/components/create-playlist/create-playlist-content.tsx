@@ -1,7 +1,5 @@
 import { Box, Button, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
-import { useAdapters } from "@/features/adapters/app";
-import { INotificationAdapterType } from "@/features/notifications/domain";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { InlineErrorMessage, Input } from "@/shared/components";
 import { getErrorMessage } from "@/shared/utils";
@@ -22,8 +20,6 @@ export function CreatePlaylistContent({
 	onSuccess,
 	userId,
 }: CreatePlaylistContentProps) {
-	const { notificationsAdapter } = useAdapters();
-
 	const { mutate: mutateCreatePlaylist, isPending: createPlaylistIsPending } =
 		useMutationCreatePlaylist();
 
@@ -47,25 +43,11 @@ export function CreatePlaylistContent({
 								"Unable to create playlist right now.",
 							),
 						}),
-					onSuccess: (args) => {
-						notificationsAdapter.notify(
-							INotificationAdapterType.SUCCESS,
-							"Added",
-							"Playlist added successfully",
-						);
-
-						onSuccess(args);
-					},
+					onSuccess: onSuccess,
 				},
 			);
 		},
-		[
-			createPlaylistForm,
-			onSuccess,
-			mutateCreatePlaylist,
-			notificationsAdapter,
-			userId,
-		],
+		[createPlaylistForm, onSuccess, mutateCreatePlaylist, userId],
 	);
 
 	return (

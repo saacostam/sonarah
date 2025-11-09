@@ -3,12 +3,14 @@ import { useCallback } from "react";
 import { useAdapters } from "@/features/adapters/app";
 import { useDashboardModalManager } from "@/features/dashboard/app";
 import { RouteName } from "@/features/navigation/domain";
+import { INotificationAdapterType } from "@/features/notifications/domain";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { XIcon } from "@/shared/icons";
 
 export function DashboardModalManagerRenderer() {
-	const { routerAdapter, navigationAdapter } = useAdapters();
+	const { routerAdapter, navigationAdapter, notificationsAdapter } =
+		useAdapters();
 
 	const { setStatus, status } = useDashboardModalManager();
 
@@ -17,6 +19,11 @@ export function DashboardModalManagerRenderer() {
 	const onCreatePlaylistSuccess = useCallback(
 		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
 			onClose();
+			notificationsAdapter.notify(
+				INotificationAdapterType.SUCCESS,
+				"Added",
+				"Playlist added successfully",
+			);
 			routerAdapter.push(
 				navigationAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
@@ -24,7 +31,7 @@ export function DashboardModalManagerRenderer() {
 				}),
 			);
 		},
-		[onClose, routerAdapter, navigationAdapter],
+		[onClose, routerAdapter, navigationAdapter, notificationsAdapter],
 	);
 
 	const onSavePlaylistSuccess = useCallback(
