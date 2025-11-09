@@ -25,6 +25,7 @@ import {
 	useQueryTrackRecommendations,
 } from "../../hooks";
 import { PlaylistBrief, TrackItem, TrackItemLayout } from "../shared";
+import { MatchPlaylistRecommendations } from "./match-playlist-recommendations";
 
 export interface MatchPlaylistContentProps {
 	playlist: IPlaylist;
@@ -56,22 +57,25 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 	});
 
 	const onClickRecommendation = useCallback(
-		(track: ITrack, position: number) => {
+		(track: ITrack) => {
 			setMatchingTracks((oldMatchingTracks) => {
 				const hasPosition = oldMatchingTracks.find(
-					(match) => match.position === position,
+					(match) => match.position === currentMatchingPosition,
 				);
 
 				const newMatchingTracks = hasPosition
 					? oldMatchingTracks.map((match) =>
-							match.position === position
+							match.position === currentMatchingPosition
 								? {
 										...match,
 										track,
 									}
 								: match,
 						)
-					: [...oldMatchingTracks, { track, position }];
+					: [
+							...oldMatchingTracks,
+							{ track, position: currentMatchingPosition },
+						];
 
 				const positions = new Set(
 					new Array(playlist.tracks.length).fill(null).map((_, index) => index),
@@ -254,60 +258,47 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 				</Flex>
 
 				<div style={{ width: "100%", padding: 0 }} ref={searchContainerRef}>
-					<Card style={{ marginTop: deltaY }}>
-						<Heading>Match Track</Heading>
-						{currentMatchingTrack && (
-							<>
-								<Text>{currentMatchingTrack.name}</Text>{" "}
-								<Text size="2" style={{ color: "var(--accent-9)" }}>
-									by {currentMatchingTrack.artistNames.join(", ")}
-								</Text>
-							</>
-						)}
-
-						<Box p="1" mt="4" style={{ maxHeight: "400px", overflowY: "auto" }}>
-							{queryTrackRecommendations.isLoading ? (
-								<Flex direction="column" gap="2">
-									{new Array(4).fill(null).map((_, index) => (
-										<Skeleton key={+index} height="74px" width="100%" />
-									))}
-								</Flex>
-							) : queryTrackRecommendations.isSuccess ? (
-								queryTrackRecommendations.data.tracks.length > 0 ? (
-									<Flex direction="column" gap="2">
-										{queryTrackRecommendations.data.tracks.map(
-											(track, index) => (
-												<button
-													key={+index}
-													className="clickable btn-reset"
-													type="button"
-													onClick={() =>
-														onClickRecommendation(
-															track,
-															currentMatchingPosition,
-														)
-													}
-												>
-													<TrackItem track={track} order={index + 1} />
-												</button>
-											),
-										)}
-									</Flex>
-								) : (
-									<EmptyQuery />
-								)
-							) : (
-								<QueryError
-									title="Unable to fetch track recommendations"
-									error={queryTrackRecommendations.error}
-									retry={{
-										onClick: queryTrackRecommendations.refetch,
-										isPending: queryTrackRecommendations.isFetching,
-									}}
-								/>
+					<div style={{ marginTop: deltaY }}>
+						<Card key={currentMatchingPosition}>
+							<Heading>Match Track</Heading>
+							{currentMatchingTrack && (
+								<>
+									<Text>{currentMatchingTrack.name}</Text>{" "}
+									<Text size="2" style={{ color: "var(--accent-9)" }}>
+										by {currentMatchingTrack.artistNames.join(", ")}
+									</Text>
+								</>
 							)}
-						</Box>
-					</Card>
+
+							<Box mt="2">
+								{queryTrackRecommendations.isLoading ? (
+									<Flex direction="column" gap="2">
+										{new Array(4).fill(null).map((_, index) => (
+											<Skeleton key={+index} height="74px" width="100%" />
+										))}
+									</Flex>
+								) : queryTrackRecommendations.isSuccess ? (
+									queryTrackRecommendations.data.playlists.length > 0 ? (
+										<MatchPlaylistRecommendations
+											recommendations={queryTrackRecommendations.data}
+											onClickRecommendation={onClickRecommendation}
+										/>
+									) : (
+										<EmptyQuery />
+									)
+								) : (
+									<QueryError
+										title="Unable to fetch track recommendations"
+										error={queryTrackRecommendations.error}
+										retry={{
+											onClick: queryTrackRecommendations.refetch,
+											isPending: queryTrackRecommendations.isFetching,
+										}}
+									/>
+								)}
+							</Box>
+						</Card>
+					</div>
 				</div>
 			</Grid>
 		</>

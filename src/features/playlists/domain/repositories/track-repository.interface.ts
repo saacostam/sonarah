@@ -12,6 +12,10 @@ export interface ITrackRepositoryPayload {
 		artists: string[];
 	};
 	GetRecommendationsOut: {
-		tracks: ITrack[];
+		playlists: {
+			id: string;
+			name: string;
+			tracks: ITrack[];
+		}[];
 	};
 }

@@ -14,9 +14,9 @@ export class TrackRepository implements ITrackRepository {
 		const { name, artists } = args;
 
 		const params = new URLSearchParams({
-			q: `${name} ${artists.join(" ")}`,
+			q: `${artists.join(" ")} ${name}`,
 			type: "playlist",
-			limit: String(3),
+			limit: String(4),
 		});
 
 		const searchResponse = await this.spotifyAuthClient.get<{
@@ -32,41 +32,64 @@ export class TrackRepository implements ITrackRepository {
 			};
 		}>(`/v1/search?${params.toString()}`);
 
-		const playlist = [...searchResponse.playlists.items]
-			.filter((item) => item !== null)
-			.sort((itemA, itemB) => itemB.tracks.total - itemA.tracks.total)
-			.at(0);
+		const playlistsToQuery = [...searchResponse.playlists.items].filter(
+			(item) => item !== null,
+		);
 
-		if (!playlist) {
-			return { tracks: [] };
+		const playlistsTracksResponse = await Promise.all(
+			playlistsToQuery.map(async (playlist) => {
+				const res = await this.spotifyAuthClient.get<{
+					items: {
+						track?: {
+							id: string;
+							uri: string;
+							name: string;
+							artists: { id: string; name: string }[];
+							duration_ms: number;
+							album: { images: { url: string }[] };
+						};
+					}[];
+				}>(`/v1/playlists/${playlist.id}/tracks`);
+
+				return {
+					id: playlist.id,
+					...res,
+				};
+			}),
+		);
+
+		const playlistsRecommendations: ITrackRepositoryPayload["GetRecommendationsOut"]["playlists"] =
+			[];
+
+		for (const playlist of playlistsToQuery) {
+			const playlistsResponse = playlistsTracksResponse.find(
+				(tracks) => tracks.id === playlist.id,
+			);
+
+			if (!playlistsResponse) continue;
+
+			const tracks: ITrack[] = playlistsResponse.items
+				.map((item) => item.track)
+				.filter((track): track is NonNullable<typeof track> => !!track)
+				.map((track) => ({
+					id: track.id,
+					name: track.name,
+					artistNames: track.artists.map((a) => a.name),
+					durationInMs: track.duration_ms,
+					pictureUrl:
+						track.album.images?.[0]?.url ?? playlist.images?.[0]?.url ?? null,
+					uri: track.uri,
+				}));
+
+			playlistsRecommendations.push({
+				id: playlist.id,
+				name: playlist.name,
+				tracks,
+			});
 		}
 
-		const playlistTracksResponse = await this.spotifyAuthClient.get<{
-			items: {
-				track?: {
-					id: string;
-					uri: string;
-					name: string;
-					artists: { id: string; name: string }[];
-					duration_ms: number;
-					album: { images: { url: string }[] };
-				};
-			}[];
-		}>(`/v1/playlists/${playlist.id}/tracks`);
-
-		const tracks: ITrack[] = playlistTracksResponse.items
-			.map((item) => item.track)
-			.filter((track): track is NonNullable<typeof track> => !!track)
-			.map((track) => ({
-				id: track.id,
-				name: track.name,
-				artistNames: track.artists.map((a) => a.name),
-				durationInMs: track.duration_ms,
-				pictureUrl:
-					track.album.images?.[0]?.url ?? playlist.images?.[0]?.url ?? null,
-				uri: track.uri,
-			}));
-
-		return { tracks };
+		return {
+			playlists: playlistsRecommendations,
+		};
 	}
 }
