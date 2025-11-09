@@ -258,47 +258,45 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 				</Flex>
 
 				<div style={{ width: "100%", padding: 0 }} ref={searchContainerRef}>
-					<div style={{ marginTop: deltaY }}>
-						<Card key={currentMatchingPosition}>
-							<Heading>Match Track</Heading>
-							{currentMatchingTrack && (
-								<>
-									<Text>{currentMatchingTrack.name}</Text>{" "}
-									<Text size="2" style={{ color: "var(--accent-9)" }}>
-										by {currentMatchingTrack.artistNames.join(", ")}
-									</Text>
-								</>
-							)}
+					<Card key={currentMatchingPosition} style={{ marginTop: deltaY }}>
+						<Heading>Match Track</Heading>
+						{currentMatchingTrack && (
+							<>
+								<Text>{currentMatchingTrack.name}</Text>{" "}
+								<Text size="2" style={{ color: "var(--accent-9)" }}>
+									by {currentMatchingTrack.artistNames.join(", ")}
+								</Text>
+							</>
+						)}
 
-							<Box mt="2">
-								{queryTrackRecommendations.isLoading ? (
-									<Flex direction="column" gap="2">
-										{new Array(4).fill(null).map((_, index) => (
-											<Skeleton key={+index} height="74px" width="100%" />
-										))}
-									</Flex>
-								) : queryTrackRecommendations.isSuccess ? (
-									queryTrackRecommendations.data.playlists.length > 0 ? (
-										<MatchPlaylistRecommendations
-											recommendations={queryTrackRecommendations.data}
-											onClickRecommendation={onClickRecommendation}
-										/>
-									) : (
-										<EmptyQuery />
-									)
-								) : (
-									<QueryError
-										title="Unable to fetch track recommendations"
-										error={queryTrackRecommendations.error}
-										retry={{
-											onClick: queryTrackRecommendations.refetch,
-											isPending: queryTrackRecommendations.isFetching,
-										}}
+						<Box mt="2">
+							{queryTrackRecommendations.isLoading ? (
+								<Flex direction="column" gap="2">
+									{new Array(4).fill(null).map((_, index) => (
+										<Skeleton key={+index} height="74px" width="100%" />
+									))}
+								</Flex>
+							) : queryTrackRecommendations.isSuccess ? (
+								queryTrackRecommendations.data.playlists.length > 0 ? (
+									<MatchPlaylistRecommendations
+										recommendations={queryTrackRecommendations.data}
+										onClickRecommendation={onClickRecommendation}
 									/>
-								)}
-							</Box>
-						</Card>
-					</div>
+								) : (
+									<EmptyQuery />
+								)
+							) : (
+								<QueryError
+									title="Unable to fetch track recommendations"
+									error={queryTrackRecommendations.error}
+									retry={{
+										onClick: queryTrackRecommendations.refetch,
+										isPending: queryTrackRecommendations.isFetching,
+									}}
+								/>
+							)}
+						</Box>
+					</Card>
 				</div>
 			</Grid>
 		</>
