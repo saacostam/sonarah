@@ -11,7 +11,7 @@
 - [x] Move add-item logic from modal-manager to component (app layer), in match-playlist
 - [x] Clean-up (double) notifications for create playlist logic in match-playlist
 - [x] Create playlist options with tabs, for recommendations card
-- [ ] Validate integration tests written for my-playlists
+- [x] Validate integration tests written for my-playlists
 - [ ] Create single-method for both create and add items (match-playlist)
 - [ ] Create error page for auth-guard
 - [ ] Create error page for home screen (and add unit test)
