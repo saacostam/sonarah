@@ -104,23 +104,26 @@ describe("MyPlaylists [Integration]", () => {
 		});
 
 		describe("Pagination", () => {
-			it("should render correct number of pages with 14 per page", async () => {
-				const TESTS = [
-					{ total: 1, pages: 1 },
-					{ total: 15, pages: 2 },
-					{ total: 29, pages: 3 },
-				];
+			const onCreatePlaylist = vi.fn();
+			const onSearchPlaylist = vi.fn();
 
-				for (const { total, pages } of TESTS) {
+			const TESTS = [
+				{ total: 1, pages: 1 },
+				{ total: 14, pages: 1 },
+				{ total: 15, pages: 2 },
+				{ total: 28, pages: 2 },
+				{ total: 29, pages: 3 },
+			];
+
+			TESTS.forEach(({ total, pages }) => {
+				it(`renders correct number of pages (total=${total} → pages=${pages})`, async () => {
 					renderWithProviders(
 						<MyPlaylists
 							onCreatePlaylist={onCreatePlaylist}
 							onSearchPlaylist={onSearchPlaylist}
 						/>,
 						{
-							adapters: {
-								navigationAdapter,
-							},
+							adapters: { navigationAdapter },
 							repositories: {
 								playlist: {
 									getAll: async () => ({
@@ -141,12 +144,11 @@ describe("MyPlaylists [Integration]", () => {
 					const pagination = await screen.findByTestId(
 						"my-playlist-pagination",
 					);
-
 					const buttons = within(pagination).queryAllByRole("button");
 					expect(buttons).toHaveLength(pages);
 
 					cleanup();
-				}
+				});
 			});
 		});
 	});
