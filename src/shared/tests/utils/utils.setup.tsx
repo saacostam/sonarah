@@ -2,8 +2,8 @@ import { Theme } from "@radix-ui/themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
-import { AdaptersContext } from "@/features/adapters/app";
-import type { IAdapters } from "@/features/adapters/domain";
+import { AdaptersContext } from "@/shared/adapters/app";
+import type { IAdapters } from "@/shared/adapters/domain";
 import { RepositoriesContext } from "@/shared/repositories/app";
 import type { IRepositories } from "@/shared/repositories/domain";
 

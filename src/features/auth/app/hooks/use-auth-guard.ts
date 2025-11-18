@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { useAdapters } from "@/features/adapters/app";
 import { RouteName } from "@/features/navigation/domain";
+import { useAdapters } from "@/shared/adapters/app";
 import { useQuerySession } from "../../app";
 import { PUBLIC_ROUTES } from "../../domain";
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAdapters } from "@/features/adapters/app";
 import { QueryKey } from "@/features/async-state/domain";
+import { useAdapters } from "@/shared/adapters/app";
 
 export function useQuerySession() {
 	const { authAdapter } = useAdapters();

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
-import { useAdapters } from "@/features/adapters/app";
 import { RouteName } from "@/features/navigation/domain";
 import { INotificationAdapterType } from "@/features/notifications/domain";
+import { useAdapters } from "@/shared/adapters/app";
 import {
 	MatchPlaylist,
 	MatchPlaylistModalManagerContext,

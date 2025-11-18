@@ -1,10 +1,10 @@
 import { lazy, Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router";
-import { useAdapters } from "@/features/adapters/app";
 import { AppLayout } from "@/features/app-shell/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
 import { RouteName } from "@/features/navigation/domain";
+import { useAdapters } from "@/shared/adapters/app";
 import { LazyLoadingRouteSkeleton } from "../components";
 
 // Lazy imports

@@ -1,5 +1,4 @@
 import { type PropsWithChildren, useMemo } from "react";
-import { useAdapters } from "@/features/adapters/app";
 import { useQuerySession } from "@/features/auth/app";
 import type { IClientAdapter } from "@/features/clients/domain";
 import { FetchClientAdapter } from "@/features/clients/infra";
@@ -13,6 +12,7 @@ import {
 } from "@/features/playlists/infra";
 import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
+import { useAdapters } from "@/shared/adapters/app";
 import { RepositoriesContext } from "../../app";
 import type { IRepositories } from "../../domain";
 

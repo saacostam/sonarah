@@ -1,7 +1,7 @@
 import { Theme } from "@radix-ui/themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { AdaptersProvider } from "@/features/adapters/ui";
+import { AdaptersProvider } from "@/shared/adapters/ui";
 
 const queryClient = new QueryClient();
 
