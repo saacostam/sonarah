@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/features/async-state/domain";
-import { useRepositories } from "@/features/repositories/app";
+import { useRepositories } from "@/shared/repositories/app";
 import type { IPlaylistRepositoryPayload } from "../../domain";
 
 export interface UseQueryMyPlaylistsArgs {

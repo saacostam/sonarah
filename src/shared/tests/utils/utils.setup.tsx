@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
 import { AdaptersContext } from "@/features/adapters/app";
 import type { IAdapters } from "@/features/adapters/domain";
-import { RepositoriesContext } from "@/features/repositories/app";
-import type { IRepositories } from "@/features/repositories/domain";
+import { RepositoriesContext } from "@/shared/repositories/app";
+import type { IRepositories } from "@/shared/repositories/domain";
 
 // REPOSITORIES
 export type MockRepositories = {

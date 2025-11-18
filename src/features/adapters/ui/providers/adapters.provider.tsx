@@ -7,9 +7,9 @@ import { MockErrorLoggerAdapter } from "@/features/errors/infra";
 import { NavigationAdapter } from "@/features/navigation/infra";
 import { NavigationProvider } from "@/features/navigation/ui";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
-import { RepositoriesProvider } from "@/features/repositories/ui";
 import { RouterAdapter } from "@/features/router/infra";
 import { LocalStorageAdapter } from "@/features/storage/infra";
+import { RepositoriesProvider } from "@/shared/repositories/ui";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
