@@ -55,6 +55,7 @@ export function MatchPlaylistRecommendations({
 					direction="column"
 					gap="2"
 					style={{ maxHeight: "350px", overflowY: "auto" }}
+					key={selectedPlaylist.id}
 				>
 					{selectedPlaylist.tracks.map((track, index) => (
 						<button
