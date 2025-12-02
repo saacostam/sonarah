@@ -7,6 +7,7 @@ export * from "./chevron-right-icon";
 export * from "./chevron-up-icon";
 export * from "./cube-transparent-icon";
 export * from "./exclamation-triangle-icon";
+export * from "./pause-icon";
 export * from "./play-icon";
 export * from "./plus-icon";
 export * from "./x-icon";
