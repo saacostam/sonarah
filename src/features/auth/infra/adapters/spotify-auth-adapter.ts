@@ -115,7 +115,7 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 		const redirectUri = this.getRedirectUri();
 
 		const scope =
-			"user-read-private user-read-email playlist-read-private playlist-modify-public playlist-modify-private";
+			"user-read-private user-read-email playlist-read-private playlist-modify-public playlist-modify-private streaming user-read-playback-state user-modify-playback-state";
 		const authUrl = new URL("https://accounts.spotify.com/authorize");
 
 		const { codeChallenge, codeVerifier } = await this.getCodeChallenge();
