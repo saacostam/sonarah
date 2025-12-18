@@ -1,26 +1,9 @@
+import type { IWebPlayerState } from "./web-player.entity";
+
 export interface IWebPlayerRepository {
-	status:
-		| {
-				type: "undefined";
-		  }
-		| {
-				type: "loading";
-		  }
-		| {
-				type: "ready";
-				deviceId: string;
-		  };
-	init(): void;
-	playback: "unavailable" | "paused" | "playing";
-	state: {
-		duration: number;
-		position: number;
-	} | null;
-	track: {
-		name: string;
-		artists: string[];
-		img?: string;
-	} | null;
+	init(
+		args: IWebPlayerRepositoryPayload["InitIn"],
+	): Promise<IWebPlayerRepositoryPayload["InitOut"]>;
 	playTrackOfPlaylist: (
 		args: IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"],
 	) => Promise<void>;
@@ -35,6 +18,13 @@ export interface IWebPlayerRepository {
 }
 
 export interface IWebPlayerRepositoryPayload {
+	InitIn: {
+		setStateCb: (state: IWebPlayerState) => void;
+	};
+	InitOut: {
+		player: SpotifyPlayer;
+		deviceId: string;
+	};
 	PlayTrackOfPlaylistIn: {
 		playlist: {
 			uri: string;

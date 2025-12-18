@@ -6,46 +6,61 @@ import {
 	Flex,
 	Heading,
 	Slider,
+	Spinner,
 	Text,
 } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
-	ArrowPathIcon,
 	ChevronDownIcon,
 	ChevronUpIcon,
 	PauseIcon,
 	PlayIcon,
 } from "@/shared/icons";
-import { useRepositories } from "@/shared/repositories/app";
+import {
+	useMutationPausePlayback,
+	useMutationSeekToPosition,
+	useMutationStartPlayback,
+	useWebPlayer,
+} from "../app";
 
 export function WebPlayer() {
-	const { webPlayer } = useRepositories();
+	const webPlayer = useWebPlayer();
+
+	const startPlayback = useMutationStartPlayback();
+	const pausePlayback = useMutationPausePlayback();
+	const seekToPosition = useMutationSeekToPosition();
+
+	const isPlaybackLoading =
+		pausePlayback.isPending ||
+		startPlayback.isPending ||
+		seekToPosition.isPending;
 
 	const [open, setOpen] = useState(true);
 
 	const [time, setTime] = useState(0);
 	const debouncedSeekToPosition = useDebouncedCallback((time: number) => {
-		if (webPlayer.status.type !== "ready" || !webPlayer.state) return;
+		if (webPlayer.type !== "ready:playing" && webPlayer.type !== "ready:paused")
+			return;
 
 		const rangedTime = Math.max(0, Math.min(time, 100));
 		const normalizedTime = rangedTime / 100;
 
-		webPlayer.seekToPosition({
-			deviceId: webPlayer.status.deviceId,
-			positionMs: normalizedTime * webPlayer.state.duration,
+		seekToPosition.mutate({
+			deviceId: webPlayer.deviceId,
+			positionMs: normalizedTime * webPlayer.state.playback.duration,
 		});
 	}, 200);
 
 	useEffect(() => {
-		if (webPlayer.state?.position) {
-			setTime(webPlayer.state.position);
+		if (webPlayer.type === "ready:playing") {
+			setTime(webPlayer.state.playback.position ?? 0);
 		}
-	}, [webPlayer.state?.position]);
+	}, [webPlayer]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			if (webPlayer.playback === "playing") {
+			if (webPlayer.type === "ready:playing") {
 				setTime((time) => time + 1000);
 			}
 		}, 1000);
@@ -53,16 +68,7 @@ export function WebPlayer() {
 		return () => {
 			clearInterval(interval);
 		};
-	}, [webPlayer.playback]);
-
-	const { pausePlayback, status } = webPlayer;
-	useEffect(() => {
-		return () => {
-			if (status.type === "ready") {
-				pausePlayback();
-			}
-		};
-	}, [pausePlayback, status.type]);
+	}, [webPlayer]);
 
 	return (
 		<Flex
@@ -92,53 +98,59 @@ export function WebPlayer() {
 			</Button>
 			{open && (
 				<Card size="2" style={{ width: "100%" }}>
-					{webPlayer.status.type !== "ready" && (
-						<Button
-							onClick={webPlayer.init}
-							loading={webPlayer.status.type === "loading"}
-						>
-							<ArrowPathIcon /> Reload
-						</Button>
-					)}
-					{webPlayer.status.type === "ready" && (
+					{(webPlayer.type === "ready:paused" ||
+						webPlayer.type === "ready:playing") && (
 						<Flex direction="row" gap="4" align="center">
-							<Avatar
-								src={webPlayer.track?.img}
-								fallback={webPlayer.track?.name || "?"}
-								size="3"
-							/>
+							<Box style={{ position: "relative", display: "inline-block" }}>
+								<Avatar
+									src={webPlayer.state.track.img}
+									fallback={webPlayer.state.track.name || "?"}
+									size="3"
+								/>
+								{isPlaybackLoading && (
+									<Flex
+										style={{
+											position: "absolute",
+											inset: 0,
+											backgroundColor: "black",
+											borderRadius: "0.5rem",
+											opacity: 0.5,
+											zIndex: 1,
+										}}
+										align="center"
+										justify="center"
+									>
+										<Spinner size="3" />
+									</Flex>
+								)}
+							</Box>
 							<Box style={{ flex: 1, minWidth: 0 }}>
 								<Heading size="3" truncate>
-									{webPlayer.track?.name}
+									{webPlayer.state.track.name}
 								</Heading>
 								<Text size="1" truncate color="indigo">
-									{webPlayer.track?.artists.join(", ")}
+									{webPlayer.state.track.artists.join(", ")}
 								</Text>
-								{webPlayer.state !== null && (
+								{webPlayer.state.playback !== null && (
 									<Flex direction="row" gap="2" mt="1" justify="center">
-										{webPlayer.playback === "paused" && (
-											<Button
-												onClick={() => webPlayer.startPlayback()}
-												size="1"
-											>
+										{webPlayer.state.playback.paused && (
+											<Button onClick={() => startPlayback.mutate()} size="1">
 												<PlayIcon height={16} width={16} />
 											</Button>
 										)}
-										{webPlayer.playback === "playing" && (
-											<Button
-												onClick={() => webPlayer.pausePlayback()}
-												size="1"
-											>
-												<PauseIcon height={16} width={16} />
-											</Button>
-										)}
+										{webPlayer.state.playback &&
+											!webPlayer.state.playback.paused && (
+												<Button onClick={() => pausePlayback.mutate()} size="1">
+													<PauseIcon height={16} width={16} />
+												</Button>
+											)}
 										<Slider
 											mt="2"
-											size="1"
+											size="2"
 											value={[
 												Math.max(
 													0,
-													Math.min(time / webPlayer.state.duration, 1),
+													Math.min(time / webPlayer.state.playback.duration, 1),
 												) * 100,
 											]}
 											radius="none"
@@ -146,7 +158,8 @@ export function WebPlayer() {
 												debouncedSeekToPosition(time);
 												setTime(
 													Math.floor(
-														(time / 100) * (webPlayer.state?.duration || 0),
+														(time / 100) *
+															(webPlayer.state.playback.duration || 0),
 													),
 												);
 											}}

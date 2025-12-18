@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import type { IClientAdapter } from "@/features/clients/domain";
-import {
-	type INotificationAdapter,
-	INotificationAdapterType,
-} from "@/features/notifications/domain";
+import { DomainError, DomainErrorType } from "@/features/errors/domain";
+import type { INotificationAdapter } from "@/features/notifications/domain";
 import { type IStorageAdapter, StorageKeys } from "@/features/storage/domain";
-import type { IWebPlayerRepository } from "../domain";
+import type {
+	IWebPlayerRepository,
+	IWebPlayerRepositoryPayload,
+	IWebPlayerState,
+} from "../domain";
 
 declare global {
 	interface Window {
@@ -80,17 +82,9 @@ export interface UseSpotifyWebPlayerRepositoryArgs {
 }
 
 export function useSpotifyWebPlayerRepository({
-	notificationsAdapter,
 	storageAdapter,
 	clientAdapter,
 }: UseSpotifyWebPlayerRepositoryArgs): IWebPlayerRepository {
-	const [, setPlayer] = useState<SpotifyPlayer | null>(null);
-	const [deviceId, setDeviceId] = useState<string | null>(null);
-
-	const [isReady, setIsReady] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [state, setState] = useState<Spotify["PlaybackState"] | null>(null);
-
 	const transferPlayback: IWebPlayerRepository["transferPlayback"] =
 		useCallback(
 			({ deviceId }) => {
@@ -126,161 +120,193 @@ export function useSpotifyWebPlayerRepository({
 			[clientAdapter],
 		);
 
-	const startPlayback: IWebPlayerRepository["startPlayback"] =
-		useCallback(() => {
-			setState(
-				(s) =>
-					({
-						...s,
-						paused: false,
-					}) as Spotify["PlaybackState"],
-			);
-			return clientAdapter.put("/v1/me/player/play");
-		}, [clientAdapter]);
+	const startPlayback: IWebPlayerRepository["startPlayback"] = useCallback(
+		() => clientAdapter.put("/v1/me/player/play"),
+		[clientAdapter],
+	);
 
-	const pausePlayback: IWebPlayerRepository["pausePlayback"] =
-		useCallback(() => {
-			setState(
-				(s) =>
-					({
-						...s,
-						paused: true,
-					}) as Spotify["PlaybackState"],
-			);
-			return clientAdapter.put("/v1/me/player/pause");
-		}, [clientAdapter]);
+	const pausePlayback: IWebPlayerRepository["pausePlayback"] = useCallback(
+		() => clientAdapter.put("/v1/me/player/pause"),
+		[clientAdapter],
+	);
 
-	const init = useCallback(() => {
-		if (!window.onSpotifyWebPlaybackSDKReady) {
-			window.onSpotifyWebPlaybackSDKReady = async () => {
-				setIsLoading(false);
+	const init: IWebPlayerRepository["init"] = useCallback(
+		(args) =>
+			new Promise<IWebPlayerRepositoryPayload["InitOut"]>((res, rej) => {
+				window.onSpotifyWebPlaybackSDKReady =
+					window.onSpotifyWebPlaybackSDKReady ??
+					createOnSpotifyWebPlaybackSDKReadyHandler({
+						res,
+						storageAdapter,
+						setState: args.setStateCb,
+						onSuccess: ({ deviceId }) => transferPlayback({ deviceId }),
+					});
 
-				const token = await storageAdapter.get(StorageKeys.TOKEN);
-				if (!token || typeof token !== "string") return;
-				if (!window.Spotify) return;
+				const body = document.querySelector("body");
+				if (!body) {
+					throw new DomainError(
+						DomainErrorType.APP_ERROR,
+						"Couldn't load web player",
+						"[init] Couldn't load web player. Missing body tag",
+					);
+				}
 
-				const webPlayer = new window.Spotify.Player({
-					name: "Sonarah Web Player",
-					getOAuthToken: (cb: (token: string) => void) => cb(token),
-					volume: 0.5,
-				});
+				const scriptAlreadyExists = Array.from(
+					body.querySelectorAll("script"),
+				).find((script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC);
+				if (scriptAlreadyExists) scriptAlreadyExists.remove();
 
-				webPlayer.addListener("ready", ({ device_id }) => {
-					setIsReady(true);
-					setDeviceId(device_id);
-					void transferPlayback({ deviceId: device_id });
-				});
+				const script = document.createElement("script");
+				script.src = SPOTIFY_WEB_PLAYER_SCRIPT_SRC;
 
-				webPlayer.addListener("not_ready", () => {
-					setIsReady(false);
-				});
+				script.onerror = rej;
 
-				webPlayer.on("autoplay_failed", () => {
-					setIsReady(false);
-					console.log("autoplay_failed");
-				});
-
-				webPlayer.on("initialization_error", () => {
-					setIsReady(false);
-					console.log("initialization_error");
-				});
-				webPlayer.on("account_error", () => {
-					setIsReady(false);
-					console.log("account_error");
-				});
-				webPlayer.on("playback_error", ({ message }) => {
-					setIsReady(false);
-					console.log("playback_error", message);
-				});
-
-				webPlayer.addListener("player_state_changed", setState);
-
-				await webPlayer.connect();
-				webPlayer.activateElement();
-				setPlayer(webPlayer);
-			};
-		} else {
-			window.onSpotifyWebPlaybackSDKReady();
-		}
-
-		const body = document.querySelector("body");
-		if (!body) {
-			notificationsAdapter.notify(
-				INotificationAdapterType.ERROR,
-				"Web Player Error",
-				"Couldn't load web player. Missing body tag",
-			);
-			return;
-		}
-
-		const scriptAlreadyExists = Array.from(
-			body.querySelectorAll("script"),
-		).some((script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC);
-
-		if (scriptAlreadyExists) return;
-
-		const script = document.createElement("script");
-		script.src = SPOTIFY_WEB_PLAYER_SCRIPT_SRC;
-		setIsLoading(true);
-
-		script.onload = () => setIsLoading(false);
-		script.onerror = () => setIsLoading(false);
-
-		body.append(script);
-	}, [notificationsAdapter, storageAdapter, transferPlayback]);
-
-	useEffect(() => {
-		init();
-	}, [init]);
+				body.append(script);
+			}),
+		[storageAdapter, transferPlayback],
+	);
 
 	return useMemo(
 		() => ({
-			status: isLoading
-				? {
-						type: "loading",
-					}
-				: isReady && deviceId
-					? {
-							type: "ready",
-							deviceId,
-						}
-					: {
-							type: "undefined",
-						},
 			init,
 			pausePlayback,
-			playback: state ? (state.paused ? "paused" : "playing") : "unavailable",
 			playTrackOfPlaylist,
 			seekToPosition,
 			startPlayback,
-			state: state
-				? {
-						duration: state.duration,
-						position: state.position,
-					}
-				: null,
 			transferPlayback,
-			track: state?.track_window.current_track
-				? {
-						name: state.track_window.current_track.name,
-						img: state.track_window.current_track.album.images.at(0)?.url,
-						artists: state.track_window.current_track.artists.map(
-							(artist) => artist.name,
-						),
-					}
-				: null,
 		}),
 		[
-			deviceId,
 			init,
-			isLoading,
-			isReady,
 			pausePlayback,
 			playTrackOfPlaylist,
 			seekToPosition,
 			startPlayback,
-			state,
 			transferPlayback,
 		],
 	);
 }
+
+const WEB_PLAYER_NAME = "Sonarah Web Player";
+
+function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
+	onSuccess: (args: IWebPlayerRepositoryPayload["InitOut"]) => void;
+	res: (args: IWebPlayerRepositoryPayload["InitOut"]) => void;
+	setState: (state: IWebPlayerState) => void;
+	storageAdapter: IStorageAdapter;
+}) {
+	const { onSuccess, res, setState, storageAdapter } = args;
+
+	return () => {
+		return storageAdapter.get(StorageKeys.TOKEN).then((token) => {
+			if (!token || typeof token !== "string") {
+				throw new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Token not found",
+					"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
+				);
+			}
+			if (!window.Spotify) {
+				throw new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Spotify could not be added",
+					"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
+				);
+			}
+
+			const webPlayer = new window.Spotify.Player({
+				name: WEB_PLAYER_NAME,
+				getOAuthToken: (cb: (token: string) => void) => cb(token),
+				volume: 0.5,
+			});
+
+			webPlayer.addListener("ready", ({ device_id }) => {
+				const payload = {
+					deviceId: device_id,
+					player: webPlayer,
+				};
+
+				onSuccess(payload);
+				res(payload);
+			});
+
+			webPlayer.addListener("not_ready", () => {});
+
+			webPlayer.addListener("player_state_changed", (state) => {
+				setState({
+					playback: {
+						duration: state.duration,
+						position: state.position,
+						paused: state.paused,
+					},
+					track: {
+						artists: state.track_window.current_track.artists.map(
+							({ name }) => name,
+						),
+						name: state.track_window.current_track.name,
+						img: state.track_window.current_track.album.images.at(0)?.url,
+					},
+				});
+			});
+
+			webPlayer.connect();
+		});
+	};
+}
+
+// webPlayer.on("autoplay_failed", () => {
+// 	console.log("autoplay_failed");
+// });
+
+// webPlayer.on("initialization_error", () => {
+// 	console.log("initialization_error");
+// });
+// webPlayer.on("account_error", () => {
+// 	console.log("account_error");
+// });
+// webPlayer.on("playback_error", ({ message }) => {
+// 	console.log("playback_error", message);
+// });
+
+// return async () => {
+// 	const token = await storageAdapter.get(StorageKeys.TOKEN);
+// 	if (!token || typeof token !== "string") {
+// 		throw new DomainError(DomainErrorType.APP_ERROR, "Token not found", "[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter");
+// 	}
+// 	if (!window.Spotify) {
+// 		throw new DomainError(DomainErrorType.APP_ERROR, "Spotify could not be added", "[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object");
+// 	};
+
+// 	const webPlayer = new window.Spotify.Player({
+// 		name: WEB_PLAYER_NAME,
+// 		getOAuthToken: (cb: (token: string) => void) => cb(token),
+// 		volume: 0.5,
+// 	});
+
+// 	webPlayer.addListener("ready", ({ device_id }) => {
+// 		setDeviceId(device_id);
+// 		void transferPlayback({ deviceId: device_id });
+// 	});
+
+// 	webPlayer.addListener("not_ready", () => {
+// 	});
+
+// 	webPlayer.on("autoplay_failed", () => {
+// 		console.log("autoplay_failed");
+// 	});
+
+// 	webPlayer.on("initialization_error", () => {
+// 		console.log("initialization_error");
+// 	});
+// 	webPlayer.on("account_error", () => {
+// 		console.log("account_error");
+// 	});
+// 	webPlayer.on("playback_error", ({ message }) => {
+// 		console.log("playback_error", message);
+// 	});
+
+// 	webPlayer.addListener("player_state_changed", setState);
+
+// 	await webPlayer.connect();
+// 	webPlayer.activateElement();
+// 	setPlayer(webPlayer);
+// };
