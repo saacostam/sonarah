@@ -4,8 +4,8 @@ import type {
 	ITrack,
 	ITrackRepositoryPayload,
 } from "@/features/playlists/domain";
+import { useMutationPlayTrackOfPlaylist } from "@/features/web-player/app";
 import { PlayIcon, PlusIcon } from "@/shared/icons";
-import { useRepositories } from "@/shared/repositories/app";
 import { TrackItem } from "../shared";
 
 export interface MatchPlaylistRecommendationsProps {
@@ -17,7 +17,7 @@ export function MatchPlaylistRecommendations({
 	onClickRecommendation,
 	recommendations,
 }: MatchPlaylistRecommendationsProps) {
-	const { webPlayer } = useRepositories();
+	const playTrackOfPlaylist = useMutationPlayTrackOfPlaylist();
 
 	const [selectedPlaylistId, setSelectedPlaylistId] = useState<
 		string | undefined
@@ -71,7 +71,7 @@ export function MatchPlaylistRecommendations({
 										<Tooltip content="Play Track">
 											<Button
 												onClick={() =>
-													webPlayer.playTrackOfPlaylist({
+													playTrackOfPlaylist.mutate({
 														playlist: {
 															uri: selectedPlaylist.uri,
 															position: index,
@@ -79,6 +79,11 @@ export function MatchPlaylistRecommendations({
 													})
 												}
 												size="1"
+												loading={
+													playTrackOfPlaylist.isPending &&
+													playTrackOfPlaylist.variables.playlist.position ===
+														index
+												}
 											>
 												<PlayIcon height={12} width={12} />
 											</Button>
