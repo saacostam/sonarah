@@ -54,7 +54,7 @@ export function WebPlayer() {
 
 	useEffect(() => {
 		if (webPlayer.type === "ready:playing") {
-			setTime(webPlayer.state.playback.position ?? 0);
+			setTime(webPlayer.state.playback.position);
 		}
 	}, [webPlayer]);
 
@@ -146,20 +146,18 @@ export function WebPlayer() {
 											)}
 										<Slider
 											mt="2"
-											size="2"
+											size="3"
 											value={[
 												Math.max(
 													0,
 													Math.min(time / webPlayer.state.playback.duration, 1),
 												) * 100,
 											]}
-											radius="none"
 											onValueChange={([time]) => {
 												debouncedSeekToPosition(time);
 												setTime(
 													Math.floor(
-														(time / 100) *
-															(webPlayer.state.playback.duration || 0),
+														(time / 100) * webPlayer.state.playback.duration,
 													),
 												);
 											}}
