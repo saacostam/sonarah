@@ -55,12 +55,14 @@ export function WebPlayer() {
 		};
 	}, [webPlayer.playback]);
 
-	const { pausePlayback } = webPlayer;
+	const { pausePlayback, status } = webPlayer;
 	useEffect(() => {
 		return () => {
-			pausePlayback();
+			if (status.type === "ready") {
+				pausePlayback();
+			}
 		};
-	}, [pausePlayback]);
+	}, [pausePlayback, status.type]);
 
 	return (
 		<Flex
