@@ -12,6 +12,8 @@ import {
 } from "@/features/playlists/infra";
 import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
+import type { IWebPlayerRepository } from "@/features/web-player/domain";
+import { useSpotifyWebPlayerRepository } from "@/features/web-player/infra";
 import { useAdapters } from "@/shared/adapters/app";
 import { RepositoriesContext } from "../../app";
 import type { IRepositories } from "../../domain";
@@ -19,7 +21,13 @@ import type { IRepositories } from "../../domain";
 const SPOTIFY_URL = "https://api.spotify.com";
 
 export function RepositoriesProvider({ children }: PropsWithChildren) {
-	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
+	const {
+		authAdapter,
+		routerAdapter,
+		navigationAdapter,
+		notificationsAdapter,
+		storageAdapter,
+	} = useAdapters();
 
 	const session = useQuerySession();
 
@@ -46,14 +54,21 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 		() => new UserRepository(spotifyFetchClientAdapter),
 		[spotifyFetchClientAdapter],
 	);
+	const webPlayerRepository: IWebPlayerRepository =
+		useSpotifyWebPlayerRepository({
+			notificationsAdapter,
+			storageAdapter,
+			clientAdapter: spotifyFetchClientAdapter,
+		});
 
 	const repositories: IRepositories = useMemo(
 		() => ({
 			playlist: playlistRepository,
 			track: trackRepository,
 			user: userRepository,
+			webPlayer: webPlayerRepository,
 		}),
-		[playlistRepository, trackRepository, userRepository],
+		[playlistRepository, trackRepository, userRepository, webPlayerRepository],
 	);
 
 	return (

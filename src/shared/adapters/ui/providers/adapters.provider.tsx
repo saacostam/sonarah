@@ -9,7 +9,6 @@ import { NavigationProvider } from "@/features/navigation/ui";
 import { ReactHotToastNotificationAdapter } from "@/features/notifications/infra";
 import { RouterAdapter } from "@/features/router/infra";
 import { LocalStorageAdapter } from "@/features/storage/infra";
-import { useSpotifyWebPlayerAdapter } from "@/features/web-player/infra";
 import { RepositoriesProvider } from "@/shared/repositories/ui";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
@@ -42,10 +41,6 @@ function AdaptersProviderDI() {
 		() => new ReactHotToastNotificationAdapter(),
 		[],
 	);
-	const webPlayerAdapter = useSpotifyWebPlayerAdapter({
-		notificationsAdapter: reactHotToastNotificationAdapter,
-		storageAdapter,
-	});
 
 	const allAdapters: IAdapters = useMemo(
 		() => ({
@@ -55,7 +50,6 @@ function AdaptersProviderDI() {
 			routerAdapter: routerAdapter,
 			navigationAdapter,
 			storageAdapter: storageAdapter,
-			webPlayerAdapter: webPlayerAdapter,
 		}),
 		[
 			authAdapter,
@@ -64,7 +58,6 @@ function AdaptersProviderDI() {
 			routerAdapter,
 			navigationAdapter,
 			storageAdapter,
-			webPlayerAdapter,
 		],
 	);
 

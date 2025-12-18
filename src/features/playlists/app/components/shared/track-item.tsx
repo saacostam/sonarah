@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { ITrack } from "@/features/playlists/domain";
 import { formatTimeFromMilliseconds } from "@/shared/utils";
 import { TrackItemLayout } from "./track-item-layout";
@@ -6,9 +7,15 @@ export interface TrackItemProps {
 	track: ITrack;
 	order: number;
 	hightlighted?: boolean;
+	rightSlot?: ReactNode;
 }
 
-export function TrackItem({ track, order, hightlighted }: TrackItemProps) {
+export function TrackItem({
+	track,
+	order,
+	hightlighted,
+	rightSlot,
+}: TrackItemProps) {
 	const formatTime = formatTimeFromMilliseconds(track.durationInMs);
 
 	return (
@@ -20,6 +27,7 @@ export function TrackItem({ track, order, hightlighted }: TrackItemProps) {
 			header={track.name}
 			subheader={`by ${track.artistNames.join(", ")} • ${formatTime}`}
 			highlighted={!!hightlighted}
+			rightSlot={rightSlot}
 		/>
 	);
 }

@@ -17,6 +17,7 @@ import {
 	useState,
 } from "react";
 import type { IPlaylist, ITrack } from "@/features/playlists/domain";
+import { WebPlayer } from "@/features/web-player/ui";
 import { EmptyQuery, PolymorphicButton, QueryError } from "@/shared/components";
 import { PlayIcon } from "@/shared/icons";
 import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
@@ -161,7 +162,8 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 
 	return (
 		<>
-			<Flex align="end" direction="row" justify="between" mb="4">
+			<WebPlayer />
+			<Flex align="end" direction="row" justify="between" my="4">
 				<Heading>Match Playlist</Heading>
 				<PolymorphicButton
 					action={{

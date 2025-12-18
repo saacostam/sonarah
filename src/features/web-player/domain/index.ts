@@ -1,1 +1,1 @@
-export * from "./web-player-adapter.interface";
+export * from "./web-player-repository.interface";

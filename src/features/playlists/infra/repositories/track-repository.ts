@@ -28,6 +28,7 @@ export class TrackRepository implements ITrackRepository {
 					tracks: {
 						total: number;
 					};
+					uri: string;
 				} | null)[];
 			};
 		}>(`/v1/search?${params.toString()}`);
@@ -83,6 +84,7 @@ export class TrackRepository implements ITrackRepository {
 
 			playlistsRecommendations.push({
 				id: playlist.id,
+				uri: playlist.uri,
 				name: playlist.name,
 				tracks,
 			});

@@ -1,1 +1,1 @@
-export * from "./use-spotify-web-player-adapter";
+export * from "./use-spotify-web-player-repository";

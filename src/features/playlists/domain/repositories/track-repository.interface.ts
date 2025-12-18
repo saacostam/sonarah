@@ -14,6 +14,7 @@ export interface ITrackRepositoryPayload {
 	GetRecommendationsOut: {
 		playlists: {
 			id: string;
+			uri: string;
 			name: string;
 			tracks: ITrack[];
 		}[];

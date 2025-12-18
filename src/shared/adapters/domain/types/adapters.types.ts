@@ -4,7 +4,6 @@ import type { INavigationAdapter } from "@/features/navigation/domain";
 import type { INotificationAdapter } from "@/features/notifications/domain";
 import type { IRouterAdapter } from "@/features/router/domain";
 import type { IStorageAdapter } from "@/features/storage/domain";
-import type { IWebPlayerAdapter } from "@/features/web-player/domain";
 
 export interface IAdapters {
 	authAdapter: IAuthAdapter;
@@ -13,5 +12,4 @@ export interface IAdapters {
 	routerAdapter: IRouterAdapter;
 	navigationAdapter: INavigationAdapter;
 	storageAdapter: IStorageAdapter;
-	webPlayerAdapter: IWebPlayerAdapter;
 }

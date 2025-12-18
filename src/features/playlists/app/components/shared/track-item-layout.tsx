@@ -1,4 +1,5 @@
 import { Avatar, Card, Flex, Heading, Text } from "@radix-ui/themes";
+import type { ReactNode } from "react";
 
 export interface TrackItemLayoutProps {
 	avatar: {
@@ -8,6 +9,7 @@ export interface TrackItemLayoutProps {
 	header: string;
 	subheader: string;
 	highlighted: boolean;
+	rightSlot?: ReactNode;
 }
 
 export function TrackItemLayout({
@@ -15,6 +17,7 @@ export function TrackItemLayout({
 	header,
 	subheader,
 	highlighted,
+	rightSlot,
 }: TrackItemLayoutProps) {
 	return (
 		<Card
@@ -36,6 +39,7 @@ export function TrackItemLayout({
 						{subheader}
 					</Text>
 				</Flex>
+				{rightSlot}
 			</Flex>
 		</Card>
 	);

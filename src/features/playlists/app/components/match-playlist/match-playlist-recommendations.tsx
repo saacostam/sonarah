@@ -4,6 +4,8 @@ import type {
 	ITrack,
 	ITrackRepositoryPayload,
 } from "@/features/playlists/domain";
+import { PlayIcon, PlusIcon } from "@/shared/icons";
+import { useRepositories } from "@/shared/repositories/app";
 import { TrackItem } from "../shared";
 
 export interface MatchPlaylistRecommendationsProps {
@@ -15,6 +17,8 @@ export function MatchPlaylistRecommendations({
 	onClickRecommendation,
 	recommendations,
 }: MatchPlaylistRecommendationsProps) {
+	const { webPlayer } = useRepositories();
+
 	const [selectedPlaylistId, setSelectedPlaylistId] = useState<
 		string | undefined
 	>(recommendations.playlists.at(0)?.id);
@@ -58,14 +62,40 @@ export function MatchPlaylistRecommendations({
 					key={selectedPlaylist.id}
 				>
 					{selectedPlaylist.tracks.map((track, index) => (
-						<button
-							key={track.id ?? index}
-							className="clickable btn-reset"
-							type="button"
-							onClick={() => onClickRecommendation(track)}
-						>
-							<TrackItem track={track} order={index + 1} />
-						</button>
+						<div key={track.id}>
+							<TrackItem
+								track={track}
+								order={index + 1}
+								rightSlot={
+									<Flex direction="row" gap="1">
+										<Tooltip content="Play Track">
+											<Button
+												onClick={() =>
+													webPlayer.playTrackOfPlaylist({
+														playlist: {
+															uri: selectedPlaylist.uri,
+															position: index,
+														},
+													})
+												}
+												size="1"
+											>
+												<PlayIcon height={12} width={12} />
+											</Button>
+										</Tooltip>
+										<Tooltip content="Match Track">
+											<Button
+												onClick={() => onClickRecommendation(track)}
+												size="1"
+												color="green"
+											>
+												<PlusIcon height={12} width={12} />
+											</Button>
+										</Tooltip>
+									</Flex>
+								}
+							/>
+						</div>
 					))}
 				</Flex>
 			)}
