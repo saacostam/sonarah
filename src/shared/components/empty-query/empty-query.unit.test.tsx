@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { EmptyQuery } from "./empty-query";
 
 describe("EmptyQuery [Unit]", () => {

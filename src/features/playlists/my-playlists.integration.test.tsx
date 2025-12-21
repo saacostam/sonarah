@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { RouteName } from "@/features/navigation/domain";
 import { NavigationAdapter } from "@/features/navigation/infra";
 import { MockLeanPlaylistFactory } from "@/features/playlists/test";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { MyPlaylists } from "./app";
 
 const navigationAdapter = new NavigationAdapter();

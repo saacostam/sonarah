@@ -6,7 +6,7 @@ import type {
 	IAuthAdapterPayload,
 	ISession,
 } from "@/shared/adapters/auth/domain";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { HomeScreen } from "./ui";
 
 const navigationAdapter = new NavigationAdapter();

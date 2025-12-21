@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { DashboardModalManagerContext } from "./app";
 import type { IDashboardModalManager } from "./domain";
 import { DashboardScreenContent } from "./ui";

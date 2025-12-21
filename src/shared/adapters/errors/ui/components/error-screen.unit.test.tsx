@@ -1,5 +1,5 @@
 import { screen } from "@testing-library/react";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { ErrorScreen } from "./error-screen";
 
 describe("ErrorScreen [Unit]", () => {

@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { RouteName } from "@/features/navigation/domain";
 import { NavigationAdapter } from "@/features/navigation/infra";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { Navbar } from "./ui";
 
 const navigationAdapter = new NavigationAdapter();

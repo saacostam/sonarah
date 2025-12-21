@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
-import { renderWithProviders } from "@/shared/tests";
+import { renderWithProviders } from "@/tests";
 import { QueryError } from "./query-error";
 
 describe("QueryError [Integration]", () => {
