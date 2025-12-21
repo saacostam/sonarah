@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { MutationKey } from "@/features/async-state/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { MutationKey } from "@/shared/async-state/domain";
 
 export function useMutationStartAuthFlow() {
 	const { authAdapter } = useAdapters();

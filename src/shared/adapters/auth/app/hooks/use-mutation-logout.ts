@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MutationKey, QueryKey } from "@/features/async-state/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { MutationKey, QueryKey } from "@/shared/async-state/domain";
 
 export function useMutationLogout() {
 	const queryClient = useQueryClient();

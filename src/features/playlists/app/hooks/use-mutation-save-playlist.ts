@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MutationKey, QueryKey } from "@/features/async-state/domain";
+import { MutationKey, QueryKey } from "@/shared/async-state/domain";
 import { useRepositories } from "@/shared/repositories/app";
 import type { IPlaylistRepositoryPayload } from "../../domain";
 
