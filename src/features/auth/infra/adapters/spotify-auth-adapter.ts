@@ -1,5 +1,5 @@
-import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
+import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import {
 	type IStorageAdapter,
 	StorageKeys,

@@ -3,8 +3,8 @@ import {
 	type INavigationAdapter,
 	RouteName,
 } from "@/features/navigation/domain";
-import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
+import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 
 export class FetchClientAdapter implements IClientAdapter {
