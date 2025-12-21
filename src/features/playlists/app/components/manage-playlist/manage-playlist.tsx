@@ -1,6 +1,6 @@
 import { Flex, Heading, Tooltip } from "@radix-ui/themes";
 import { useEffect } from "react";
-import { DomainError, DomainErrorType } from "@/features/errors/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { PolymorphicButton, QueryError } from "@/shared/components";
 import { PlayIcon } from "@/shared/icons";
 import { useQueryPlaylistById } from "../../hooks";

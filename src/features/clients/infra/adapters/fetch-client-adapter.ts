@@ -1,10 +1,10 @@
 import type { IAuthAdapter } from "@/features/auth/domain";
-import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import {
 	type INavigationAdapter,
 	RouteName,
 } from "@/features/navigation/domain";
 import type { IRouterAdapter } from "@/features/router/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 
 export class FetchClientAdapter implements IClientAdapter {

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { DomainError, DomainErrorType } from "@/features/errors/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { QueryError } from "@/shared/components";
 import { useQueryPlaylistById } from "../../hooks";
 import { MatchPlaylistContent } from "./match-playlist-content";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DomainError, DomainErrorType } from "@/features/errors/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { getErrorMessage } from "./error.utils";
 
 describe("getErrorMessage [Unit]", () => {
