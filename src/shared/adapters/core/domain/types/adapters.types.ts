@@ -1,8 +1,8 @@
 import type { IAuthAdapter } from "@/features/auth/domain";
 import type { IErrorLoggerAdapter } from "@/features/errors/domain";
 import type { INavigationAdapter } from "@/features/navigation/domain";
-import type { INotificationAdapter } from "@/features/notifications/domain";
 import type { IRouterAdapter } from "@/features/router/domain";
+import type { INotificationAdapter } from "@/shared/adapters/notifications/domain";
 import type { IStorageAdapter } from "@/shared/adapters/storage/domain";
 
 export interface IAdapters {

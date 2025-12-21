@@ -1,8 +1,8 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { RouteName } from "@/features/navigation/domain";
-import { INotificationAdapterType } from "@/features/notifications/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { XIcon } from "@/shared/icons";
 import { getErrorMessage } from "@/shared/utils";
 import { useMatchPlaylistModalManger } from "../../hooks";
