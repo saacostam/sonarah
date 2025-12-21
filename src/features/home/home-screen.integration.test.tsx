@@ -1,11 +1,11 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import { RouteName } from "@/features/navigation/domain";
-import { NavigationAdapter } from "@/features/navigation/infra";
 import type {
 	IAuthAdapterPayload,
 	ISession,
 } from "@/shared/adapters/auth/domain";
+import { RouteName } from "@/shared/adapters/navigation/domain";
+import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
 import { HomeScreen } from "./ui";
 

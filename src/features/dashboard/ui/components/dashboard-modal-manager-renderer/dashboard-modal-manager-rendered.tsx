@@ -1,10 +1,10 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useDashboardModalManager } from "@/features/dashboard/app";
-import { RouteName } from "@/features/navigation/domain";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { RouteName } from "@/shared/adapters/navigation/domain";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { XIcon } from "@/shared/icons";
 

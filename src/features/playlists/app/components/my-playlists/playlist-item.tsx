@@ -1,8 +1,8 @@
 import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
-import { RouteName } from "@/features/navigation/domain";
 import type { ILeanPlaylist } from "@/features/playlists/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { RouteName } from "@/shared/adapters/navigation/domain";
 
 export interface PlaylistItemProps {
 	playlist: ILeanPlaylist;

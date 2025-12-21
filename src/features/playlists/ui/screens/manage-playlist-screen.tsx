@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
-import { RouteName } from "@/features/navigation/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { RouteName } from "@/shared/adapters/navigation/domain";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { ManagePlaylist, ManagePlaylistSkeleton } from "../../app";
 

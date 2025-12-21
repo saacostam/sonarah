@@ -1,8 +1,8 @@
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RouteName } from "@/features/navigation/domain";
-import { NavigationAdapter } from "@/features/navigation/infra";
 import { MockLeanPlaylistFactory } from "@/features/playlists/test";
+import { RouteName } from "@/shared/adapters/navigation/domain";
+import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
 import { MyPlaylists } from "./app";
 

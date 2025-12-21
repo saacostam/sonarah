@@ -1,7 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
-import { RouteName } from "@/features/navigation/domain";
-import { NavigationAdapter } from "@/features/navigation/infra";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
+import { RouteName } from "@/shared/adapters/navigation/domain";
+import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
 import type { ISession } from "./domain";
 import { AuthGuard } from "./ui";

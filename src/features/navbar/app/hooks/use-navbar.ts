@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { RouteName } from "@/features/navigation/domain";
 import {
 	useMutationLogout,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { RouteName } from "@/shared/adapters/navigation/domain";
 
 export function useNavbar() {
 	const { navigationAdapter } = useAdapters();

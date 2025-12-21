@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
-import { NavigationAdapter } from "@/features/navigation/infra";
-import { NavigationProvider } from "@/features/navigation/ui";
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
 import { AuthProvider } from "@/shared/adapters/auth/ui";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
+import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
+import { NavigationProvider } from "@/shared/adapters/navigation/ui";
 import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notifications/infra";
 import { useReactRouterAdapter } from "@/shared/adapters/router/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";

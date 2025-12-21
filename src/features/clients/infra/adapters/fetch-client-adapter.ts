@@ -1,9 +1,9 @@
+import type { IAuthAdapter } from "@/shared/adapters/auth/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import {
 	type INavigationAdapter,
 	RouteName,
-} from "@/features/navigation/domain";
-import type { IAuthAdapter } from "@/shared/adapters/auth/domain";
-import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
+} from "@/shared/adapters/navigation/domain";
 import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import type { IClientAdapter, IClientAdapterRequestConfig } from "../../domain";
 

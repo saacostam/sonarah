@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
-import { RouteName } from "@/features/navigation/domain";
 import {
 	useMutationRequestAccessToken,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
+import { RouteName } from "@/shared/adapters/navigation/domain";
 import type { IAction } from "@/shared/types";
 
 enum UrlSearchParam {
