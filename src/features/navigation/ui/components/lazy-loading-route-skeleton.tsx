@@ -1,5 +1,5 @@
 import { Flex, Skeleton } from "@radix-ui/themes";
-import { AppLayout } from "@/shared/app-shell/ui";
+import { AppLayout } from "@/shared/layout/ui";
 
 export function LazyLoadingRouteSkeleton() {
 	return (
