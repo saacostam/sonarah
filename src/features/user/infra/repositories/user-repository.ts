@@ -1,4 +1,4 @@
-import type { IClientAdapter } from "@/features/clients/domain";
+import type { IClientAdapter } from "@/shared/adapters/clients/domain";
 import type { IUser, IUserRepository } from "../../domain";
 
 export class UserRepository implements IUserRepository {

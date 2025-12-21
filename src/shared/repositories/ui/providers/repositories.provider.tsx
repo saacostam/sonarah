@@ -1,6 +1,4 @@
 import { type PropsWithChildren, useMemo } from "react";
-import type { IClientAdapter } from "@/features/clients/domain";
-import { FetchClientAdapter } from "@/features/clients/infra";
 import type {
 	IPlaylistRepository,
 	ITrackRepository,
@@ -14,6 +12,8 @@ import { UserRepository } from "@/features/user/infra";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";
 import { useSpotifyWebPlayerRepository } from "@/features/web-player/infra";
 import { useQuerySession } from "@/shared/adapters/auth/app";
+import type { IClientAdapter } from "@/shared/adapters/clients/domain";
+import { FetchClientAdapter } from "@/shared/adapters/clients/infra";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RepositoriesContext } from "../../app";
 import type { IRepositories } from "../../domain";

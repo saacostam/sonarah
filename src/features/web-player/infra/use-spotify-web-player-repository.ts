@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import type { IClientAdapter } from "@/features/clients/domain";
+import type { IClientAdapter } from "@/shared/adapters/clients/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import type { INotificationAdapter } from "@/shared/adapters/notifications/domain";
 import {
