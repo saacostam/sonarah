@@ -1,5 +1,9 @@
 import { useCallback, useMemo } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import {
+	useLocation,
+	useNavigate,
+	useParams as useReactRouterParams,
+} from "react-router";
 import type { IRouterAdapter } from "../../domain";
 
 export function useReactRouterAdapter(): IRouterAdapter {
@@ -16,7 +20,7 @@ export function useReactRouterAdapter(): IRouterAdapter {
 		[location.pathname],
 	);
 
-	const getParams: IRouterAdapter["getParams"] = useParams;
+	const useParams: IRouterAdapter["useParams"] = useReactRouterParams;
 
 	const getUrlSearchParams: IRouterAdapter["getUrlSearchParams"] = useCallback(
 		() => new URLSearchParams(window.location.search),
@@ -45,7 +49,7 @@ export function useReactRouterAdapter(): IRouterAdapter {
 		(): IRouterAdapter => ({
 			getBaseUrl,
 			getPathname,
-			getParams,
+			useParams,
 			getUrlSearchParams,
 			push,
 			replace,
@@ -54,7 +58,7 @@ export function useReactRouterAdapter(): IRouterAdapter {
 		[
 			getBaseUrl,
 			getPathname,
-			getParams,
+			useParams,
 			getUrlSearchParams,
 			push,
 			replace,

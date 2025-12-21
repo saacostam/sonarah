@@ -14,7 +14,7 @@ export function MatchPlaylistScreen() {
 	const { notificationsAdapter, routerAdapter, navigationAdapter } =
 		useAdapters();
 
-	const { id } = routerAdapter.getParams();
+	const { id } = routerAdapter.useParams();
 
 	const onNotFound = useCallback(
 		() =>
