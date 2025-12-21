@@ -1,1 +1,1 @@
-export * from "./router-adapter";
+export * from "./use-react-router-adapter";
