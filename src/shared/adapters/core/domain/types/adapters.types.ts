@@ -3,7 +3,7 @@ import type { IErrorLoggerAdapter } from "@/features/errors/domain";
 import type { INavigationAdapter } from "@/features/navigation/domain";
 import type { INotificationAdapter } from "@/features/notifications/domain";
 import type { IRouterAdapter } from "@/features/router/domain";
-import type { IStorageAdapter } from "@/features/storage/domain";
+import type { IStorageAdapter } from "@/shared/adapters/storage/domain";
 
 export interface IAdapters {
 	authAdapter: IAuthAdapter;

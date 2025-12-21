@@ -1,6 +1,9 @@
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import type { IRouterAdapter } from "@/features/router/domain";
-import { type IStorageAdapter, StorageKeys } from "@/features/storage/domain";
+import {
+	type IStorageAdapter,
+	StorageKeys,
+} from "@/shared/adapters/storage/domain";
 import type { IAuthAdapter, IAuthAdapterPayload, ISession } from "../../domain";
 
 const CLIENT_ID = "336489bc89354dff841b0eb68d389193";

@@ -2,7 +2,10 @@ import { useCallback, useMemo } from "react";
 import type { IClientAdapter } from "@/features/clients/domain";
 import { DomainError, DomainErrorType } from "@/features/errors/domain";
 import type { INotificationAdapter } from "@/features/notifications/domain";
-import { type IStorageAdapter, StorageKeys } from "@/features/storage/domain";
+import {
+	type IStorageAdapter,
+	StorageKeys,
+} from "@/shared/adapters/storage/domain";
 import type {
 	IWebPlayerRepository,
 	IWebPlayerRepositoryPayload,
