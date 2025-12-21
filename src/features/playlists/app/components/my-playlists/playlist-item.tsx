@@ -2,7 +2,7 @@ import { Avatar, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
 import { RouteName } from "@/features/navigation/domain";
 import type { ILeanPlaylist } from "@/features/playlists/domain";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 
 export interface PlaylistItemProps {
 	playlist: ILeanPlaylist;

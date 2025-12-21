@@ -5,7 +5,7 @@ import {
 	useQuerySession,
 } from "@/features/auth/app";
 import { RouteName } from "@/features/navigation/domain";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 
 export function useNavbar() {
 	const { navigationAdapter } = useAdapters();

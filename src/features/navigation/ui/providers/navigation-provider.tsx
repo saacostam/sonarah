@@ -4,7 +4,7 @@ import { AppLayout } from "@/features/app-shell/ui";
 import { ErrorScreen } from "@/features/errors/ui";
 import { HomeScreen } from "@/features/home/ui";
 import { RouteName } from "@/features/navigation/domain";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { LazyLoadingRouteSkeleton } from "../components";
 
 // Lazy imports

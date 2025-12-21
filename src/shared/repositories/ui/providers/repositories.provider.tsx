@@ -14,7 +14,7 @@ import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";
 import { useSpotifyWebPlayerRepository } from "@/features/web-player/infra";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { RepositoriesContext } from "../../app";
 import type { IRepositories } from "../../domain";
 

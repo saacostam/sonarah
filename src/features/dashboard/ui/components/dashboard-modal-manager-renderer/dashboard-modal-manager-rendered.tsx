@@ -5,7 +5,7 @@ import { RouteName } from "@/features/navigation/domain";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { XIcon } from "@/shared/icons";
 
 export function DashboardModalManagerRenderer() {

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { INotificationAdapterType } from "@/features/notifications/domain";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
-import { useAdapters } from "@/shared/adapters/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { useMutationSavePlaylist, useQuerySearchPlaylists } from "../../hooks";
 import { PlaylistSearchItem } from "./playlist-search-item";
