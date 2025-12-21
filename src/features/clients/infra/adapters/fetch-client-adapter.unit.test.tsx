@@ -5,7 +5,7 @@ import {
 	RouteName,
 } from "@/features/navigation/domain";
 import { NavigationAdapter } from "@/features/navigation/infra";
-import type { IRouterAdapter } from "@/features/router/domain";
+import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import { DomainErrorType } from "@/shared/adapters/errors/domain";
 import { FetchClientAdapter } from "./fetch-client-adapter";
 

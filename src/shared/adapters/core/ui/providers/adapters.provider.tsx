@@ -5,7 +5,7 @@ import { SpotifyAuthAdapter } from "@/features/auth/infra";
 import { AuthProvider } from "@/features/auth/ui";
 import { NavigationAdapter } from "@/features/navigation/infra";
 import { NavigationProvider } from "@/features/navigation/ui";
-import { RouterAdapter } from "@/features/router/infra";
+import { RouterAdapter } from "@/shared/adapters/router/infra";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
 import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notifications/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";
