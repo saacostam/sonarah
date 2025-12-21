@@ -1,10 +1,10 @@
 import { useMemo } from "react";
+import { RouteName } from "@/features/navigation/domain";
 import {
 	useMutationLogout,
 	useMutationStartAuthFlow,
 	useQuerySession,
-} from "@/features/auth/app";
-import { RouteName } from "@/features/navigation/domain";
+} from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 
 export function useNavbar() {

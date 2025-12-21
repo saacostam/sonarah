@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter, useLocation, useNavigate } from "react-router";
-import { SpotifyAuthAdapter } from "@/features/auth/infra";
-import { AuthProvider } from "@/features/auth/ui";
 import { NavigationAdapter } from "@/features/navigation/infra";
 import { NavigationProvider } from "@/features/navigation/ui";
+import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
+import { AuthProvider } from "@/shared/adapters/auth/ui";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
 import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notifications/infra";
 import { RouterAdapter } from "@/shared/adapters/router/infra";

@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from "react";
+import { RouteName } from "@/features/navigation/domain";
 import {
 	useMutationRequestAccessToken,
 	useMutationStartAuthFlow,
 	useQuerySession,
-} from "@/features/auth/app";
-import { RouteName } from "@/features/navigation/domain";
+} from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import type { IButtonAction } from "@/shared/types";
 

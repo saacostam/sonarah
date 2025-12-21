@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { IAuthAdapter } from "@/features/auth/domain";
 import {
 	type INavigationAdapter,
 	RouteName,
 } from "@/features/navigation/domain";
 import { NavigationAdapter } from "@/features/navigation/infra";
+import type { IAuthAdapter } from "@/shared/adapters/auth/domain";
 import { DomainErrorType } from "@/shared/adapters/errors/domain";
 import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import { FetchClientAdapter } from "./fetch-client-adapter";

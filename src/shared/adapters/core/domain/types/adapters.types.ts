@@ -1,5 +1,5 @@
-import type { IAuthAdapter } from "@/features/auth/domain";
 import type { INavigationAdapter } from "@/features/navigation/domain";
+import type { IAuthAdapter } from "@/shared/adapters/auth/domain";
 import type { IErrorLoggerAdapter } from "@/shared/adapters/errors/domain";
 import type { INotificationAdapter } from "@/shared/adapters/notifications/domain";
 import type { IRouterAdapter } from "@/shared/adapters/router/domain";
