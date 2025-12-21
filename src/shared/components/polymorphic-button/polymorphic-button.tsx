@@ -1,9 +1,9 @@
 import { Button, type ButtonProps } from "@radix-ui/themes";
 import { Link } from "react-router";
-import type { IButtonAction } from "@/shared/types";
+import type { IAction } from "@/shared/types";
 
 export interface PolymorphicButtonProps extends ButtonProps {
-	action: IButtonAction;
+	action: IAction;
 }
 
 export function PolymorphicButton(props: PolymorphicButtonProps) {

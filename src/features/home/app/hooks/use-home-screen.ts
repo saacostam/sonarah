@@ -6,7 +6,7 @@ import {
 	useQuerySession,
 } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
-import type { IButtonAction } from "@/shared/types";
+import type { IAction } from "@/shared/types";
 
 enum UrlSearchParam {
 	CODE = "code",
@@ -23,7 +23,7 @@ export function useHomeScreen() {
 	const code = urlSearchParams.get(UrlSearchParam.CODE);
 
 	const isAuth = session.isSuccess && session.data.type === "authenticated";
-	const mainCta: IButtonAction = useMemo(
+	const mainCta: IAction = useMemo(
 		() => ({
 			action: isAuth
 				? {

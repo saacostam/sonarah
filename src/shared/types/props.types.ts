@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export interface IButtonAction {
+export interface IAction {
 	label: ReactNode;
 	action:
 		| {

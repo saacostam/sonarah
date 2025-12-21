@@ -1,9 +1,9 @@
 import { Flex, Heading, Text } from "@radix-ui/themes";
 import { PolymorphicButton } from "@/shared/components";
-import type { IButtonAction } from "@/shared/types";
+import type { IAction } from "@/shared/types";
 
 export interface HomeScreenContentProps {
-	mainCta: IButtonAction;
+	mainCta: IAction;
 }
 
 export function HomeScreenContent({ mainCta }: HomeScreenContentProps) {
