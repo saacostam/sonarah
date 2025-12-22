@@ -25,3 +25,21 @@ body {
 .dark .radix-themes {
 	--gray-12: #eee;
 }
+
+.app-shell {
+	position: relative;
+	min-height: 100vh;
+	overflow: hidden;
+}
+
+.app-shell__bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+
+	width: 100vw;
+	height: 100vh;
+
+	pointer-events: none;
+	z-index: -1;
+}

@@ -12,18 +12,22 @@ import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notification
 import { useReactRouterAdapter } from "@/shared/adapters/router/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";
 import { useThemeAdapterImpl } from "@/shared/adapters/theme/infra";
+import { BackgroundWave } from "@/shared/components";
 import { RepositoriesProvider } from "@/shared/repositories/ui";
-
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
 export function AdaptersProvider() {
 	return (
 		<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
-			<HashRouter>
-				<AdaptersProviderDI />
-				<Toaster position="bottom-right" />
-			</HashRouter>
+			<div className="app-shell">
+				<BackgroundWave className="app-shell__bg" />
+
+				<HashRouter>
+					<AdaptersProviderDI />
+					<Toaster position="bottom-right" />
+				</HashRouter>
+			</div>
 		</Theme>
 	);
 }
