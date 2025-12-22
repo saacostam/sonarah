@@ -17,3 +17,11 @@ body {
 	all: unset;
 	cursor: pointer;
 }
+
+.radix-themes {
+	--gray-12: #333;
+}
+
+.dark .radix-themes {
+	--gray-12: #eee;
+}
