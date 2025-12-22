@@ -8,12 +8,7 @@ const queryClient = new QueryClient();
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Theme
-				accentColor="iris"
-				appearance="dark"
-				grayColor="sage"
-				panelBackground="translucent"
-			>
+			<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
 				<AdaptersProvider />
 			</Theme>
 			<ReactQueryDevtools buttonPosition="bottom-left" />

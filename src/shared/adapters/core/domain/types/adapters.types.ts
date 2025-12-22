@@ -4,6 +4,7 @@ import type { INavigationAdapter } from "@/shared/adapters/navigation/domain";
 import type { INotificationAdapter } from "@/shared/adapters/notifications/domain";
 import type { IRouterAdapter } from "@/shared/adapters/router/domain";
 import type { IStorageAdapter } from "@/shared/adapters/storage/domain";
+import type { IThemeAdapter } from "@/shared/adapters/theme/domain";
 
 export interface IAdapters {
 	authAdapter: IAuthAdapter;
@@ -12,4 +13,5 @@ export interface IAdapters {
 	routerAdapter: IRouterAdapter;
 	navigationAdapter: INavigationAdapter;
 	storageAdapter: IStorageAdapter;
+	themeAdapter: IThemeAdapter;
 }
