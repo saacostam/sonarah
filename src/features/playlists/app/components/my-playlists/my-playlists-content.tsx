@@ -16,7 +16,7 @@ export function MyPlaylistContent({
 		<main data-testid="my-playlists-content">
 			{pagination.total > 0 ? (
 				<>
-					<Flex wrap="wrap" gap="6" width="100%" mb="6" justify="center">
+					<Flex wrap="wrap" gap="3" width="100%" mb="6" justify="center">
 						{pagination.playlists.map((playlist) => (
 							<PlaylistItem key={playlist.id} playlist={playlist} />
 						))}
