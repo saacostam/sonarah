@@ -53,7 +53,7 @@ export function DashboardModalManagerRenderer() {
 				open={status.type === "create-playlist"}
 				onOpenChange={onClose}
 			>
-				<Dialog.Content width="512px">
+				<Dialog.Content maxWidth="512px">
 					<Flex direction="row" gap="2" justify="between">
 						<Dialog.Title>Create Playlist</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">
@@ -70,7 +70,7 @@ export function DashboardModalManagerRenderer() {
 				open={status.type === "search-playlist"}
 				onOpenChange={onClose}
 			>
-				<Dialog.Content style={{ maxWidth: "1024px" }}>
+				<Dialog.Content maxWidth="1024px">
 					<Flex direction="row" gap="2" justify="between">
 						<Dialog.Title size="7">Import Playlist</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">

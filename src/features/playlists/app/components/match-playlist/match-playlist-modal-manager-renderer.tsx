@@ -49,7 +49,7 @@ export function MatchPlaylistModalManagerRenderer() {
 			open={status.type === "create-playlist"}
 			onOpenChange={onClose}
 		>
-			<Dialog.Content width="512px">
+			<Dialog.Content maxWidth="512px">
 				<Flex direction="row" gap="2" justify="between">
 					<Dialog.Title>Create Playlist</Dialog.Title>
 					<Button onClick={onClose} variant="ghost">
