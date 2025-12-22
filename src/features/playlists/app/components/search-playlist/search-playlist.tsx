@@ -97,6 +97,7 @@ export function SearchPlaylist({ onCancel, onSuccess }: SearchPlaylistProps) {
 			<TextField.Root
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
+				placeholder="Search..."
 			/>
 			<Flex direction="column" gap="2">
 				{debouncedSearch === "" ? (
