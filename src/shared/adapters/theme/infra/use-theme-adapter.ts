@@ -14,7 +14,7 @@ async function loadStoredTheme(
 	const saved = await storage.unsafeGet(KEY);
 	return saved === IThemeVariant.LIGHT || saved === IThemeVariant.DARK
 		? saved
-		: IThemeVariant.LIGHT;
+		: IThemeVariant.DARK;
 }
 
 function storeTheme(args: {
@@ -40,7 +40,7 @@ export function useThemeAdapterImpl({
 	const loaded = useRef(false);
 
 	const [theme, setTheme] = useState<IThemeAdapter["theme"]>(
-		IThemeVariant.LIGHT,
+		IThemeVariant.DARK,
 	);
 	useEffect(() => {
 		loadStoredTheme(storage)

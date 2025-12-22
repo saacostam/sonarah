@@ -18,12 +18,12 @@ describe("useThemeAdapterImpl", () => {
 		document.documentElement.className = "";
 	});
 
-	it("initializes with LIGHT theme by default", () => {
+	it("initializes with DARK theme by default", () => {
 		const storage = createStorageMock();
 
 		const { result } = renderHook(() => useThemeAdapterImpl({ storage }));
 
-		expect(result.current.theme).toBe(IThemeVariant.LIGHT);
+		expect(result.current.theme).toBe(IThemeVariant.DARK);
 	});
 
 	it("loads DARK theme from storage", async () => {
@@ -36,13 +36,13 @@ describe("useThemeAdapterImpl", () => {
 		});
 	});
 
-	it("falls back to LIGHT if stored theme is invalid", async () => {
+	it("falls back to DARK if stored theme is invalid", async () => {
 		const storage = createStorageMock("invalid-theme");
 
 		const { result } = renderHook(() => useThemeAdapterImpl({ storage }));
 
 		await waitFor(() => {
-			expect(result.current.theme).toBe(IThemeVariant.LIGHT);
+			expect(result.current.theme).toBe(IThemeVariant.DARK);
 		});
 	});
 
@@ -82,7 +82,7 @@ describe("useThemeAdapterImpl", () => {
 	});
 
 	it("does not store the theme before initial load finishes", async () => {
-		const storage = createStorageMock(IThemeVariant.DARK);
+		const storage = createStorageMock(IThemeVariant.LIGHT);
 
 		renderHook(() => useThemeAdapterImpl({ storage }));
 
@@ -95,14 +95,14 @@ describe("useThemeAdapterImpl", () => {
 	});
 
 	it("stores the theme after initial load", async () => {
-		const storage = createStorageMock(IThemeVariant.DARK);
+		const storage = createStorageMock(IThemeVariant.LIGHT);
 
 		renderHook(() => useThemeAdapterImpl({ storage }));
 
 		await waitFor(() => {
 			expect(storage.set).toHaveBeenCalledWith(
 				StorageKeys.THEME,
-				IThemeVariant.DARK,
+				IThemeVariant.LIGHT,
 			);
 		});
 	});
