@@ -1,6 +1,8 @@
+import { Theme } from "@radix-ui/themes";
 import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
+
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
 import { AuthProvider } from "@/shared/adapters/auth/ui";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
@@ -11,15 +13,18 @@ import { useReactRouterAdapter } from "@/shared/adapters/router/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";
 import { useThemeAdapterImpl } from "@/shared/adapters/theme/infra";
 import { RepositoriesProvider } from "@/shared/repositories/ui";
+
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
 export function AdaptersProvider() {
 	return (
-		<HashRouter>
-			<AdaptersProviderDI />
-			<Toaster position="bottom-right" />
-		</HashRouter>
+		<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
+			<HashRouter>
+				<AdaptersProviderDI />
+				<Toaster position="bottom-right" />
+			</HashRouter>
+		</Theme>
 	);
 }
 
