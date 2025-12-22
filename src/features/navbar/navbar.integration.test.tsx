@@ -109,7 +109,7 @@ describe("Navbar [Integration]", () => {
 		});
 	});
 
-	it("should toggle theme from light to dark", async () => {
+	it("should toggle appearance from light to dark", async () => {
 		const themeAdapter = makeThemeAdapter(IThemeVariant.LIGHT);
 
 		renderWithProviders(<Navbar />, {
@@ -121,7 +121,7 @@ describe("Navbar [Integration]", () => {
 		});
 
 		const toggleThemeButton = await screen.findByRole("button", {
-			name: "Toggle Theme",
+			name: "Toggle Appearance",
 		});
 		userEvent.click(toggleThemeButton);
 
@@ -132,7 +132,7 @@ describe("Navbar [Integration]", () => {
 		});
 	});
 
-	it("should toggle theme from dark to ligth", async () => {
+	it("should toggle appearance from dark to ligth", async () => {
 		const themeAdapter = makeThemeAdapter(IThemeVariant.DARK);
 
 		renderWithProviders(<Navbar />, {
@@ -144,7 +144,7 @@ describe("Navbar [Integration]", () => {
 		});
 
 		const toggleThemeButton = await screen.findByRole("button", {
-			name: "Toggle Theme",
+			name: "Toggle Appearance",
 		});
 		userEvent.click(toggleThemeButton);
 

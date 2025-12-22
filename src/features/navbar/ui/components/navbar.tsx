@@ -1,4 +1,11 @@
-import { Box, Button, Container, Flex, Skeleton } from "@radix-ui/themes";
+import {
+	Box,
+	Button,
+	Container,
+	Flex,
+	Skeleton,
+	Tooltip,
+} from "@radix-ui/themes";
 import { Link } from "react-router";
 import { IThemeVariant } from "@/shared/adapters/theme/domain";
 import { Logo, PolymorphicButton } from "@/shared/components";
@@ -29,17 +36,19 @@ export function Navbar() {
 							</Flex>
 						)}
 						{status === "loading" && <Skeleton height="32px" width="64px" />}
-						<Button
-							onClick={onToggleTheme}
-							variant="soft"
-							aria-label="Toggle Theme"
-						>
-							{theme === IThemeVariant.DARK ? (
-								<SunIcon height={20} width={20} />
-							) : (
-								<MoonIcon height={20} width={20} />
-							)}
-						</Button>
+						<Tooltip content="Toggle Appearence">
+							<Button
+								onClick={onToggleTheme}
+								variant="soft"
+								aria-label="Toggle Appearance"
+							>
+								{theme === IThemeVariant.DARK ? (
+									<SunIcon height={20} width={20} />
+								) : (
+									<MoonIcon height={20} width={20} />
+								)}
+							</Button>
+						</Tooltip>
 					</Flex>
 				</Flex>
 			</Container>
