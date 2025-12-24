@@ -3,6 +3,7 @@ import { expect } from "vitest";
 
 expect.extend(matchers);
 
+// @ts-expect-error: Test Setup
 global.ResizeObserver = class {
 	observe() {
 		/* empty */
