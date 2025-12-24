@@ -11,10 +11,12 @@ const navigationAdapter = new NavigationAdapter();
 describe("MyPlaylists [Integration]", () => {
 	const onCreatePlaylist = vi.fn();
 	const onSearchPlaylist = vi.fn();
+	const onUnfollowPlaylist = vi.fn();
 
 	beforeEach(() => {
 		onCreatePlaylist.mockReset();
 		onSearchPlaylist.mockReset();
+		onUnfollowPlaylist.mockReset();
 	});
 
 	describe("UI", () => {
@@ -26,6 +28,7 @@ describe("MyPlaylists [Integration]", () => {
 					<MyPlaylists
 						onCreatePlaylist={onCreatePlaylist}
 						onSearchPlaylist={onSearchPlaylist}
+						onUnfollowPlaylist={onUnfollowPlaylist}
 					/>,
 					{
 						adapters: {
@@ -74,6 +77,7 @@ describe("MyPlaylists [Integration]", () => {
 					<MyPlaylists
 						onCreatePlaylist={onCreatePlaylist}
 						onSearchPlaylist={onSearchPlaylist}
+						onUnfollowPlaylist={onUnfollowPlaylist}
 					/>,
 					{
 						adapters: {
@@ -121,6 +125,7 @@ describe("MyPlaylists [Integration]", () => {
 						<MyPlaylists
 							onCreatePlaylist={onCreatePlaylist}
 							onSearchPlaylist={onSearchPlaylist}
+							onUnfollowPlaylist={onUnfollowPlaylist}
 						/>,
 						{
 							adapters: { navigationAdapter },
@@ -159,6 +164,7 @@ describe("MyPlaylists [Integration]", () => {
 				<MyPlaylists
 					onCreatePlaylist={onCreatePlaylist}
 					onSearchPlaylist={onSearchPlaylist}
+					onUnfollowPlaylist={onUnfollowPlaylist}
 				/>,
 				{
 					repositories: {
@@ -189,6 +195,7 @@ describe("MyPlaylists [Integration]", () => {
 				<MyPlaylists
 					onCreatePlaylist={onCreatePlaylist}
 					onSearchPlaylist={onSearchPlaylist}
+					onUnfollowPlaylist={onUnfollowPlaylist}
 				/>,
 				{
 					repositories: {
@@ -212,6 +219,51 @@ describe("MyPlaylists [Integration]", () => {
 			await userEvent.click(button);
 
 			expect(onSearchPlaylist).toHaveBeenCalledTimes(1);
+		});
+
+		it("should call on-unfollow-playlist when unfollow button is clicked", async () => {
+			const [playlist] = MockLeanPlaylistFactory(1);
+
+			renderWithProviders(
+				<MyPlaylists
+					onCreatePlaylist={onCreatePlaylist}
+					onSearchPlaylist={onSearchPlaylist}
+					onUnfollowPlaylist={onUnfollowPlaylist}
+				/>,
+				{
+					repositories: {
+						playlist: {
+							getAll: async () => ({
+								page: 1,
+								playlists: [playlist],
+								total: 1,
+								limit: 14,
+							}),
+						},
+					},
+					adapters: {
+						navigationAdapter,
+					},
+				},
+			);
+
+			await waitFor(() =>
+				expect(screen.queryByTestId("my-playlist-skeleton")).toBeNull(),
+			);
+
+			const playlistItem = await screen.findByTestId("playlist-item");
+			const ellipsisButton = await within(playlistItem).findByRole("button", {
+				name: /Menu Options/i,
+			});
+			await userEvent.click(ellipsisButton);
+
+			const unfollowButton = await screen.findByRole("menuitem", {
+				name: /Unfollow/i,
+			});
+			await userEvent.click(unfollowButton);
+
+			expect(onUnfollowPlaylist).toHaveBeenCalledTimes(1);
+			expect(onUnfollowPlaylist).toHaveBeenCalledWith(playlist.id);
 		});
 	});
 });

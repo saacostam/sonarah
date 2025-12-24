@@ -196,4 +196,16 @@ export class PlaylistRepository implements IPlaylistRepository {
 			limit,
 		};
 	}
+
+	async unfollow(
+		args: IPlaylistRepositoryPayload["UnfollowIn"],
+	): Promise<IPlaylistRepositoryPayload["UnfollowOut"]> {
+		const { id } = args;
+
+		await this.spotifyAuthClient.delete(`/v1/playlists/${id}/followers`);
+
+		return {
+			id,
+		};
+	}
 }

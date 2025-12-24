@@ -11,11 +11,13 @@ const LIMIT = 14;
 export interface MyPlaylistsProps {
 	onCreatePlaylist: () => void;
 	onSearchPlaylist: () => void;
+	onUnfollowPlaylist: (id: string) => void;
 }
 
 export function MyPlaylists({
 	onCreatePlaylist,
 	onSearchPlaylist,
+	onUnfollowPlaylist,
 }: MyPlaylistsProps) {
 	const [page, setPage] = useState<number>(1);
 
@@ -62,7 +64,11 @@ export function MyPlaylists({
 			)}
 			{myPlaylists.isLoading && <MyPlaylistsSkeleton />}
 			{myPlaylists.isSuccess && (
-				<MyPlaylistContent pagination={myPlaylists.data} setPage={setPage} />
+				<MyPlaylistContent
+					onUnfollowPlaylist={onUnfollowPlaylist}
+					pagination={myPlaylists.data}
+					setPage={setPage}
+				/>
 			)}
 		</main>
 	);

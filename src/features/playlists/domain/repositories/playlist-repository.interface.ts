@@ -28,6 +28,10 @@ export interface IPlaylistRepository {
 	search(
 		args: IPlaylistRepositoryPayload["SearchIn"],
 	): Promise<IPlaylistRepositoryPayload["SearchOut"]>;
+
+	unfollow(
+		args: IPlaylistRepositoryPayload["UnfollowIn"],
+	): Promise<IPlaylistRepositoryPayload["UnfollowOut"]>;
 }
 
 export interface IPlaylistRepositoryPayload {
@@ -71,4 +75,11 @@ export interface IPlaylistRepositoryPayload {
 		page: number;
 	};
 	SearchOut: IPaginatedPlaylists;
+
+	UnfollowIn: {
+		id: string;
+	};
+	UnfollowOut: {
+		id: string;
+	};
 }

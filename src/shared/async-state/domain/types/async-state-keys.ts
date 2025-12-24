@@ -20,4 +20,5 @@ export enum MutationKey {
 	SET_SESSION = "Set Session",
 	START_AUTH_FLOW = "Start Auth Flow",
 	START_PLAYBACK = "Start Playback",
+	UNFOLLOW_PLAYLIST = "Unfollow Playlist",
 }

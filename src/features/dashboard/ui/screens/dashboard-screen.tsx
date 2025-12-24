@@ -26,10 +26,18 @@ export function DashboardScreenContent() {
 		[setStatus],
 	);
 
+	const onUnfollowPlaylist = useCallback(
+		(id: string) => {
+			setStatus({ type: "unfollow-playlist", payload: { id } });
+		},
+		[setStatus],
+	);
+
 	return (
 		<MyPlaylists
 			onCreatePlaylist={onCreatePlaylist}
 			onSearchPlaylist={onImportPlaylist}
+			onUnfollowPlaylist={onUnfollowPlaylist}
 		/>
 	);
 }

@@ -8,6 +8,12 @@ export interface IDashboardModalManager {
 		  }
 		| {
 				type: "search-playlist";
+		  }
+		| {
+				type: "unfollow-playlist";
+				payload: {
+					id: string;
+				};
 		  };
 	setStatus: (status: IDashboardModalManager["status"]) => void;
 }

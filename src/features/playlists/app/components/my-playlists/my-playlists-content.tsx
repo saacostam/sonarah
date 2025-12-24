@@ -6,11 +6,13 @@ import { PlaylistItem } from "./playlist-item";
 export interface MyPlaylistContentProps {
 	pagination: IPaginatedPlaylists;
 	setPage: (page: number) => void;
+	onUnfollowPlaylist: (id: string) => void;
 }
 
 export function MyPlaylistContent({
 	pagination,
 	setPage,
+	onUnfollowPlaylist,
 }: MyPlaylistContentProps) {
 	return (
 		<main data-testid="my-playlists-content">
@@ -18,7 +20,11 @@ export function MyPlaylistContent({
 				<>
 					<Flex wrap="wrap" gap="3" width="100%" mb="6" justify="center">
 						{pagination.playlists.map((playlist) => (
-							<PlaylistItem key={playlist.id} playlist={playlist} />
+							<PlaylistItem
+								key={playlist.id}
+								playlist={playlist}
+								onUnfollow={() => onUnfollowPlaylist(playlist.id)}
+							/>
 						))}
 					</Flex>
 					<Pagination

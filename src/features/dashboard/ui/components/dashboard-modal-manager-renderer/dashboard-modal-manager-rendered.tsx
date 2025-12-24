@@ -1,7 +1,11 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useDashboardModalManager } from "@/features/dashboard/app";
-import { CreatePlaylist, SearchPlaylist } from "@/features/playlists/app";
+import {
+	CreatePlaylist,
+	SearchPlaylist,
+	UnfollowPlaylist,
+} from "@/features/playlists/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
@@ -47,6 +51,15 @@ export function DashboardModalManagerRenderer() {
 		[onClose, routerAdapter, navigationAdapter],
 	);
 
+	const onUnfollowSuccess = useCallback(() => {
+		onClose();
+		notificationsAdapter.notify(
+			INotificationAdapterType.SUCCESS,
+			"Unfollowed",
+			"Playlist unfollowed successfully",
+		);
+	}, [notificationsAdapter, onClose]);
+
 	return (
 		<>
 			<Dialog.Root
@@ -81,6 +94,26 @@ export function DashboardModalManagerRenderer() {
 						onCancel={onClose}
 						onSuccess={onSavePlaylistSuccess}
 					/>
+				</Dialog.Content>
+			</Dialog.Root>
+			<Dialog.Root
+				open={status.type === "unfollow-playlist"}
+				onOpenChange={onClose}
+			>
+				<Dialog.Content maxWidth="512px">
+					<Flex direction="row" gap="2" justify="between">
+						<Dialog.Title size="7">Unfollow Playlist</Dialog.Title>
+						<Button onClick={onClose} variant="ghost">
+							<XIcon height={20} width={20} />
+						</Button>
+					</Flex>
+					{status.type === "unfollow-playlist" && (
+						<UnfollowPlaylist
+							id={status.payload.id}
+							onCancel={onClose}
+							onSuccess={onUnfollowSuccess}
+						/>
+					)}
 				</Dialog.Content>
 			</Dialog.Root>
 		</>
