@@ -252,10 +252,13 @@ describe("MyPlaylists [Integration]", () => {
 			);
 
 			const playlistItem = await screen.findByTestId("playlist-item");
-			const ellipsisButton = await within(playlistItem).findByRole("button", {
-				name: /Menu Options/i,
-			});
-			await userEvent.click(ellipsisButton);
+			const user = userEvent.setup();
+			await user.pointer([
+				{
+					keys: "[MouseRight]",
+					target: playlistItem,
+				},
+			]);
 
 			const unfollowButton = await screen.findByRole("menuitem", {
 				name: /Unfollow/i,
