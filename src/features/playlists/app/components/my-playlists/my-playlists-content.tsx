@@ -31,7 +31,8 @@ export function MyPlaylistContent({
 						currentPage={pagination.page}
 						dataTestId="my-playlist-pagination"
 						setPage={setPage}
-						totalPages={Math.ceil(pagination.total / pagination.limit)}
+						itemsPerPage={pagination.limit}
+						totalItems={pagination.total}
 					/>
 				</>
 			) : (

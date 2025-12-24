@@ -11,13 +11,15 @@ describe("Pagination", () => {
 				currentPage={1}
 				dataTestId="pagination"
 				setPage={setPage}
-				totalPages={3}
+				totalItems={12}
+				itemsPerPage={4}
 			/>,
 		);
 
 		const buttons = screen.getAllByRole("button");
 		expect(buttons).toHaveLength(3);
 		expect(screen.getByTestId("pagination")).toBeInTheDocument();
+		expect(screen.getByText("Showing 1-4 of 12")).toBeInTheDocument();
 	});
 
 	it("applies 'solid' variant to the current page", () => {
@@ -28,7 +30,8 @@ describe("Pagination", () => {
 				currentPage={2}
 				dataTestId="pagination"
 				setPage={setPage}
-				totalPages={3}
+				totalItems={12}
+				itemsPerPage={4}
 			/>,
 		);
 
@@ -36,9 +39,10 @@ describe("Pagination", () => {
 		expect(
 			buttons[1].getAttribute("data-state") || buttons[1].className,
 		).toContain("solid");
+		expect(screen.getByText("Showing 5-8 of 12")).toBeInTheDocument();
 	});
 
-	it("calls setPage with the correct number when clicked", () => {
+	it("calls setPage with the correct number when clicked", async () => {
 		const setPage = vi.fn();
 
 		render(
@@ -46,7 +50,8 @@ describe("Pagination", () => {
 				currentPage={1}
 				dataTestId="pagination"
 				setPage={setPage}
-				totalPages={3}
+				totalItems={12}
+				itemsPerPage={4}
 			/>,
 		);
 
@@ -58,4 +63,61 @@ describe("Pagination", () => {
 		fireEvent.click(buttons[0]);
 		expect(setPage).toHaveBeenCalledWith(1);
 	});
+});
+
+describe("Pagination – l-r total copy", () => {
+	const cases = [
+		{
+			name: "first page",
+			currentPage: 1,
+			itemsPerPage: 5,
+			totalItems: 20,
+			expected: "Showing 1-5 of 20",
+		},
+		{
+			name: "middle page",
+			currentPage: 3,
+			itemsPerPage: 5,
+			totalItems: 20,
+			expected: "Showing 11-15 of 20",
+		},
+		{
+			name: "last full page",
+			currentPage: 4,
+			itemsPerPage: 5,
+			totalItems: 20,
+			expected: "Showing 16-20 of 20",
+		},
+		{
+			name: "partially filled last page",
+			currentPage: 3,
+			itemsPerPage: 4,
+			totalItems: 10,
+			expected: "Showing 9-10 of 10",
+		},
+		{
+			name: "totalItems smaller than itemsPerPage",
+			currentPage: 1,
+			itemsPerPage: 10,
+			totalItems: 3,
+			expected: "Showing 1-3 of 3",
+		},
+	];
+
+	it.each(cases)(
+		"$name",
+		({ currentPage, itemsPerPage, totalItems, expected }) => {
+			render(
+				<Pagination
+					currentPage={currentPage}
+					dataTestId="pagination"
+					setPage={vi.fn()}
+					itemsPerPage={itemsPerPage}
+					totalItems={totalItems}
+				/>,
+			);
+
+			expect(screen.getByText(expected)).toBeInTheDocument();
+		},
+	);
 });
