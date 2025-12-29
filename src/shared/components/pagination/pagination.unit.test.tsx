@@ -102,6 +102,13 @@ describe("Pagination – l-r total copy", () => {
 			totalItems: 3,
 			expected: "Showing 1-3 of 3",
 		},
+		{
+			name: "handle 0 items",
+			currentPage: 1,
+			itemsPerPage: 1,
+			totalItems: 0,
+			expected: "Showing 0-0 of 0",
+		},
 	];
 
 	it.each(cases)(

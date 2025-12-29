@@ -15,7 +15,7 @@ export function Pagination({
 	itemsPerPage,
 	totalItems,
 }: PaginationProps) {
-	const l = itemsPerPage * (currentPage - 1) + 1;
+	const l = Math.min(itemsPerPage * (currentPage - 1) + 1, totalItems);
 	const r = Math.min(itemsPerPage * currentPage, totalItems);
 
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
