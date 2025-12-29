@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { MyPlaylists } from "@/features/playlists/app";
 import { useDashboardModalManager } from "../../app";
 import { DashboardModalManagerRenderer } from "../components";
@@ -14,6 +14,9 @@ export function DashboardScreen() {
 }
 
 export function DashboardScreenContent() {
+	const paginationLimit = 14;
+	const [page, setPage] = useState(1);
+
 	const { setStatus } = useDashboardModalManager();
 
 	const onCreatePlaylist = useCallback(
@@ -38,6 +41,9 @@ export function DashboardScreenContent() {
 			onCreatePlaylist={onCreatePlaylist}
 			onSearchPlaylist={onImportPlaylist}
 			onUnfollowPlaylist={onUnfollowPlaylist}
+			page={page}
+			paginationLimit={paginationLimit}
+			setPage={setPage}
 		/>
 	);
 }
