@@ -1,2 +1,3 @@
-yarn cc
-yarn test
+bun run cc
+bun run test
+bun run build 
