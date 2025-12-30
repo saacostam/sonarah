@@ -1,5 +1,5 @@
 import { Heading } from "@radix-ui/themes";
-import { AudioWaveIcon } from "../icons";
+import { AudioWaveIcon } from "@/shared/icons";
 
 export function Logo() {
 	return (
