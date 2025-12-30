@@ -29,6 +29,9 @@ describe("MyPlaylists [Integration]", () => {
 						onCreatePlaylist={onCreatePlaylist}
 						onSearchPlaylist={onSearchPlaylist}
 						onUnfollowPlaylist={onUnfollowPlaylist}
+						page={1}
+						paginationLimit={14}
+						setPage={vi.fn()}
 					/>,
 					{
 						adapters: {
@@ -78,6 +81,9 @@ describe("MyPlaylists [Integration]", () => {
 						onCreatePlaylist={onCreatePlaylist}
 						onSearchPlaylist={onSearchPlaylist}
 						onUnfollowPlaylist={onUnfollowPlaylist}
+						page={1}
+						paginationLimit={14}
+						setPage={vi.fn()}
 					/>,
 					{
 						adapters: {
@@ -126,6 +132,9 @@ describe("MyPlaylists [Integration]", () => {
 							onCreatePlaylist={onCreatePlaylist}
 							onSearchPlaylist={onSearchPlaylist}
 							onUnfollowPlaylist={onUnfollowPlaylist}
+							page={1}
+							paginationLimit={14}
+							setPage={vi.fn()}
 						/>,
 						{
 							adapters: { navigationAdapter },
@@ -165,6 +174,9 @@ describe("MyPlaylists [Integration]", () => {
 					onCreatePlaylist={onCreatePlaylist}
 					onSearchPlaylist={onSearchPlaylist}
 					onUnfollowPlaylist={onUnfollowPlaylist}
+					page={1}
+					paginationLimit={14}
+					setPage={vi.fn()}
 				/>,
 				{
 					repositories: {
@@ -196,6 +208,9 @@ describe("MyPlaylists [Integration]", () => {
 					onCreatePlaylist={onCreatePlaylist}
 					onSearchPlaylist={onSearchPlaylist}
 					onUnfollowPlaylist={onUnfollowPlaylist}
+					page={1}
+					paginationLimit={14}
+					setPage={vi.fn()}
 				/>,
 				{
 					repositories: {
@@ -229,6 +244,9 @@ describe("MyPlaylists [Integration]", () => {
 					onCreatePlaylist={onCreatePlaylist}
 					onSearchPlaylist={onSearchPlaylist}
 					onUnfollowPlaylist={onUnfollowPlaylist}
+					page={1}
+					paginationLimit={14}
+					setPage={vi.fn()}
 				/>,
 				{
 					repositories: {
