@@ -21,13 +21,7 @@ import type { IRepositories } from "../../domain";
 const SPOTIFY_URL = "https://api.spotify.com";
 
 export function RepositoriesProvider({ children }: PropsWithChildren) {
-	const {
-		authAdapter,
-		routerAdapter,
-		navigationAdapter,
-		notificationsAdapter,
-		storageAdapter,
-	} = useAdapters();
+	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
 
 	const session = useQuerySession();
 
@@ -56,8 +50,6 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 	);
 	const webPlayerRepository: IWebPlayerRepository =
 		useSpotifyWebPlayerRepository({
-			notificationsAdapter,
-			storageAdapter,
 			clientAdapter: spotifyFetchClientAdapter,
 		});
 

@@ -11,6 +11,7 @@ import {
 } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { useAdapters } from "@/shared/adapters/core/app";
 import {
 	ChevronDownIcon,
 	ChevronUpIcon,
@@ -21,11 +22,10 @@ import {
 	useMutationPausePlayback,
 	useMutationSeekToPosition,
 	useMutationStartPlayback,
-	useWebPlayer,
 } from "../app";
 
 export function WebPlayer() {
-	const webPlayer = useWebPlayer();
+	const { webPlayerAdapter } = useAdapters();
 
 	const startPlayback = useMutationStartPlayback();
 	const pausePlayback = useMutationPausePlayback();
@@ -40,27 +40,34 @@ export function WebPlayer() {
 
 	const [time, setTime] = useState(0);
 	const debouncedSeekToPosition = useDebouncedCallback((time: number) => {
-		if (webPlayer.type !== "ready:playing" && webPlayer.type !== "ready:paused")
-			return;
+		if (webPlayerAdapter.status.type !== "running") return;
 
 		const rangedTime = Math.max(0, Math.min(time, 100));
 		const normalizedTime = rangedTime / 100;
 
 		seekToPosition.mutate({
-			deviceId: webPlayer.deviceId,
-			positionMs: normalizedTime * webPlayer.state.playback.duration,
+			deviceId: webPlayerAdapter.status.payload.deviceId,
+			positionMs:
+				normalizedTime *
+				webPlayerAdapter.status.payload.state.playback.duration,
 		});
 	}, 200);
 
 	useEffect(() => {
-		if (webPlayer.type === "ready:playing") {
-			setTime(webPlayer.state.playback.position);
+		if (
+			webPlayerAdapter.status.type === "running" &&
+			!webPlayerAdapter.status.payload.state.playback.paused
+		) {
+			setTime(webPlayerAdapter.status.payload.state.playback.position);
 		}
-	}, [webPlayer]);
+	}, [webPlayerAdapter.status]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			if (webPlayer.type === "ready:playing") {
+			if (
+				webPlayerAdapter.status.type === "running" &&
+				!webPlayerAdapter.status.payload.state.playback.paused
+			) {
 				setTime((time) => time + 1000);
 			}
 		}, 1000);
@@ -68,7 +75,7 @@ export function WebPlayer() {
 		return () => {
 			clearInterval(interval);
 		};
-	}, [webPlayer]);
+	}, [webPlayerAdapter.status]);
 
 	return (
 		<Flex
@@ -98,13 +105,14 @@ export function WebPlayer() {
 			</Button>
 			{open && (
 				<Card size="2" style={{ width: "100%" }}>
-					{(webPlayer.type === "ready:paused" ||
-						webPlayer.type === "ready:playing") && (
+					{webPlayerAdapter.status.type === "running" && (
 						<Flex direction="row" gap="4" align="center">
 							<Box style={{ position: "relative", display: "inline-block" }}>
 								<Avatar
-									src={webPlayer.state.track.img}
-									fallback={webPlayer.state.track.name || "?"}
+									src={webPlayerAdapter.status.payload.state.track.img}
+									fallback={
+										webPlayerAdapter.status.payload.state.track.name || "?"
+									}
 									size="3"
 								/>
 								{isPlaybackLoading && (
@@ -126,44 +134,52 @@ export function WebPlayer() {
 							</Box>
 							<Box style={{ flex: 1, minWidth: 0 }}>
 								<Heading size="3" truncate>
-									{webPlayer.state.track.name}
+									{webPlayerAdapter.status.payload.state.track.name}
 								</Heading>
 								<Text size="1" truncate color="indigo">
-									{webPlayer.state.track.artists.join(", ")}
+									{webPlayerAdapter.status.payload.state.track.artists.join(
+										", ",
+									)}
 								</Text>
-								{webPlayer.state.playback !== null && (
-									<Flex direction="row" gap="2" mt="1" justify="center">
-										{webPlayer.state.playback.paused && (
-											<Button onClick={() => startPlayback.mutate()} size="1">
-												<PlayIcon height={16} width={16} />
-											</Button>
-										)}
-										{webPlayer.state.playback &&
-											!webPlayer.state.playback.paused && (
-												<Button onClick={() => pausePlayback.mutate()} size="1">
-													<PauseIcon height={16} width={16} />
-												</Button>
-											)}
-										<Slider
-											mt="2"
-											size="3"
-											value={[
-												Math.max(
-													0,
-													Math.min(time / webPlayer.state.playback.duration, 1),
-												) * 100,
-											]}
-											onValueChange={([time]) => {
-												debouncedSeekToPosition(time);
-												setTime(
-													Math.floor(
-														(time / 100) * webPlayer.state.playback.duration,
-													),
-												);
-											}}
-										/>
-									</Flex>
-								)}
+								<Flex direction="row" gap="2" mt="1" justify="center">
+									{webPlayerAdapter.status.payload.state.playback.paused && (
+										<Button onClick={() => startPlayback.mutate()} size="1">
+											<PlayIcon height={16} width={16} />
+										</Button>
+									)}
+									{!webPlayerAdapter.status.payload.state.playback.paused && (
+										<Button onClick={() => pausePlayback.mutate()} size="1">
+											<PauseIcon height={16} width={16} />
+										</Button>
+									)}
+									<Slider
+										mt="2"
+										size="3"
+										value={[
+											Math.max(
+												0,
+												Math.min(
+													time /
+														webPlayerAdapter.status.payload.state.playback
+															.duration,
+													1,
+												),
+											) * 100,
+										]}
+										onValueChange={([time]) => {
+											if (webPlayerAdapter.status.type !== "running") return;
+
+											debouncedSeekToPosition(time);
+											setTime(
+												Math.floor(
+													(time / 100) *
+														webPlayerAdapter.status.payload.state.playback
+															.duration,
+												),
+											);
+										}}
+									/>
+								</Flex>
 							</Box>
 						</Flex>
 					)}
