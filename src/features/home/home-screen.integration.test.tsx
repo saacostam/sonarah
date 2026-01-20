@@ -1,7 +1,10 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type { IAuthRepositoryPayload } from "@/features/auth/domain";
-import type { ISession } from "@/shared/adapters/auth/domain";
+import type {
+	IAuthAdapterPayload,
+	ISession,
+} from "@/shared/adapters/auth/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
@@ -76,12 +79,14 @@ describe("HomeScreen [Integration]", () => {
 	it("should request access-token if code is available and reset route", async () => {
 		const requestAccessToken = vi.fn();
 		const resetRouter = vi.fn();
+		const setToken = vi.fn();
 
 		const di = diFactory({
 			token: "unauth",
 			code: "code",
 		});
 
+		requestAccessToken.mockResolvedValueOnce("code");
 		renderWithProviders(<HomeScreen />, {
 			...di,
 			repositories: {
@@ -95,6 +100,7 @@ describe("HomeScreen [Integration]", () => {
 				...di?.adapters,
 				authAdapter: {
 					...di?.adapters?.authAdapter,
+					setToken,
 				},
 				routerAdapter: {
 					...di?.adapters?.routerAdapter,
@@ -111,6 +117,10 @@ describe("HomeScreen [Integration]", () => {
 		});
 
 		await waitFor(() => {
+			const payload: IAuthAdapterPayload["ISetTokenIn"] = {
+				token: "code",
+			};
+			expect(setToken).toHaveBeenCalledWith(payload);
 			expect(resetRouter).toHaveBeenCalled();
 		});
 	});

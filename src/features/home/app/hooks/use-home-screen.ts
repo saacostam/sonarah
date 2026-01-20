@@ -13,7 +13,7 @@ enum UrlSearchParam {
 }
 
 export function useHomeScreen() {
-	const { routerAdapter, navigationAdapter } = useAdapters();
+	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
 	const session = useQuerySession();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
@@ -46,12 +46,14 @@ export function useHomeScreen() {
 			requestAccessToken(
 				{ code },
 				{
-					// We rely on the authentication logic to re-direct to auth pages
+					onSuccess: (code) => {
+						authAdapter.setToken({ token: code });
+					},
 					onSettled: () => routerAdapter.reset(),
 				},
 			);
 		}
-	}, [code, requestAccessToken, routerAdapter]);
+	}, [authAdapter, code, requestAccessToken, routerAdapter]);
 
 	return useMemo(
 		() =>
