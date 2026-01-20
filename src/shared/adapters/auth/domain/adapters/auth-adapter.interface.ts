@@ -1,9 +1,9 @@
 import type { ISession } from "../entities";
 
 export interface IAuthAdapter {
-	getToken: () => Promise<ISession>;
-	removeToken: () => Promise<void>;
-	setToken: (args: IAuthAdapterPayload["ISetTokenIn"]) => Promise<void>;
+	getToken: () => ISession;
+	removeToken: () => void;
+	setToken: (args: IAuthAdapterPayload["ISetTokenIn"]) => void;
 	startAuthFlow: () => Promise<void>;
 }
 

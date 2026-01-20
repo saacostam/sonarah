@@ -1,9 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useMutationRequestAccessToken } from "@/features/auth/app";
-import {
-	useMutationStartAuthFlow,
-	useQuerySession,
-} from "@/shared/adapters/auth/app";
+import { useMutationStartAuthFlow } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import type { IAction } from "@/shared/types";
@@ -14,7 +11,6 @@ enum UrlSearchParam {
 
 export function useHomeScreen() {
 	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
-	const session = useQuerySession();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
 	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
@@ -22,7 +18,8 @@ export function useHomeScreen() {
 	const urlSearchParams = routerAdapter.getUrlSearchParams();
 	const code = urlSearchParams.get(UrlSearchParam.CODE);
 
-	const isAuth = session.isSuccess && session.data.type === "authenticated";
+	const session = authAdapter.getToken();
+	const isAuth = session.type === "authenticated";
 	const mainCta: IAction = useMemo(
 		() => ({
 			action: isAuth
@@ -57,11 +54,9 @@ export function useHomeScreen() {
 
 	return useMemo(
 		() =>
-			code || session.isLoading
+			code
 				? { status: "loading" as const }
-				: session.isSuccess
-					? { status: "success" as const, mainCta }
-					: { status: "error" as const },
-		[code, mainCta, session.isLoading, session.isSuccess],
+				: { status: "success" as const, mainCta },
+		[code, mainCta],
 	);
 }

@@ -1,20 +1,25 @@
 import { useCallback, useMemo } from "react";
-import {
-	useMutationLogout,
-	useMutationStartAuthFlow,
-	useQuerySession,
-} from "@/shared/adapters/auth/app";
+import { useMutationStartAuthFlow } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { IThemeVariant } from "@/shared/adapters/theme/domain";
 
 export function useNavbar() {
-	const { navigationAdapter, themeAdapter } = useAdapters();
+	const { authAdapter, navigationAdapter, routerAdapter, themeAdapter } =
+		useAdapters();
 
-	const session = useQuerySession();
+	const session = authAdapter.getToken();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
-	const { mutate: logout } = useMutationLogout();
+
+	const logout = useCallback(() => {
+		authAdapter.removeToken();
+		routerAdapter.push(
+			navigationAdapter.generateRoute({
+				name: RouteName.HOME,
+			}),
+		);
+	}, [authAdapter, navigationAdapter, routerAdapter]);
 
 	const onToggleTheme = useCallback(() => {
 		themeAdapter.setTheme(
@@ -27,35 +32,24 @@ export function useNavbar() {
 	return useMemo(
 		() => ({
 			logoHref:
-				session.isSuccess && session.data.type === "authenticated"
+				session.type === "authenticated"
 					? navigationAdapter.generateRoute({ name: RouteName.DASHBOARD })
 					: navigationAdapter.generateRoute({ name: RouteName.HOME }),
-			loader: session.isLoading
-				? {
-						status: "loading" as const,
-					}
-				: session.isSuccess
+			mainAction:
+				session.type === "unauthenticated"
 					? {
-							status: "success" as const,
-							mainAction:
-								session.data.type === "unauthenticated"
-									? {
-											label: "Login",
-											action: {
-												type: "button" as const,
-												onClick: () => startAuthFlow(),
-											},
-										}
-									: {
-											label: "Sign Out",
-											action: {
-												type: "button" as const,
-												onClick: () => logout(),
-											},
-										},
+							label: "Login",
+							action: {
+								type: "button" as const,
+								onClick: () => startAuthFlow(),
+							},
 						}
 					: {
-							status: "error" as const,
+							label: "Sign Out",
+							action: {
+								type: "button" as const,
+								onClick: () => logout(),
+							},
 						},
 			onToggleTheme,
 			theme: themeAdapter.theme,
@@ -64,9 +58,7 @@ export function useNavbar() {
 			logout,
 			navigationAdapter,
 			onToggleTheme,
-			session.data,
-			session.isLoading,
-			session.isSuccess,
+			session.type,
 			startAuthFlow,
 			themeAdapter.theme,
 		],

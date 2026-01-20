@@ -11,6 +11,12 @@ describe("AppLayout [Unit]", () => {
 		 */
 		const { container } = renderWithProviders(<AppLayout />, {
 			adapters: {
+				authAdapter: {
+					getToken: () => ({
+						type: "authenticated",
+						token: "code",
+					}),
+				},
 				navigationAdapter: {
 					generateRoute: vi.fn(),
 				},

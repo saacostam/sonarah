@@ -1,12 +1,11 @@
 import { useEffect, useMemo } from "react";
-import { useQuerySession } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { PUBLIC_ROUTES } from "../../domain";
 
 export function useAuthGuard() {
-	const { routerAdapter, navigationAdapter } = useAdapters();
-	const session = useQuerySession();
+	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
+	const session = authAdapter.getToken();
 
 	const publicRoutesPaths = useMemo(
 		() =>
@@ -21,12 +20,8 @@ export function useAuthGuard() {
 		(publicRoute) => location === publicRoute,
 	);
 
-	const shouldGoToApp =
-		session.isSuccess && session.data.type === "authenticated" && isPublicRoute;
-	const shouldGoToHome =
-		session.isSuccess &&
-		session.data.type === "unauthenticated" &&
-		!isPublicRoute;
+	const shouldGoToApp = session.type === "authenticated" && isPublicRoute;
+	const shouldGoToHome = session.type === "unauthenticated" && !isPublicRoute;
 
 	useEffect(() => {
 		if (shouldGoToApp) {
@@ -44,10 +39,7 @@ export function useAuthGuard() {
 		}
 	}, [routerAdapter, navigationAdapter, shouldGoToHome]);
 
-	const pending = !session.isSuccess || shouldGoToApp || shouldGoToHome;
+	const pending = shouldGoToApp || shouldGoToHome;
 
-	return useMemo(
-		() => (session.isError ? "error" : pending ? "loading" : "success"),
-		[pending, session.isError],
-	);
+	return useMemo(() => (pending ? "loading" : "success"), [pending]);
 }

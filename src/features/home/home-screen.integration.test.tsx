@@ -1,10 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type { IAuthRepositoryPayload } from "@/features/auth/domain";
-import type {
-	IAuthAdapterPayload,
-	ISession,
-} from "@/shared/adapters/auth/domain";
+import type { IAuthAdapterPayload } from "@/shared/adapters/auth/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
@@ -13,26 +10,21 @@ import { HomeScreen } from "./ui";
 const navigationAdapter = new NavigationAdapter();
 
 const diFactory = (args: {
-	token: "auth" | "unauth" | "pending";
+	token: "auth" | "unauth";
 	code?: string;
 }): Parameters<typeof renderWithProviders>["1"] => {
 	return {
 		adapters: {
 			authAdapter: {
-				getToken: async () => {
-					if (args.token === "auth") {
-						return {
-							type: "authenticated",
-							token: "token",
-						};
-					} else if (args.token === "unauth") {
-						return {
-							type: "unauthenticated",
-						};
-					} else {
-						return new Promise<ISession>(() => {});
-					}
-				},
+				getToken: () =>
+					args.token === "auth"
+						? {
+								type: "authenticated",
+								token: "token",
+							}
+						: {
+								type: "unauthenticated",
+							},
 			},
 			routerAdapter: {
 				getUrlSearchParams: () =>
@@ -47,20 +39,6 @@ const diFactory = (args: {
 };
 
 describe("HomeScreen [Integration]", () => {
-	it("should handle loading state because of pending query", async () => {
-		renderWithProviders(
-			<HomeScreen />,
-			diFactory({
-				token: "pending",
-			}),
-		);
-
-		expect(screen.getByTestId("home-screen-skeleton")).toBeDefined();
-		await waitFor(() => {
-			expect(screen.queryByTestId("home-screen-content")).toBeNull();
-		});
-	});
-
 	it("should handle loading state because code is available", async () => {
 		renderWithProviders(
 			<HomeScreen />,

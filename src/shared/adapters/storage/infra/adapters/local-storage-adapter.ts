@@ -1,7 +1,7 @@
 import type { IStorageAdapter, StorageKeys } from "../../domain";
 
 export class LocalStorageAdapter implements IStorageAdapter {
-	async get(key: StorageKeys): Promise<unknown | null> {
+	get(key: StorageKeys): unknown | null {
 		const val = localStorage.getItem(key);
 
 		if (val === null) return null;
@@ -13,15 +13,15 @@ export class LocalStorageAdapter implements IStorageAdapter {
 		}
 	}
 
-	async remove(key: StorageKeys) {
+	remove(key: StorageKeys) {
 		localStorage.removeItem(key);
 	}
 
-	async set(key: StorageKeys, value: unknown) {
+	set(key: StorageKeys, value: unknown) {
 		localStorage.setItem(key, JSON.stringify(value));
 	}
 
-	async unsafeGet<T>(key: StorageKeys): Promise<T | null> {
+	unsafeGet<T>(key: StorageKeys): T | null {
 		const val = this.get(key);
 
 		if (val === null) return null;

@@ -5,7 +5,7 @@ import { HomeScreenSkeleton } from "./home-screen-skeleton";
 export function HomeScreen() {
 	const { status, mainCta } = useHomeScreen();
 
-	if (status === "error" || status === "loading") return <HomeScreenSkeleton />;
+	if (status === "loading") return <HomeScreenSkeleton />;
 
 	return <HomeScreenContent mainCta={mainCta} />;
 }

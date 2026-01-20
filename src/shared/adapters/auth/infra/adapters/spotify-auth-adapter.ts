@@ -13,8 +13,8 @@ export class SpotifyAuthAdapter implements IAuthAdapter {
 		private routerAdapter: IRouterAdapter,
 	) {}
 
-	async getToken(): Promise<ISession> {
-		const _token = await this.clientStorageAdapter.get(StorageKeys.TOKEN);
+	getToken(): ISession {
+		const _token = this.clientStorageAdapter.get(StorageKeys.TOKEN);
 
 		const token =
 			typeof _token === "string" && _token.trim().length > 0 ? _token : null;

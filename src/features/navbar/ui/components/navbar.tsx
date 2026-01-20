@@ -1,11 +1,4 @@
-import {
-	Box,
-	Button,
-	Container,
-	Flex,
-	Skeleton,
-	Tooltip,
-} from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Tooltip } from "@radix-ui/themes";
 import { Link } from "react-router";
 import { IThemeVariant } from "@/shared/adapters/theme/domain";
 import { Logo, PolymorphicButton } from "@/shared/components";
@@ -13,12 +6,7 @@ import { MoonIcon, SunIcon } from "@/shared/icons";
 import { useNavbar } from "../../app";
 
 export function Navbar() {
-	const {
-		loader: { status, mainAction },
-		logoHref,
-		theme,
-		onToggleTheme,
-	} = useNavbar();
+	const { mainAction, logoHref, theme, onToggleTheme } = useNavbar();
 
 	return (
 		<Box width="100%" style={{ borderBottom: "var(--gray-8) 1px solid" }}>
@@ -30,12 +18,9 @@ export function Navbar() {
 						</Link>
 					</Button>
 					<Flex gap="2" align="center" justify="center">
-						{status === "success" && (
-							<Flex gap="4">
-								<PolymorphicButton action={mainAction} />
-							</Flex>
-						)}
-						{status === "loading" && <Skeleton height="32px" width="64px" />}
+						<Flex gap="4">
+							<PolymorphicButton action={mainAction} />
+						</Flex>
 						<Tooltip content="Toggle Appearence">
 							<Button
 								onClick={onToggleTheme}

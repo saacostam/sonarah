@@ -13,7 +13,6 @@ import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";
 import { useSpotifyWebPlayerRepository } from "@/features/web-player/infra";
-import { useQuerySession } from "@/shared/adapters/auth/app";
 import type { IClientAdapter } from "@/shared/adapters/clients/domain";
 import { FetchClientAdapter } from "@/shared/adapters/clients/infra";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -31,17 +30,17 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 		storageAdapter,
 	} = useAdapters();
 
-	const session = useQuerySession();
+	const session = authAdapter.getToken();
 
 	const spotifyFetchClientAdapter: IClientAdapter = useMemo(
 		() =>
 			new FetchClientAdapter(authAdapter, routerAdapter, navigationAdapter, {
 				baseUrl: SPOTIFY_URL,
 				defaultHeaders: {
-					Authorization: `Bearer ${session.data?.type === "authenticated" ? session.data.token : ""}`,
+					Authorization: `Bearer ${session.type === "authenticated" ? session.token : ""}`,
 				},
 			}),
-		[authAdapter, routerAdapter, navigationAdapter, session.data],
+		[authAdapter, routerAdapter, navigationAdapter, session],
 	);
 
 	const authRepository: IAuthRepository = useMemo(

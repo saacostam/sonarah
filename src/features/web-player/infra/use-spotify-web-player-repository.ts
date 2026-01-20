@@ -200,59 +200,59 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	const { onSuccess, res, setState, storageAdapter } = args;
 
 	return () => {
-		return storageAdapter.get(StorageKeys.TOKEN).then((token) => {
-			if (!token || typeof token !== "string") {
-				throw new DomainError(
-					DomainErrorType.APP_ERROR,
-					"Token not found",
-					"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
-				);
-			}
-			if (!window.Spotify) {
-				throw new DomainError(
-					DomainErrorType.APP_ERROR,
-					"Spotify could not be added",
-					"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
-				);
-			}
+		const token = storageAdapter.get(StorageKeys.TOKEN);
 
-			const webPlayer = new window.Spotify.Player({
-				name: WEB_PLAYER_NAME,
-				getOAuthToken: (cb: (token: string) => void) => cb(token),
-				volume: 0.5,
-			});
+		if (!token || typeof token !== "string") {
+			throw new DomainError(
+				DomainErrorType.APP_ERROR,
+				"Token not found",
+				"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
+			);
+		}
+		if (!window.Spotify) {
+			throw new DomainError(
+				DomainErrorType.APP_ERROR,
+				"Spotify could not be added",
+				"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
+			);
+		}
 
-			webPlayer.addListener("ready", ({ device_id }) => {
-				const payload = {
-					deviceId: device_id,
-					player: webPlayer,
-				};
-
-				onSuccess(payload);
-				res(payload);
-			});
-
-			webPlayer.addListener("not_ready", () => {});
-
-			webPlayer.addListener("player_state_changed", (state) => {
-				setState({
-					playback: {
-						duration: state.duration,
-						position: state.position,
-						paused: state.paused,
-					},
-					track: {
-						artists: state.track_window.current_track.artists.map(
-							({ name }) => name,
-						),
-						name: state.track_window.current_track.name,
-						img: state.track_window.current_track.album.images.at(0)?.url,
-					},
-				});
-			});
-
-			webPlayer.connect();
+		const webPlayer = new window.Spotify.Player({
+			name: WEB_PLAYER_NAME,
+			getOAuthToken: (cb: (token: string) => void) => cb(token),
+			volume: 0.5,
 		});
+
+		webPlayer.addListener("ready", ({ device_id }) => {
+			const payload = {
+				deviceId: device_id,
+				player: webPlayer,
+			};
+
+			onSuccess(payload);
+			res(payload);
+		});
+
+		webPlayer.addListener("not_ready", () => {});
+
+		webPlayer.addListener("player_state_changed", (state) => {
+			setState({
+				playback: {
+					duration: state.duration,
+					position: state.position,
+					paused: state.paused,
+				},
+				track: {
+					artists: state.track_window.current_track.artists.map(
+						({ name }) => name,
+					),
+					name: state.track_window.current_track.name,
+					img: state.track_window.current_track.album.images.at(0)?.url,
+				},
+			});
+		});
+
+		webPlayer.connect();
 	};
 }
 
