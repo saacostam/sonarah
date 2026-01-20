@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
+import { useMutationRequestAccessToken } from "@/features/auth/app";
 import {
-	useMutationRequestAccessToken,
 	useMutationStartAuthFlow,
 	useQuerySession,
 } from "@/shared/adapters/auth/app";

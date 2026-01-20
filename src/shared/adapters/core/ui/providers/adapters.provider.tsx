@@ -1,10 +1,9 @@
 import { Theme } from "@radix-ui/themes";
-import { useMemo } from "react";
+import { type PropsWithChildren, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
 
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
-import { AuthProvider } from "@/shared/adapters/auth/ui";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { NavigationProvider } from "@/shared/adapters/navigation/ui";
@@ -16,18 +15,18 @@ import { RepositoriesProvider } from "@/shared/repositories/ui";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
-export function AdaptersProvider() {
+export function AdaptersProvider({ children }: PropsWithChildren) {
 	return (
 		<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
 			<HashRouter>
-				<AdaptersProviderDI />
+				<AdaptersProviderDI>{children}</AdaptersProviderDI>
 				<Toaster position="bottom-right" />
 			</HashRouter>
 		</Theme>
 	);
 }
 
-function AdaptersProviderDI() {
+function AdaptersProviderDI({ children }: PropsWithChildren) {
 	const storageAdapter = useMemo(() => new LocalStorageAdapter(), []);
 	const routerAdapter = useReactRouterAdapter();
 	const navigationAdapter = useMemo(() => new NavigationAdapter(), []);
@@ -67,11 +66,9 @@ function AdaptersProviderDI() {
 
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
-			<AuthProvider>
-				<RepositoriesProvider>
-					<NavigationProvider />
-				</RepositoriesProvider>
-			</AuthProvider>
+			<RepositoriesProvider>
+				<NavigationProvider>{children}</NavigationProvider>
+			</RepositoriesProvider>
 		</AdaptersContext.Provider>
 	);
 }

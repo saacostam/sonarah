@@ -1,9 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import type {
-	IAuthAdapterPayload,
-	ISession,
-} from "@/shared/adapters/auth/domain";
+import type { IAuthRepositoryPayload } from "@/features/auth/domain";
+import type { ISession } from "@/shared/adapters/auth/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
@@ -38,6 +36,9 @@ const diFactory = (args: {
 					new URLSearchParams({ code: args.code ?? "" }),
 			},
 			navigationAdapter,
+		},
+		repositories: {
+			auth: {},
 		},
 	};
 };
@@ -83,11 +84,17 @@ describe("HomeScreen [Integration]", () => {
 
 		renderWithProviders(<HomeScreen />, {
 			...di,
+			repositories: {
+				...di?.repositories,
+				auth: {
+					...di?.repositories?.auth,
+					requestAccessToken,
+				},
+			},
 			adapters: {
 				...di?.adapters,
 				authAdapter: {
 					...di?.adapters?.authAdapter,
-					requestAccessToken,
 				},
 				routerAdapter: {
 					...di?.adapters?.routerAdapter,
@@ -97,7 +104,7 @@ describe("HomeScreen [Integration]", () => {
 		});
 
 		await waitFor(() => {
-			const payload: IAuthAdapterPayload["IRequestAccessTokenIn"] = {
+			const payload: IAuthRepositoryPayload["IRequestAccessTokenIn"] = {
 				code: "code",
 			};
 			expect(requestAccessToken).toHaveBeenCalledWith(payload);

@@ -1,4 +1,6 @@
 import { type PropsWithChildren, useMemo } from "react";
+import type { IAuthRepository } from "@/features/auth/domain";
+import { SpotifyAuthRepository } from "@/features/auth/infra/spotify-auth-repository";
 import type {
 	IPlaylistRepository,
 	ITrackRepository,
@@ -42,6 +44,10 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 		[authAdapter, routerAdapter, navigationAdapter, session.data],
 	);
 
+	const authRepository: IAuthRepository = useMemo(
+		() => new SpotifyAuthRepository(storageAdapter, routerAdapter),
+		[storageAdapter, routerAdapter],
+	);
 	const playlistRepository: IPlaylistRepository = useMemo(
 		() => new PlaylistRepository(spotifyFetchClientAdapter),
 		[spotifyFetchClientAdapter],
@@ -63,12 +69,19 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 
 	const repositories: IRepositories = useMemo(
 		() => ({
+			auth: authRepository,
 			playlist: playlistRepository,
 			track: trackRepository,
 			user: userRepository,
 			webPlayer: webPlayerRepository,
 		}),
-		[playlistRepository, trackRepository, userRepository, webPlayerRepository],
+		[
+			authRepository,
+			playlistRepository,
+			trackRepository,
+			userRepository,
+			webPlayerRepository,
+		],
 	);
 
 	return (
