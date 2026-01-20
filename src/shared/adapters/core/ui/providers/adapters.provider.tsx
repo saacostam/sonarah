@@ -1,4 +1,3 @@
-import { Theme } from "@radix-ui/themes";
 import { type PropsWithChildren, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
@@ -11,18 +10,15 @@ import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notification
 import { useReactRouterAdapter } from "@/shared/adapters/router/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";
 import { useThemeAdapterImpl } from "@/shared/adapters/theme/infra";
-import { RepositoriesProvider } from "@/shared/repositories/ui";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
 export function AdaptersProvider({ children }: PropsWithChildren) {
 	return (
-		<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
-			<HashRouter>
-				<AdaptersProviderDI>{children}</AdaptersProviderDI>
-				<Toaster position="bottom-right" />
-			</HashRouter>
-		</Theme>
+		<HashRouter>
+			<AdaptersProviderDI>{children}</AdaptersProviderDI>
+			<Toaster position="bottom-right" />
+		</HashRouter>
 	);
 }
 
@@ -66,9 +62,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 
 	return (
 		<AdaptersContext.Provider value={allAdapters}>
-			<RepositoriesProvider>
-				<NavigationProvider>{children}</NavigationProvider>
-			</RepositoriesProvider>
+			<NavigationProvider>{children}</NavigationProvider>
 		</AdaptersContext.Provider>
 	);
 }
