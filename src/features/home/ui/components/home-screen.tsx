@@ -1,11 +1,11 @@
+import { LazyLoadedSkeleton } from "@/shared/adapters/navigation/ui";
 import { useHomeScreen } from "../../app";
 import { HomeScreenContent } from "./home-screen-content";
-import { HomeScreenSkeleton } from "./home-screen-skeleton";
 
 export function HomeScreen() {
 	const { status, mainCta } = useHomeScreen();
 
-	if (status === "loading") return <HomeScreenSkeleton />;
+	if (status === "loading") return <LazyLoadedSkeleton />;
 
 	return <HomeScreenContent mainCta={mainCta} />;
 }

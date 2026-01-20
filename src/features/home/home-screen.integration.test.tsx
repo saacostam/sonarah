@@ -48,7 +48,7 @@ describe("HomeScreen [Integration]", () => {
 			}),
 		);
 
-		expect(screen.getByTestId("home-screen-skeleton")).toBeDefined();
+		expect(screen.getByTestId("lazy-loaded-skeleton")).toBeDefined();
 		await waitFor(() => {
 			expect(screen.queryByTestId("home-screen-content")).toBeNull();
 		});

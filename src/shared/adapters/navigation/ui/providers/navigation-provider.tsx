@@ -5,7 +5,7 @@ import { useAdapters } from "@/shared/adapters/core/app";
 import { ErrorScreen } from "@/shared/adapters/errors/ui";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { AppLayout } from "@/shared/layout/ui";
-import { LazyLoadingRouteSkeleton } from "../components";
+import { LazyLoadedSkeleton } from "../components";
 
 // Lazy imports
 const ManagePlaylistScreen = lazy(() =>
@@ -28,7 +28,13 @@ export function NavigationProvider({ children }: PropsWithChildren) {
 	const { navigationAdapter } = useAdapters();
 
 	return (
-		<Suspense fallback={<LazyLoadingRouteSkeleton />}>
+		<Suspense
+			fallback={
+				<AppLayout>
+					<LazyLoadedSkeleton />
+				</AppLayout>
+			}
+		>
 			<Routes>
 				<Route element={<AppLayout>{children}</AppLayout>}>
 					<Route index element={<HomeScreen />} />

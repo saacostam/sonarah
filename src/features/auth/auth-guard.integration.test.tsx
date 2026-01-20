@@ -92,7 +92,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.getByTestId("lazy-loaded-skeleton")).toBeInTheDocument();
 		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
@@ -119,7 +119,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.getByTestId("lazy-loaded-skeleton")).toBeInTheDocument();
 		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
