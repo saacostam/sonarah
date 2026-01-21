@@ -28,13 +28,7 @@ export function NavigationProvider({ children }: PropsWithChildren) {
 	const { navigationAdapter } = useAdapters();
 
 	return (
-		<Suspense
-			fallback={
-				<AppLayout>
-					<LazyLoadedSkeleton />
-				</AppLayout>
-			}
-		>
+		<Suspense fallback={<LazyLoadedSkeleton style={{ height: "100vh" }} />}>
 			<Routes>
 				<Route element={<AppLayout>{children}</AppLayout>}>
 					<Route index element={<HomeScreen />} />

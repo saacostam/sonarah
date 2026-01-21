@@ -11,7 +11,7 @@ export function LazyLoadedSkeleton({ style }: LazyLoadedSkeletonProps) {
 		<Flex
 			align="center"
 			justify="center"
-			style={{ ...style, margin: style?.margin ?? "8rem 0" }}
+			style={style}
 			data-testid="lazy-loaded-skeleton"
 		>
 			<RingLoader color="var(--accent-9)" size="128" />

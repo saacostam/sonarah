@@ -5,7 +5,8 @@ import { HomeScreenContent } from "./home-screen-content";
 export function HomeScreen() {
 	const { status, mainCta } = useHomeScreen();
 
-	if (status === "loading") return <LazyLoadedSkeleton />;
+	if (status === "loading")
+		return <LazyLoadedSkeleton style={{ margin: "8rem 0" }} />;
 
 	return <HomeScreenContent mainCta={mainCta} />;
 }
