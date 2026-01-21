@@ -1,1 +1,1 @@
-export * from "./lazy-loading-route-skeleton";
+export * from "./lazy-loaded-skeleton";

@@ -1,11 +1,11 @@
-import { lazy, Suspense } from "react";
-import { Outlet, Route, Routes } from "react-router";
+import { lazy, type PropsWithChildren, Suspense } from "react";
+import { Route, Routes } from "react-router";
 import { HomeScreen } from "@/features/home/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { ErrorScreen } from "@/shared/adapters/errors/ui";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { AppLayout } from "@/shared/layout/ui";
-import { LazyLoadingRouteSkeleton } from "../components";
+import { LazyLoadedSkeleton } from "../components";
 
 // Lazy imports
 const ManagePlaylistScreen = lazy(() =>
@@ -24,19 +24,13 @@ const DashboardScreen = lazy(() =>
 	})),
 );
 
-export function NavigationProvider() {
+export function NavigationProvider({ children }: PropsWithChildren) {
 	const { navigationAdapter } = useAdapters();
 
 	return (
-		<Suspense fallback={<LazyLoadingRouteSkeleton />}>
+		<Suspense fallback={<LazyLoadedSkeleton style={{ height: "100vh" }} />}>
 			<Routes>
-				<Route
-					element={
-						<AppLayout>
-							<Outlet />
-						</AppLayout>
-					}
-				>
+				<Route element={<AppLayout>{children}</AppLayout>}>
 					<Route index element={<HomeScreen />} />
 					<Route
 						path={navigationAdapter.defineRoute(RouteName.DASHBOARD)}

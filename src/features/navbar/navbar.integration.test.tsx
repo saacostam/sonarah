@@ -14,7 +14,7 @@ const makeAuthAdapter = (state: "authenticated" | "unauthenticated") => {
 	const removeToken = vi.fn();
 
 	return {
-		getToken: async () =>
+		getToken: () =>
 			state === "authenticated"
 				? { type: "authenticated" as const, token: "hello" }
 				: { type: "unauthenticated" as const },
@@ -33,7 +33,7 @@ const makeThemeAdapter = (initTheme?: IThemeVariant) => {
 };
 
 describe("Navbar [Integration]", () => {
-	it("should render login and trigger auth flow if session is unauthenticated", async () => {
+	it("should render login and trigger auth flow when clicked, if session is unauthenticated", async () => {
 		const authAdapter = makeAuthAdapter("unauthenticated");
 		const themeAdapter = makeThemeAdapter();
 
@@ -52,15 +52,19 @@ describe("Navbar [Integration]", () => {
 		expect(authAdapter.removeToken).not.toHaveBeenCalled();
 	});
 
-	it("should render logout and remove token if session is authenticated", async () => {
+	it("should render logout and remove token when clicked, if session is authenticated", async () => {
 		const authAdapter = makeAuthAdapter("authenticated");
 		const themeAdapter = makeThemeAdapter();
+		const routerAdapterPush = vi.fn();
 
 		renderWithProviders(<Navbar />, {
 			adapters: {
 				authAdapter,
 				navigationAdapter,
 				themeAdapter,
+				routerAdapter: {
+					push: routerAdapterPush,
+				},
 			},
 		});
 
@@ -69,6 +73,13 @@ describe("Navbar [Integration]", () => {
 
 		expect(authAdapter.removeToken).toHaveBeenCalled();
 		expect(authAdapter.startAuthFlow).not.toHaveBeenCalled();
+
+		// redirect to home
+		expect(routerAdapterPush).toHaveBeenCalledWith(
+			navigationAdapter.generateRoute({
+				name: RouteName.HOME,
+			}),
+		);
 	});
 
 	it("should link logo to home if user is unauthenticated", async () => {

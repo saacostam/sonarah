@@ -1,4 +1,6 @@
 import { type PropsWithChildren, useMemo } from "react";
+import type { IAuthRepository } from "@/features/auth/domain";
+import { SpotifyAuthRepository } from "@/features/auth/infra/spotify-auth-repository";
 import type {
 	IPlaylistRepository,
 	ITrackRepository,
@@ -11,7 +13,6 @@ import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";
 import { useSpotifyWebPlayerRepository } from "@/features/web-player/infra";
-import { useQuerySession } from "@/shared/adapters/auth/app";
 import type { IClientAdapter } from "@/shared/adapters/clients/domain";
 import { FetchClientAdapter } from "@/shared/adapters/clients/infra";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -21,21 +22,26 @@ import type { IRepositories } from "../../domain";
 const SPOTIFY_URL = "https://api.spotify.com";
 
 export function RepositoriesProvider({ children }: PropsWithChildren) {
-	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
+	const { authAdapter, navigationAdapter, storageAdapter, routerAdapter } =
+		useAdapters();
 
-	const session = useQuerySession();
+	const session = authAdapter.getToken();
 
 	const spotifyFetchClientAdapter: IClientAdapter = useMemo(
 		() =>
 			new FetchClientAdapter(authAdapter, routerAdapter, navigationAdapter, {
 				baseUrl: SPOTIFY_URL,
 				defaultHeaders: {
-					Authorization: `Bearer ${session.data?.type === "authenticated" ? session.data.token : ""}`,
+					Authorization: `Bearer ${session.type === "authenticated" ? session.token : ""}`,
 				},
 			}),
-		[authAdapter, routerAdapter, navigationAdapter, session.data],
+		[authAdapter, routerAdapter, navigationAdapter, session],
 	);
 
+	const authRepository: IAuthRepository = useMemo(
+		() => new SpotifyAuthRepository(storageAdapter, routerAdapter),
+		[storageAdapter, routerAdapter],
+	);
 	const playlistRepository: IPlaylistRepository = useMemo(
 		() => new PlaylistRepository(spotifyFetchClientAdapter),
 		[spotifyFetchClientAdapter],
@@ -55,12 +61,19 @@ export function RepositoriesProvider({ children }: PropsWithChildren) {
 
 	const repositories: IRepositories = useMemo(
 		() => ({
+			auth: authRepository,
 			playlist: playlistRepository,
 			track: trackRepository,
 			user: userRepository,
 			webPlayer: webPlayerRepository,
 		}),
-		[playlistRepository, trackRepository, userRepository, webPlayerRepository],
+		[
+			authRepository,
+			playlistRepository,
+			trackRepository,
+			userRepository,
+			webPlayerRepository,
+		],
 	);
 
 	return (

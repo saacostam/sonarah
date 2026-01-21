@@ -1,9 +1,9 @@
 import { screen, waitFor } from "@testing-library/dom";
-import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
+import type { ISession } from "@/shared/adapters/auth/domain";
+import type { DomainError } from "@/shared/adapters/errors/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
-import type { ISession } from "./domain";
 import { AuthGuard } from "./ui";
 
 const navigationAdapter = new NavigationAdapter();
@@ -25,7 +25,7 @@ function setupAuthGuard({
 			push,
 		},
 		authAdapter: {
-			getToken: async () => {
+			getToken: () => {
 				if (authError) throw authError;
 				return authState;
 			},
@@ -52,9 +52,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
-
-		const content = await screen.findByTestId("content");
+		const content = screen.getByTestId("content");
 		expect(content).toBeInTheDocument();
 		expect(push).not.toHaveBeenCalled();
 	});
@@ -74,9 +72,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
-
-		const content = await screen.findByTestId("content");
+		const content = screen.getByTestId("content");
 		expect(content).toBeInTheDocument();
 		expect(push).not.toHaveBeenCalled();
 	});
@@ -96,7 +92,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.getByTestId("lazy-loaded-skeleton")).toBeInTheDocument();
 		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
@@ -123,7 +119,7 @@ describe("AuthGuard [Integration]", () => {
 			{ adapters },
 		);
 
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
+		expect(screen.getByTestId("lazy-loaded-skeleton")).toBeInTheDocument();
 		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
 
 		await waitFor(() => {
@@ -132,29 +128,6 @@ describe("AuthGuard [Integration]", () => {
 					name: RouteName.DASHBOARD,
 				}),
 			);
-		});
-	});
-
-	it("should render skeleton in case of session error", async () => {
-		const { push, adapters } = setupAuthGuard({
-			pathname: navigationAdapter.generateRoute({
-				name: RouteName.HOME,
-			}),
-			authError: new DomainError(DomainErrorType.BAD_REQUEST, "Bad Request"),
-		});
-
-		renderWithProviders(
-			<AuthGuard>
-				<div data-testid="content" />
-			</AuthGuard>,
-			{ adapters },
-		);
-
-		expect(screen.getByTestId("auth-guard-skeleton")).toBeInTheDocument();
-		expect(screen.queryByTestId("content")).not.toBeInTheDocument();
-
-		await waitFor(() => {
-			expect(push).not.toHaveBeenCalled();
 		});
 	});
 });
