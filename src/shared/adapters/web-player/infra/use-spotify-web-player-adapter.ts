@@ -2,10 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import type { IWebPlayerState } from "@/features/web-player/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
-import {
-	type IStorageAdapter,
-	StorageKeys,
-} from "@/shared/adapters/storage/domain";
 import type { IWebPlayerAdapter } from "../domain";
 
 declare global {
@@ -75,11 +71,13 @@ declare global {
 const SPOTIFY_WEB_PLAYER_SCRIPT_SRC = "https://sdk.scdn.co/spotify-player.js";
 
 export interface UseSpotifyWebPlayerAdapterArgs {
-	storageAdapter: IStorageAdapter;
+	token: string;
+	enabled: boolean;
 }
 
 export function useSpotifyWebPlayerAdapter({
-	storageAdapter,
+	token,
+	enabled,
 }: UseSpotifyWebPlayerAdapterArgs): IWebPlayerAdapter {
 	const [deviceId, setDeviceId] = useState<string | null>(null);
 	const [webPlayerState, setWebPlayerState] = useState<IWebPlayerState | null>(
@@ -87,14 +85,17 @@ export function useSpotifyWebPlayerAdapter({
 	);
 
 	const setup = useQuery({
-		queryKey: ["private-spotify-web-player-adapter-setup"],
+		queryKey: ["private-spotify-web-player-adapter-setup", token],
 		queryFn: () => {
+			setDeviceId(null);
+			setWebPlayerState(null);
+
 			window.onSpotifyWebPlaybackSDKReady =
 				window.onSpotifyWebPlaybackSDKReady ??
 				createOnSpotifyWebPlaybackSDKReadyHandler({
 					onDeviceId: ({ deviceId }) => setDeviceId(deviceId),
-					storageAdapter,
 					setState: setWebPlayerState,
+					token,
 				});
 
 			const body = document.querySelector("body");
@@ -122,9 +123,9 @@ export function useSpotifyWebPlayerAdapter({
 
 			return null;
 		},
+		enabled,
 	});
 
-	console.log(setup);
 	console.log(webPlayerState, deviceId);
 
 	return useMemo(
@@ -154,13 +155,11 @@ const WEB_PLAYER_NAME = "Sonarah Web Player";
 function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	onDeviceId: (args: { deviceId: string }) => void;
 	setState: (state: IWebPlayerState) => void;
-	storageAdapter: IStorageAdapter;
+	token: string;
 }) {
-	const { onDeviceId, setState, storageAdapter } = args;
+	const { onDeviceId, setState, token } = args;
 
 	return () => {
-		const token = storageAdapter.get(StorageKeys.TOKEN);
-
 		if (!token || typeof token !== "string") {
 			throw new DomainError(
 				DomainErrorType.APP_ERROR,

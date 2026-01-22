@@ -39,8 +39,11 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 	const themeAdapter = useThemeAdapterImpl({
 		storage: storageAdapter,
 	});
+
+	const session = authAdapter.getToken();
 	const webPlayerAdapter = useSpotifyWebPlayerAdapter({
-		storageAdapter,
+		token: session.type === "authenticated" ? session.token : "",
+		enabled: session.type === "authenticated" && !!session.token,
 	});
 
 	const allAdapters: IAdapters = useMemo(
