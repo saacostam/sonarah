@@ -9,6 +9,21 @@ export interface UseSpotifyWebPlayerRepositoryArgs {
 export function useSpotifyWebPlayerRepository({
 	clientAdapter,
 }: UseSpotifyWebPlayerRepositoryArgs): IWebPlayerRepository {
+	const getPlaybackState: IWebPlayerRepository["getPlaybackState"] =
+		useCallback(async () => {
+			const resp = await clientAdapter.get<{
+				device: {
+					id: string;
+				};
+			}>("/v1/me/player");
+
+			return {
+				device: {
+					id: resp.device.id,
+				},
+			};
+		}, [clientAdapter]);
+
 	const transferPlayback: IWebPlayerRepository["transferPlayback"] =
 		useCallback(
 			({ deviceId }) => {
@@ -56,6 +71,7 @@ export function useSpotifyWebPlayerRepository({
 
 	return useMemo(
 		() => ({
+			getPlaybackState,
 			pausePlayback,
 			playTrackOfPlaylist,
 			seekToPosition,
@@ -63,6 +79,7 @@ export function useSpotifyWebPlayerRepository({
 			transferPlayback,
 		}),
 		[
+			getPlaybackState,
 			pausePlayback,
 			playTrackOfPlaylist,
 			seekToPosition,

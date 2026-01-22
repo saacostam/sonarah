@@ -1,4 +1,7 @@
 export interface IWebPlayerRepository {
+	getPlaybackState(): Promise<
+		IWebPlayerRepositoryPayload["GetPlaybackStateResponse"]
+	>;
 	playTrackOfPlaylist: (
 		args: IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"],
 	) => Promise<void>;
@@ -13,6 +16,11 @@ export interface IWebPlayerRepository {
 }
 
 export interface IWebPlayerRepositoryPayload {
+	GetPlaybackStateResponse: {
+		device: {
+			id: string;
+		};
+	};
 	PlayTrackOfPlaylistIn: {
 		playlist: {
 			uri: string;
