@@ -1,5 +1,17 @@
-import type { IWebPlayerState } from "@/features/web-player/domain";
 import type { DomainError } from "@/shared/adapters/errors/domain";
+
+export interface IWebPlayerState {
+	playback: {
+		duration: number;
+		position: number;
+		paused: boolean;
+	};
+	track: {
+		name: string;
+		artists: string[];
+		img?: string;
+	};
+}
 
 export interface IWebPlayerAdapter {
 	status:

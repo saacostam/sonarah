@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import type { IWebPlayerState } from "@/features/web-player/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
-import type { IWebPlayerAdapter } from "../domain";
+import type { IWebPlayerAdapter, IWebPlayerState } from "../domain";
 
 declare global {
 	interface Window {
