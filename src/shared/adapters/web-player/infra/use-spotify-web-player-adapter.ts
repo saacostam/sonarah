@@ -102,6 +102,7 @@ export function useSpotifyWebPlayerAdapter({
 		if (!enabled || !token) {
 			setDeviceId(null);
 			setWebPlayerState(null);
+			setScheduledCallbacks([]);
 		}
 	}, [enabled, token]);
 
