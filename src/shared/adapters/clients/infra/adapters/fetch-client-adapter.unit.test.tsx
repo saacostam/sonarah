@@ -142,6 +142,30 @@ describe("FetchClientAdapter [Unit]", () => {
 		);
 	});
 
+	it("[GET Method] if responseType is set to string, allow non-json string", async () => {
+		fetchMock.mockResolvedValueOnce({
+			ok: true,
+			status: 200,
+			text: () => Promise.resolve("not-json-but-valid-string"),
+		});
+
+		const data = await adapter.get("/invalid", { responseType: "string" });
+		expect(data).toEqual("not-json-but-valid-string");
+	});
+
+	it("[PUT Method] if responseType is set to string, allow non-json string", async () => {
+		fetchMock.mockResolvedValueOnce({
+			ok: true,
+			status: 200,
+			text: () => Promise.resolve("not-json-but-valid-string"),
+		});
+
+		const data = await adapter.put("/invalid", undefined, {
+			responseType: "string",
+		});
+		expect(data).toEqual("not-json-but-valid-string");
+	});
+
 	it("throws for other HTTP errors", async () => {
 		fetchMock.mockResolvedValueOnce({
 			ok: false,

@@ -27,4 +27,5 @@ export interface IClientAdapter {
 export interface IClientAdapterRequestConfig {
 	headers?: Record<string, string>;
 	params?: Record<string, string | number | boolean>;
+	responseType?: "json" | "string";
 }

@@ -99,6 +99,8 @@ export class FetchClientAdapter implements IClientAdapter {
 		try {
 			return JSON.parse(text) as TResponse;
 		} catch {
+			if (config?.responseType === "string") return text as TResponse;
+
 			// Handle invalid JSON but non-empty body gracefully
 			throw new Error(`Invalid JSON response: ${text}`);
 		}

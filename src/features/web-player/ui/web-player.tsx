@@ -17,50 +17,40 @@ import {
 	PauseIcon,
 	PlayIcon,
 } from "@/shared/icons";
-import {
-	useMutationPausePlayback,
-	useMutationSeekToPosition,
-	useMutationStartPlayback,
-	useWebPlayer,
-} from "../app";
+import { useWebPlayerManager } from "../app";
 
 export function WebPlayer() {
-	const webPlayer = useWebPlayer();
-
-	const startPlayback = useMutationStartPlayback();
-	const pausePlayback = useMutationPausePlayback();
-	const seekToPosition = useMutationSeekToPosition();
+	const wpm = useWebPlayerManager();
 
 	const isPlaybackLoading =
-		pausePlayback.isPending ||
-		startPlayback.isPending ||
-		seekToPosition.isPending;
+		wpm.status !== "ready" ||
+		wpm.pausePlayback.isPending ||
+		wpm.startPlayback.isPending ||
+		wpm.seekToPosition.isPending;
 
 	const [open, setOpen] = useState(true);
 
 	const [time, setTime] = useState(0);
 	const debouncedSeekToPosition = useDebouncedCallback((time: number) => {
-		if (webPlayer.type !== "ready:playing" && webPlayer.type !== "ready:paused")
-			return;
+		if (wpm.status !== "ready") return;
 
 		const rangedTime = Math.max(0, Math.min(time, 100));
 		const normalizedTime = rangedTime / 100;
 
-		seekToPosition.mutate({
-			deviceId: webPlayer.deviceId,
-			positionMs: normalizedTime * webPlayer.state.playback.duration,
+		wpm.seekToPosition.onClick({
+			positionMs: normalizedTime * wpm.state.playback.duration,
 		});
 	}, 200);
 
 	useEffect(() => {
-		if (webPlayer.type === "ready:playing") {
-			setTime(webPlayer.state.playback.position);
+		if (wpm.status === "ready" && !wpm.state.playback.paused) {
+			setTime(wpm.state.playback.position);
 		}
-	}, [webPlayer]);
+	}, [wpm]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			if (webPlayer.type === "ready:playing") {
+			if (wpm.status === "ready" && !wpm.state.playback.paused) {
 				setTime((time) => time + 1000);
 			}
 		}, 1000);
@@ -68,7 +58,9 @@ export function WebPlayer() {
 		return () => {
 			clearInterval(interval);
 		};
-	}, [webPlayer]);
+	}, [wpm]);
+
+	if (wpm.status === "failed" || wpm.status === "loading") return null;
 
 	return (
 		<Flex
@@ -76,7 +68,7 @@ export function WebPlayer() {
 			style={{
 				position: "fixed",
 				bottom: 0,
-				right: 0,
+				left: 0,
 				width: open ? "24rem" : "fit-content",
 				maxWidth: "24rem",
 				minWidth: "24rem",
@@ -98,13 +90,12 @@ export function WebPlayer() {
 			</Button>
 			{open && (
 				<Card size="2" style={{ width: "100%" }}>
-					{(webPlayer.type === "ready:paused" ||
-						webPlayer.type === "ready:playing") && (
+					{wpm.status === "ready" && (
 						<Flex direction="row" gap="4" align="center">
 							<Box style={{ position: "relative", display: "inline-block" }}>
 								<Avatar
-									src={webPlayer.state.track.img}
-									fallback={webPlayer.state.track.name || "?"}
+									src={wpm.state.track.img}
+									fallback={wpm.state.track.name || "?"}
 									size="3"
 								/>
 								{isPlaybackLoading && (
@@ -126,46 +117,57 @@ export function WebPlayer() {
 							</Box>
 							<Box style={{ flex: 1, minWidth: 0 }}>
 								<Heading size="3" truncate>
-									{webPlayer.state.track.name}
+									{wpm.state.track.name}
 								</Heading>
 								<Text size="1" truncate color="indigo">
-									{webPlayer.state.track.artists.join(", ")}
+									{wpm.state.track.artists.join(", ")}
 								</Text>
-								{webPlayer.state.playback !== null && (
-									<Flex direction="row" gap="2" mt="1" justify="center">
-										{webPlayer.state.playback.paused && (
-											<Button onClick={() => startPlayback.mutate()} size="1">
-												<PlayIcon height={16} width={16} />
-											</Button>
-										)}
-										{webPlayer.state.playback &&
-											!webPlayer.state.playback.paused && (
-												<Button onClick={() => pausePlayback.mutate()} size="1">
-													<PauseIcon height={16} width={16} />
-												</Button>
-											)}
-										<Slider
-											mt="2"
-											size="3"
-											value={[
-												Math.max(
-													0,
-													Math.min(time / webPlayer.state.playback.duration, 1),
-												) * 100,
-											]}
-											onValueChange={([time]) => {
-												debouncedSeekToPosition(time);
-												setTime(
-													Math.floor(
-														(time / 100) * webPlayer.state.playback.duration,
-													),
-												);
-											}}
-										/>
-									</Flex>
-								)}
+								<Flex direction="row" gap="2" mt="1" justify="center">
+									{wpm.state.playback.paused && (
+										<Button
+											onClick={() => wpm.startPlayback.onClick()}
+											size="1"
+										>
+											<PlayIcon height={16} width={16} />
+										</Button>
+									)}
+									{!wpm.state.playback.paused && (
+										<Button
+											onClick={() => wpm.pausePlayback.onClick()}
+											size="1"
+										>
+											<PauseIcon height={16} width={16} />
+										</Button>
+									)}
+									<Slider
+										mt="2"
+										size="3"
+										value={[
+											Math.max(
+												0,
+												Math.min(time / wpm.state.playback.duration, 1),
+											) * 100,
+										]}
+										onValueChange={([time]) => {
+											if (wpm.status !== "ready") return;
+
+											debouncedSeekToPosition(time);
+											setTime(
+												Math.floor((time / 100) * wpm.state.playback.duration),
+											);
+										}}
+									/>
+								</Flex>
 							</Box>
 						</Flex>
+					)}
+					{wpm.status === "playback-not-available" && (
+						<Button
+							style={{ width: "100%" }}
+							onClick={wpm.openTransferPlaybackModal}
+						>
+							Transfer Playback
+						</Button>
 					)}
 				</Card>
 			)}

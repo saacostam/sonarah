@@ -10,6 +10,7 @@ import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notification
 import { useReactRouterAdapter } from "@/shared/adapters/router/infra";
 import { LocalStorageAdapter } from "@/shared/adapters/storage/infra";
 import { useThemeAdapterImpl } from "@/shared/adapters/theme/infra";
+import { useSpotifyWebPlayerAdapter } from "@/shared/adapters/web-player/infra";
 import { AdaptersContext } from "../../app";
 import type { IAdapters } from "../../domain";
 
@@ -39,6 +40,12 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		storage: storageAdapter,
 	});
 
+	const session = authAdapter.getToken();
+	const webPlayerAdapter = useSpotifyWebPlayerAdapter({
+		token: session.type === "authenticated" ? session.token : "",
+		enabled: session.type === "authenticated" && !!session.token,
+	});
+
 	const allAdapters: IAdapters = useMemo(
 		() => ({
 			authAdapter: authAdapter,
@@ -48,6 +55,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 			navigationAdapter,
 			storageAdapter: storageAdapter,
 			themeAdapter: themeAdapter,
+			webPlayerAdapter: webPlayerAdapter,
 		}),
 		[
 			authAdapter,
@@ -57,6 +65,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 			navigationAdapter,
 			storageAdapter,
 			themeAdapter,
+			webPlayerAdapter,
 		],
 	);
 
