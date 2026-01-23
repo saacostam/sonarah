@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { IWebPlayerManager } from "../domain";
+import type { IWebPlayerManager } from "../../domain";
 
 export const WebPlayerManagerContext = createContext(
 	null as unknown as IWebPlayerManager,

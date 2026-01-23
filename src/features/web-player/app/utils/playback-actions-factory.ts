@@ -3,7 +3,7 @@ import {
 	INotificationAdapterType,
 } from "@/shared/adapters/notifications/domain";
 import type { IWebPlayerAdapter } from "@/shared/adapters/web-player/domain";
-import type { IWebPlayerManagerModal } from "../domain";
+import type { IWebPlayerManagerModal } from "../../domain";
 
 type PlaybackActionFactoryParams<TArgs> = {
 	webPlayerStatus: IWebPlayerAdapter["status"];
