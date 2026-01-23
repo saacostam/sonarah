@@ -48,24 +48,36 @@ export function useSpotifyWebPlayerRepository({
 	const playTrackOfPlaylist: IWebPlayerRepository["playTrackOfPlaylist"] =
 		useCallback(
 			({ playlist, positionMs }) => {
-				return clientAdapter.put("/v1/me/player/play", {
-					context_uri: playlist.uri,
-					offset: {
-						position: playlist.position,
+				return clientAdapter.put<void>(
+					"/v1/me/player/play",
+					{
+						context_uri: playlist.uri,
+						offset: {
+							position: playlist.position,
+						},
+						position_ms: positionMs ?? 60 * 1000,
 					},
-					position_ms: positionMs ?? 60 * 1000,
-				});
+					{
+						responseType: "string",
+					},
+				);
 			},
 			[clientAdapter],
 		);
 
 	const startPlayback: IWebPlayerRepository["startPlayback"] = useCallback(
-		() => clientAdapter.put("/v1/me/player/play"),
+		() =>
+			clientAdapter.put<void>("/v1/me/player/play", undefined, {
+				responseType: "string",
+			}),
 		[clientAdapter],
 	);
 
 	const pausePlayback: IWebPlayerRepository["pausePlayback"] = useCallback(
-		() => clientAdapter.put("/v1/me/player/pause"),
+		() =>
+			clientAdapter.put<void>("/v1/me/player/pause", undefined, {
+				responseType: "string",
+			}),
 		[clientAdapter],
 	);
 
