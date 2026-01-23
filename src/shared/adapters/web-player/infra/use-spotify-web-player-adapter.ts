@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import type { IWebPlayerAdapter, IWebPlayerState } from "../domain";
 
@@ -83,7 +83,19 @@ export function useSpotifyWebPlayerAdapter({
 		null,
 	);
 
+	useEffect(() => {
+		if (!enabled || !token) {
+			setDeviceId(null);
+			setWebPlayerState(null);
+		}
+	}, [enabled, token]);
+
 	const setup = useQuery({
+		staleTime: Infinity,
+		refetchOnMount: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
+
 		queryKey: ["private-spotify-web-player-adapter-setup", token],
 		queryFn: () => {
 			setDeviceId(null);
@@ -125,27 +137,25 @@ export function useSpotifyWebPlayerAdapter({
 		enabled,
 	});
 
-	console.log(webPlayerState, deviceId);
-
 	return useMemo(
 		() => ({
-			status: setup.isLoading
-				? { type: "pending" }
-				: deviceId && webPlayerState
-					? { type: "running", payload: { state: webPlayerState, deviceId } }
-					: {
-							type: "failed",
-							payload: {
-								error: new DomainError(
-									DomainErrorType.APP_ERROR,
-									"Unable to initialize Spotify Web Player",
-									`[SpotifyWebPlayerAdapter]: ${setup.error}`,
-								),
-								retry: setup.refetch,
-							},
+			status: setup.isError
+				? {
+						type: "failed",
+						payload: {
+							error: new DomainError(
+								DomainErrorType.APP_ERROR,
+								"Unable to initialize Spotify Web Player",
+								`[SpotifyWebPlayerAdapter]: ${setup.error}`,
+							),
+							retry: setup.refetch,
 						},
+					}
+				: deviceId
+					? { type: "running", payload: { state: webPlayerState, deviceId } }
+					: { type: "pending" },
 		}),
-		[deviceId, webPlayerState, setup.error, setup.isLoading, setup.refetch],
+		[deviceId, webPlayerState, setup.error, setup.isError, setup.refetch],
 	);
 }
 
@@ -153,7 +163,7 @@ const WEB_PLAYER_NAME = "Sonarah Web Player";
 
 function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	onDeviceId: (args: { deviceId: string }) => void;
-	setState: (state: IWebPlayerState) => void;
+	setState: (state: IWebPlayerState | null) => void;
 	token: string;
 }) {
 	const { onDeviceId, setState, token } = args;

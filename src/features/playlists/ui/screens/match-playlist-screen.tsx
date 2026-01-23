@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { WebPlayerManagerProvider } from "@/features/web-player/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
@@ -35,15 +36,17 @@ export function MatchPlaylistScreen() {
 	}, [id, onNotFound]);
 
 	return (
-		<MatchPlaylistModalManagerContext.Provider
-			value={useMatchPlaylistModalManagerImpl()}
-		>
-			{id ? (
-				<MatchPlaylist id={id} onNotFound={onNotFound} />
-			) : (
-				<MatchPlaylistSkeleton />
-			)}
-			<MatchPlaylistModalManagerRenderer />
-		</MatchPlaylistModalManagerContext.Provider>
+		<WebPlayerManagerProvider>
+			<MatchPlaylistModalManagerContext.Provider
+				value={useMatchPlaylistModalManagerImpl()}
+			>
+				{id ? (
+					<MatchPlaylist id={id} onNotFound={onNotFound} />
+				) : (
+					<MatchPlaylistSkeleton />
+				)}
+				<MatchPlaylistModalManagerRenderer />
+			</MatchPlaylistModalManagerContext.Provider>
+		</WebPlayerManagerProvider>
 	);
 }

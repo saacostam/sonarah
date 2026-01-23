@@ -4,7 +4,7 @@ import type {
 	ITrack,
 	ITrackRepositoryPayload,
 } from "@/features/playlists/domain";
-import { useMutationPlayTrackOfPlaylist } from "@/features/web-player/app";
+import { useWebPlayerManager } from "@/features/web-player/app";
 import { PlayIcon, PlusIcon } from "@/shared/icons";
 import { TrackItem } from "../shared";
 
@@ -17,7 +17,7 @@ export function MatchPlaylistRecommendations({
 	onClickRecommendation,
 	recommendations,
 }: MatchPlaylistRecommendationsProps) {
-	const playTrackOfPlaylist = useMutationPlayTrackOfPlaylist();
+	const wpm = useWebPlayerManager();
 
 	const [selectedPlaylistId, setSelectedPlaylistId] = useState<
 		string | undefined
@@ -68,26 +68,25 @@ export function MatchPlaylistRecommendations({
 								order={index + 1}
 								rightSlot={
 									<Flex direction="row" gap="1">
-										<Tooltip content="Play Track">
-											<Button
-												onClick={() =>
-													playTrackOfPlaylist.mutate({
-														playlist: {
-															uri: selectedPlaylist.uri,
-															position: index,
-														},
-													})
-												}
-												size="1"
-												loading={
-													playTrackOfPlaylist.isPending &&
-													playTrackOfPlaylist.variables.playlist.position ===
-														index
-												}
-											>
-												<PlayIcon height={12} width={12} />
-											</Button>
-										</Tooltip>
+										{(wpm.status === "ready" ||
+											wpm.status === "playback-not-available") && (
+											<Tooltip content="Play Track">
+												<Button
+													onClick={() =>
+														wpm.playTrackOfPlaylist.onClick({
+															playlist: {
+																uri: selectedPlaylist.uri,
+																position: index,
+															},
+														})
+													}
+													size="1"
+													loading={wpm.playTrackOfPlaylist.isPending}
+												>
+													<PlayIcon height={12} width={12} />
+												</Button>
+											</Tooltip>
+										)}
 										<Tooltip content="Match Track">
 											<Button
 												onClick={() => onClickRecommendation(track)}

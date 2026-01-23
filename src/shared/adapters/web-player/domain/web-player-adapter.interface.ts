@@ -22,7 +22,7 @@ export interface IWebPlayerAdapter {
 				type: "running";
 				payload: {
 					deviceId: string;
-					state: IWebPlayerState;
+					state: IWebPlayerState | null;
 				};
 		  }
 		| {
