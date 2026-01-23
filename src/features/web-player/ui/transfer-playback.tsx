@@ -45,7 +45,7 @@ export function TransferPlayback({
 				playback?
 			</Text>
 			<Flex gap="4" justify="end">
-				<Button color="red" type="button" onClick={onCancel}>
+				<Button color="red" type="button" onClick={onCancel} variant="outline">
 					Cancel
 				</Button>
 				<Button
