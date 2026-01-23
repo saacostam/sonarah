@@ -1,7 +1,6 @@
 export enum QueryKey {
 	INIT_WEB_PLAYER = "Init Web Player",
 	MY_PLAYLISTS = "My Playlists",
-	PLAYBACK_STATE = "Playback State",
 	PLAYLIST_BY_ID = "Playlist By Id",
 	SEARCH_PLAYLISTS = "Search Playlists",
 	SESSION = "Session",
