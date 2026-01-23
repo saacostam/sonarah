@@ -12,6 +12,7 @@
 - [x] Clean-up (double) notifications for create playlist logic in match-playlist
 - [x] Create playlist options with tabs, for recommendations card
 - [x] Validate integration tests written for my-playlists
+- [ ] Try to use web-player first, and fallback to api call for web-player actions: seek, pause, play, etc.
 - [ ] Create single-method for both create and add items (match-playlist)
 - [ ] Create error page for auth-guard
 - [ ] Create error page for home screen (and add unit test)
