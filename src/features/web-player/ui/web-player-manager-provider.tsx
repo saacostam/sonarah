@@ -46,27 +46,27 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 	const startPlayback = useMemo(
 		() =>
 			createPlaybackAction<void>({
-				webPlayerStatus: webPlayerAdapter.status,
+				webPlayerAdapter,
 				notificationsAdapter,
 				setPlaybackModal,
 				mutate: (_, options) =>
 					startPlaybackMutation.mutate(undefined, options),
 				errorMessage: "Unnable to start playback. Please try again.",
 			}),
-		[webPlayerAdapter.status, notificationsAdapter, startPlaybackMutation],
+		[webPlayerAdapter, notificationsAdapter, startPlaybackMutation],
 	);
 
 	const pausePlayback = useMemo(
 		() =>
 			createPlaybackAction<void>({
-				webPlayerStatus: webPlayerAdapter.status,
+				webPlayerAdapter,
 				notificationsAdapter,
 				setPlaybackModal,
 				mutate: (_, options) =>
 					pausePlaybackMutation.mutate(undefined, options),
 				errorMessage: "Unnable to pause playback. Please try again.",
 			}),
-		[webPlayerAdapter.status, notificationsAdapter, pausePlaybackMutation],
+		[webPlayerAdapter, notificationsAdapter, pausePlaybackMutation],
 	);
 
 	const seekToPosition = useMemo(
@@ -74,7 +74,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 			createPlaybackAction<
 				Omit<IWebPlayerRepositoryPayload["SeekToPositionIn"], "deviceId">
 			>({
-				webPlayerStatus: webPlayerAdapter.status,
+				webPlayerAdapter,
 				notificationsAdapter,
 				setPlaybackModal,
 				mutate: (args) =>
@@ -87,7 +87,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 					}),
 				errorMessage: "Unnable to update playback position. Please try again.",
 			}),
-		[webPlayerAdapter.status, notificationsAdapter, seekToPositionMutation],
+		[webPlayerAdapter, notificationsAdapter, seekToPositionMutation],
 	);
 
 	const playTrackOfPlaylist = useMemo(
@@ -95,17 +95,13 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 			createPlaybackAction<
 				IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"]
 			>({
-				webPlayerStatus: webPlayerAdapter.status,
+				webPlayerAdapter,
 				notificationsAdapter,
 				setPlaybackModal,
 				mutate: playTrackOfPlaylistMutation.mutate,
 				errorMessage: "Unnable to play track. Please try again.",
 			}),
-		[
-			webPlayerAdapter.status,
-			notificationsAdapter,
-			playTrackOfPlaylistMutation,
-		],
+		[notificationsAdapter, playTrackOfPlaylistMutation, webPlayerAdapter],
 	);
 
 	const mutations = useMemo(

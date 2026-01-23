@@ -32,4 +32,5 @@ export interface IWebPlayerAdapter {
 					retry: () => void;
 				};
 		  };
+	on: (event: "state-changed", cb: (state: IWebPlayerState) => void) => void;
 }

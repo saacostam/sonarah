@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import type { IWebPlayerAdapter, IWebPlayerState } from "../domain";
 
@@ -83,6 +83,21 @@ export function useSpotifyWebPlayerAdapter({
 		null,
 	);
 
+	const [scheduledCallbacks, setScheduledCallbacks] = useState<
+		Array<(state: IWebPlayerState) => void>
+	>([]);
+
+	useEffect(() => {
+		if (webPlayerState !== null) {
+			scheduledCallbacks.forEach((cb) => {
+				cb(webPlayerState);
+			});
+			setScheduledCallbacks((scheduledCallbacks) =>
+				scheduledCallbacks.length === 0 ? scheduledCallbacks : [],
+			);
+		}
+	}, [scheduledCallbacks, webPlayerState]);
+
 	useEffect(() => {
 		if (!enabled || !token) {
 			setDeviceId(null);
@@ -137,8 +152,18 @@ export function useSpotifyWebPlayerAdapter({
 		enabled,
 	});
 
+	const on: IWebPlayerAdapter["on"] = useCallback((event, cb) => {
+		switch (event) {
+			case "state-changed": {
+				setScheduledCallbacks((prev) => [...prev, cb]);
+				break;
+			}
+		}
+	}, []);
+
 	return useMemo(
 		() => ({
+			on,
 			status: setup.isError
 				? {
 						type: "failed",
@@ -155,7 +180,7 @@ export function useSpotifyWebPlayerAdapter({
 					? { type: "running", payload: { state: webPlayerState, deviceId } }
 					: { type: "pending" },
 		}),
-		[deviceId, webPlayerState, setup.error, setup.isError, setup.refetch],
+		[deviceId, on, setup.error, setup.isError, setup.refetch, webPlayerState],
 	);
 }
 
@@ -199,7 +224,7 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 		webPlayer.addListener("not_ready", () => {});
 
 		webPlayer.addListener("player_state_changed", (state) => {
-			setState({
+			const webPlayerState: IWebPlayerState = {
 				playback: {
 					duration: state.duration,
 					position: state.position,
@@ -212,7 +237,9 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 					name: state.track_window.current_track.name,
 					img: state.track_window.current_track.album.images.at(0)?.url,
 				},
-			});
+			};
+
+			setState(webPlayerState);
 		});
 
 		webPlayer.connect();

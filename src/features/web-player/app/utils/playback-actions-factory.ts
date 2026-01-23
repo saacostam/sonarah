@@ -6,8 +6,8 @@ import type { IWebPlayerAdapter } from "@/shared/adapters/web-player/domain";
 import type { IWebPlayerManagerModal } from "../../domain";
 
 type PlaybackActionFactoryParams<TArgs> = {
-	webPlayerStatus: IWebPlayerAdapter["status"];
 	notificationsAdapter: INotificationAdapter;
+	webPlayerAdapter: IWebPlayerAdapter;
 	setPlaybackModal: (arg: IWebPlayerManagerModal) => void;
 
 	mutate: (args: TArgs, options: { onError: () => void }) => void;
@@ -16,13 +16,15 @@ type PlaybackActionFactoryParams<TArgs> = {
 };
 
 export function createPlaybackAction<TArgs>({
-	webPlayerStatus,
 	notificationsAdapter,
+	webPlayerAdapter,
 	setPlaybackModal,
 	mutate,
 	errorMessage,
 }: PlaybackActionFactoryParams<TArgs>) {
 	return (args: TArgs) => {
+		const webPlayerStatus = webPlayerAdapter.status;
+
 		if (webPlayerStatus.type !== "running") {
 			notificationsAdapter.notify(
 				INotificationAdapterType.ERROR,
@@ -35,14 +37,20 @@ export function createPlaybackAction<TArgs>({
 		const onSuccess = () => {
 			if (webPlayerStatus.type !== "running") return;
 
-			mutate(args, {
-				onError: () => {
-					notificationsAdapter.notify(
-						INotificationAdapterType.ERROR,
-						"Error",
-						errorMessage,
-					);
-				},
+			const OPTIMISTIC_WAIT = 500;
+
+			webPlayerAdapter.on("state-changed", () => {
+				setTimeout(() => {
+					mutate(args, {
+						onError: () => {
+							notificationsAdapter.notify(
+								INotificationAdapterType.ERROR,
+								"Error",
+								errorMessage,
+							);
+						},
+					});
+				}, OPTIMISTIC_WAIT);
 			});
 		};
 
