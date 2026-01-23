@@ -1,3 +1,4 @@
+export * from "./playback-actions-factory";
 export * from "./use-mutation-pause-playback";
 export * from "./use-mutation-play-track-of-playlist";
 export * from "./use-mutation-seek-to-position";

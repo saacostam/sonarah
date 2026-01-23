@@ -29,3 +29,9 @@ export type IWebPlayerManager =
 			status: "ready";
 			state: IWebPlayerState;
 	  } & Mutations);
+
+export type IWebPlayerManagerModal =
+	| { type: "open"; deviceId: string; onSuccess: () => void }
+	| {
+			type: "closed";
+	  };

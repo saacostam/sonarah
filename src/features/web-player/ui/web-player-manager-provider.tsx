@@ -10,198 +10,101 @@ import { useAdapters } from "@/shared/adapters/core/app";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { XIcon } from "@/shared/icons";
 import {
+	createPlaybackAction,
 	useMutationPausePlayback,
 	useMutationPlayTrackOfPlaylist,
 	useMutationSeekToPosition,
 	useMutationStartPlayback,
 	WebPlayerManagerContext,
 } from "../app";
-import type { IWebPlayerManager } from "../domain";
+import type {
+	IWebPlayerManager,
+	IWebPlayerManagerModal,
+	IWebPlayerRepositoryPayload,
+} from "../domain";
 import { TransferPlayback } from "./transfer-playback";
 
 export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 	const { notificationsAdapter, webPlayerAdapter } = useAdapters();
 
-	const [playbackModal, setPlaybackModal] = useState<
-		| { type: "open"; deviceId: string; onSuccess: () => void }
-		| {
-				type: "closed";
-		  }
-	>({
+	// Modal management
+	const [playbackModal, setPlaybackModal] = useState<IWebPlayerManagerModal>({
 		type: "closed",
 	});
-
 	const onClosePlaybackModal = useCallback(() => {
 		setPlaybackModal({
 			type: "closed",
 		});
 	}, []);
 
+	// Actions
 	const pausePlaybackMutation = useMutationPausePlayback();
 	const playTrackOfPlaylistMutation = useMutationPlayTrackOfPlaylist();
 	const seekToPositionMutation = useMutationSeekToPosition();
 	const startPlaybackMutation = useMutationStartPlayback();
 
-	const startPlayback: Extract<
-		IWebPlayerManager,
-		{ status: "ready" }
-	>["startPlayback"]["onClick"] = useCallback(() => {
-		if (webPlayerAdapter.status.type !== "running") {
-			notificationsAdapter.notify(
-				INotificationAdapterType.ERROR,
-				"Error",
-				"Something went wrong with web player playback",
-			);
-			return;
-		}
-
-		const onSuccess = () =>
-			startPlaybackMutation.mutate(undefined, {
-				onError: () => {
-					notificationsAdapter.notify(
-						INotificationAdapterType.ERROR,
-						"Error",
-						"Unnable to start playback. Please try again.",
-					);
-				},
-			});
-
-		if (webPlayerAdapter.status.payload.state === null) {
-			setPlaybackModal({
-				type: "open",
-				onSuccess,
-				deviceId: webPlayerAdapter.status.payload.deviceId,
-			});
-			return;
-		}
-		onSuccess();
-	}, [notificationsAdapter, startPlaybackMutation, webPlayerAdapter.status]);
-
-	const pausePlayback: Extract<
-		IWebPlayerManager,
-		{ status: "ready" }
-	>["pausePlayback"]["onClick"] = useCallback(() => {
-		if (webPlayerAdapter.status.type !== "running") {
-			notificationsAdapter.notify(
-				INotificationAdapterType.ERROR,
-				"Error",
-				"Something went wrong with web player playback",
-			);
-			return;
-		}
-
-		const onSuccess = () =>
-			pausePlaybackMutation.mutate(undefined, {
-				onError: () => {
-					notificationsAdapter.notify(
-						INotificationAdapterType.ERROR,
-						"Error",
-						"Unnable to pause playback. Please try again.",
-					);
-				},
-			});
-
-		if (webPlayerAdapter.status.payload.state === null) {
-			setPlaybackModal({
-				type: "open",
-				onSuccess,
-				deviceId: webPlayerAdapter.status.payload.deviceId,
-			});
-			return;
-		}
-
-		onSuccess();
-	}, [notificationsAdapter, pausePlaybackMutation, webPlayerAdapter.status]);
-
-	const seekToPosition: Extract<
-		IWebPlayerManager,
-		{ status: "ready" }
-	>["seekToPosition"]["onClick"] = useCallback(
-		(args) => {
-			if (webPlayerAdapter.status.type !== "running") {
-				notificationsAdapter.notify(
-					INotificationAdapterType.ERROR,
-					"Error",
-					"Something went wrong with web player playback",
-				);
-				return;
-			}
-
-			const onSuccess = () => {
-				if (webPlayerAdapter.status.type !== "running") return;
-				seekToPositionMutation.mutate(
-					{
-						...args,
-						deviceId: webPlayerAdapter.status.payload.deviceId,
-					},
-					{
-						onError: () => {
-							notificationsAdapter.notify(
-								INotificationAdapterType.ERROR,
-								"Error",
-								"Unnable to update playback position. Please try again.",
-							);
-						},
-					},
-				);
-			};
-
-			if (webPlayerAdapter.status.payload.state === null) {
-				setPlaybackModal({
-					type: "open",
-					onSuccess,
-					deviceId: webPlayerAdapter.status.payload.deviceId,
-				});
-				return;
-			}
-
-			onSuccess();
-		},
-		[notificationsAdapter, seekToPositionMutation, webPlayerAdapter.status],
+	const startPlayback = useMemo(
+		() =>
+			createPlaybackAction<void>({
+				webPlayerStatus: webPlayerAdapter.status,
+				notificationsAdapter,
+				setPlaybackModal,
+				mutate: (_, options) =>
+					startPlaybackMutation.mutate(undefined, options),
+				errorMessage: "Unnable to start playback. Please try again.",
+			}),
+		[webPlayerAdapter.status, notificationsAdapter, startPlaybackMutation],
 	);
 
-	const playTrackOfPlaylist: Extract<
-		IWebPlayerManager,
-		{ status: "ready" }
-	>["playTrackOfPlaylist"]["onClick"] = useCallback(
-		(args) => {
-			if (webPlayerAdapter.status.type !== "running") {
-				notificationsAdapter.notify(
-					INotificationAdapterType.ERROR,
-					"Error",
-					"Something went wrong with web player playback",
-				);
-				return;
-			}
+	const pausePlayback = useMemo(
+		() =>
+			createPlaybackAction<void>({
+				webPlayerStatus: webPlayerAdapter.status,
+				notificationsAdapter,
+				setPlaybackModal,
+				mutate: (_, options) =>
+					pausePlaybackMutation.mutate(undefined, options),
+				errorMessage: "Unnable to pause playback. Please try again.",
+			}),
+		[webPlayerAdapter.status, notificationsAdapter, pausePlaybackMutation],
+	);
 
-			const onSuccess = () => {
-				if (webPlayerAdapter.status.type !== "running") return;
-				playTrackOfPlaylistMutation.mutate(args, {
-					onError: () => {
-						notificationsAdapter.notify(
-							INotificationAdapterType.ERROR,
-							"Error",
-							"Unnable to play track. Please try again.",
-						);
-					},
-				});
-			};
+	const seekToPosition = useMemo(
+		() =>
+			createPlaybackAction<
+				Omit<IWebPlayerRepositoryPayload["SeekToPositionIn"], "deviceId">
+			>({
+				webPlayerStatus: webPlayerAdapter.status,
+				notificationsAdapter,
+				setPlaybackModal,
+				mutate: (args) =>
+					seekToPositionMutation.mutate({
+						...args,
+						deviceId:
+							webPlayerAdapter.status.type === "running"
+								? webPlayerAdapter.status.payload.deviceId
+								: "",
+					}),
+				errorMessage: "Unnable to update playback position. Please try again.",
+			}),
+		[webPlayerAdapter.status, notificationsAdapter, seekToPositionMutation],
+	);
 
-			if (webPlayerAdapter.status.payload.state === null) {
-				setPlaybackModal({
-					type: "open",
-					onSuccess,
-					deviceId: webPlayerAdapter.status.payload.deviceId,
-				});
-				return;
-			}
-
-			onSuccess();
-		},
+	const playTrackOfPlaylist = useMemo(
+		() =>
+			createPlaybackAction<
+				IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"]
+			>({
+				webPlayerStatus: webPlayerAdapter.status,
+				notificationsAdapter,
+				setPlaybackModal,
+				mutate: playTrackOfPlaylistMutation.mutate,
+				errorMessage: "Unnable to play track. Please try again.",
+			}),
 		[
+			webPlayerAdapter.status,
 			notificationsAdapter,
 			playTrackOfPlaylistMutation,
-			webPlayerAdapter.status,
 		],
 	);
 
@@ -236,6 +139,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 		],
 	);
 
+	// Clean-up
 	const { mutate } = pausePlaybackMutation;
 	useEffect(() => {
 		return () => {
