@@ -19,7 +19,7 @@ const MatchPlaylistScreen = lazy(() =>
 	})),
 );
 const DashboardScreen = lazy(() =>
-	import("@/features/dashboard/ui/screens/dashboard-screen").then((m) => ({
+	import("@/shared/screens/dashboard-screen").then((m) => ({
 		default: m.DashboardScreen,
 	})),
 );

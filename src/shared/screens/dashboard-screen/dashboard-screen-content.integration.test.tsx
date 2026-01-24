@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import { DashboardModalManagerContext } from "@/features/dashboard/app";
+import type { IDashboardModalManager } from "@/features/dashboard/domain";
 import { renderWithProviders } from "@/tests";
-import { DashboardModalManagerContext } from "./app";
-import type { IDashboardModalManager } from "./domain";
-import { DashboardScreenContent } from "./ui";
+import { DashboardScreenContent } from "./dashboard-screen";
 
 function renderWithModalManager(
 	..._args: Parameters<typeof renderWithProviders>

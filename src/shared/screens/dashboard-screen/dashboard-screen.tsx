@@ -1,8 +1,10 @@
 import { useCallback, useState } from "react";
+import { useDashboardModalManager } from "@/features/dashboard/app";
+import {
+	DashboardModalManagerProvider,
+	DashboardModalManagerRenderer,
+} from "@/features/dashboard/ui";
 import { MyPlaylists } from "@/features/playlists/my-playlists/ui";
-import { useDashboardModalManager } from "../../app";
-import { DashboardModalManagerRenderer } from "../components";
-import { DashboardModalManagerProvider } from "../providers";
 
 export function DashboardScreen() {
 	return (
