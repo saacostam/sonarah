@@ -4,11 +4,11 @@ import { SpotifyAuthRepository } from "@/features/auth/infra/spotify-auth-reposi
 import type {
 	IPlaylistRepository,
 	ITrackRepository,
-} from "@/features/playlists/domain";
+} from "@/features/playlists/shared/domain";
 import {
 	PlaylistRepository,
 	TrackRepository,
-} from "@/features/playlists/infra";
+} from "@/features/playlists/shared/infra";
 import type { IUserRepository } from "@/features/user/domain";
 import { UserRepository } from "@/features/user/infra";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";

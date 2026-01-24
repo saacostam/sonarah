@@ -1,12 +1,10 @@
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useDashboardModalManager } from "@/features/dashboard/app";
-import {
-	CreatePlaylist,
-	SearchPlaylist,
-	UnfollowPlaylist,
-} from "@/features/playlists/app";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/domain";
+import { CreatePlaylist } from "@/features/playlists/create-playlist/ui";
+import { SearchPlaylist } from "@/features/playlists/search-playlist/ui";
+import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import { UnfollowPlaylist } from "@/features/playlists/unfollow-playlist/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";

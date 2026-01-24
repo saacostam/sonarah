@@ -9,12 +9,12 @@ import { LazyLoadedSkeleton } from "../components";
 
 // Lazy imports
 const ManagePlaylistScreen = lazy(() =>
-	import("@/features/playlists/ui/screens/manage-playlist-screen").then(
-		(m) => ({ default: m.ManagePlaylistScreen }),
-	),
+	import("@/shared/screens/manage-playlist-screen").then((m) => ({
+		default: m.ManagePlaylistScreen,
+	})),
 );
 const MatchPlaylistScreen = lazy(() =>
-	import("@/features/playlists/ui/screens/match-playlist-screen").then((m) => ({
+	import("@/shared/screens/match-playlist-screen").then((m) => ({
 		default: m.MatchPlaylistScreen,
 	})),
 );

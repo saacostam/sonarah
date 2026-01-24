@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { MyPlaylists } from "@/features/playlists/app";
+import { MyPlaylists } from "@/features/playlists/my-playlists/ui";
 import { useDashboardModalManager } from "../../app";
 import { DashboardModalManagerRenderer } from "../components";
 import { DashboardModalManagerProvider } from "../providers";

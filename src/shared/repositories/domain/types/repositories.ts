@@ -2,7 +2,7 @@ import type { IAuthRepository } from "@/features/auth/domain";
 import type {
 	IPlaylistRepository,
 	ITrackRepository,
-} from "@/features/playlists/domain";
+} from "@/features/playlists/shared/domain";
 import type { IUserRepository } from "@/features/user/domain";
 import type { IWebPlayerRepository } from "@/features/web-player/domain";
 
