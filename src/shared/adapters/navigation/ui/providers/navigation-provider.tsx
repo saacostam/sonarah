@@ -1,10 +1,10 @@
 import { lazy, type PropsWithChildren, Suspense } from "react";
 import { Route, Routes } from "react-router";
-import { HomeScreen } from "@/features/home/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { ErrorScreen } from "@/shared/adapters/errors/ui";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { AppLayout } from "@/shared/layout/ui";
+import { HomeScreen } from "@/shared/screens/home-screen";
 import { LazyLoadedSkeleton } from "../components";
 
 // Lazy imports

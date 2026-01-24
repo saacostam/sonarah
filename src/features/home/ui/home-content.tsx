@@ -2,11 +2,11 @@ import { Flex, Heading, Text } from "@radix-ui/themes";
 import { PolymorphicButton } from "@/shared/components";
 import type { IAction } from "@/shared/types";
 
-export interface HomeScreenContentProps {
+export interface HomeContentProps {
 	mainCta: IAction;
 }
 
-export function HomeScreenContent({ mainCta }: HomeScreenContentProps) {
+export function HomeContent({ mainCta }: HomeContentProps) {
 	return (
 		<Flex
 			direction="column"

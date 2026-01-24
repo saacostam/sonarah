@@ -9,7 +9,7 @@ enum UrlSearchParam {
 	CODE = "code",
 }
 
-export function useHomeScreen() {
+export function useHome() {
 	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
