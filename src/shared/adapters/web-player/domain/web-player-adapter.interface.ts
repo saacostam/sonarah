@@ -33,9 +33,7 @@ export interface IWebPlayerAdapter {
 				};
 		  };
 	actions: {
-		pause?: () => Promise<void>;
-		resume?: () => Promise<void>;
-		seek?: (ms: number) => Promise<void>;
+		seek?: (args: { positionMs: number }) => Promise<void>;
 	};
 	on: (event: "state-changed", cb: (state: IWebPlayerState) => void) => void;
 }

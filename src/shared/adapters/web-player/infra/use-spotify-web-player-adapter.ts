@@ -171,7 +171,9 @@ export function useSpotifyWebPlayerAdapter({
 			actions: {
 				pause: webPlayer?.pause,
 				resume: webPlayer?.resume,
-				seek: webPlayer?.seek,
+				seek: webPlayer?.seek
+					? ({ positionMs }) => webPlayer.seek(positionMs)
+					: undefined,
 			},
 			status: setup.isError
 				? {
@@ -195,9 +197,7 @@ export function useSpotifyWebPlayerAdapter({
 			setup.error,
 			setup.isError,
 			setup.refetch,
-			webPlayer?.pause,
-			webPlayer?.resume,
-			webPlayer?.seek,
+			webPlayer,
 			webPlayerState,
 		],
 	);

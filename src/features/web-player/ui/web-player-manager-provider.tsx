@@ -115,7 +115,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 				isPending: playTrackOfPlaylistMutation.isPending,
 			},
 			seekToPosition: {
-				onClick: seekToPosition,
+				onClick: webPlayerAdapter.actions.seek ?? seekToPosition,
 				isPending: seekToPositionMutation.isPending,
 			},
 			startPlayback: {
@@ -132,6 +132,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 			seekToPositionMutation,
 			startPlayback,
 			startPlaybackMutation,
+			webPlayerAdapter.actions.seek,
 		],
 	);
 
