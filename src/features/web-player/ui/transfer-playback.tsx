@@ -1,22 +1,20 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import { useCallback } from "react";
-import { useAdapters } from "@/shared/adapters/core/app";
-import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { useMutationTransferPlayback } from "../app";
 
 export interface TransferPlaybackProps {
 	deviceId: string;
 	onCancel: () => void;
+	onError: (e: unknown) => void;
 	onSuccess: () => void;
 }
 
 export function TransferPlayback({
 	deviceId,
 	onCancel,
+	onError,
 	onSuccess,
 }: TransferPlaybackProps) {
-	const { notificationsAdapter } = useAdapters();
-
 	const transferPlayback = useMutationTransferPlayback();
 
 	const onClickTransfer = useCallback(() => {
@@ -26,17 +24,11 @@ export function TransferPlayback({
 			},
 			{
 				onSuccess,
-				onError: () => {
-					notificationsAdapter.notify(
-						INotificationAdapterType.ERROR,
-						"Error",
-						"We couldn't transfer playback. Please try again.",
-					);
-				},
+				onError,
 				onSettled: onCancel,
 			},
 		);
-	}, [deviceId, notificationsAdapter, onCancel, onSuccess, transferPlayback]);
+	}, [deviceId, onCancel, onError, onSuccess, transferPlayback]);
 
 	return (
 		<Flex direction="column" gap="4">

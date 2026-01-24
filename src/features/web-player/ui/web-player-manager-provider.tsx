@@ -199,6 +199,13 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 						<TransferPlayback
 							deviceId={playbackModal.deviceId}
 							onCancel={onClosePlaybackModal}
+							onError={() => {
+								notificationsAdapter.notify(
+									INotificationAdapterType.ERROR,
+									"Error",
+									"We couldn't transfer playback. Please try again.",
+								);
+							}}
 							onSuccess={playbackModal.onSuccess}
 						/>
 					)}
