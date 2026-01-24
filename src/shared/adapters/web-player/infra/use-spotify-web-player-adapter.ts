@@ -40,8 +40,9 @@ declare global {
 	interface SpotifyPlayer {
 		connect(): Promise<boolean>;
 		disconnect(): void;
-		resume(): void;
-		pause(): void;
+		resume(): Promise<void>;
+		pause(): Promise<void>;
+		seek(ms: number): Promise<void>;
 		activateElement(): void;
 		addListener(
 			event: "ready",
@@ -82,6 +83,7 @@ export function useSpotifyWebPlayerAdapter({
 	const [webPlayerState, setWebPlayerState] = useState<IWebPlayerState | null>(
 		null,
 	);
+	const [webPlayer, setWebPlayer] = useState<SpotifyPlayer | null>(null);
 
 	const [scheduledCallbacks, setScheduledCallbacks] = useState<
 		Array<(state: IWebPlayerState) => void>
@@ -122,6 +124,7 @@ export function useSpotifyWebPlayerAdapter({
 				createOnSpotifyWebPlaybackSDKReadyHandler({
 					onDeviceId: ({ deviceId }) => setDeviceId(deviceId),
 					setState: setWebPlayerState,
+					setWebPlayer,
 					token,
 				});
 
@@ -165,6 +168,11 @@ export function useSpotifyWebPlayerAdapter({
 	return useMemo(
 		() => ({
 			on,
+			actions: {
+				pause: webPlayer?.pause,
+				resume: webPlayer?.resume,
+				seek: webPlayer?.seek,
+			},
 			status: setup.isError
 				? {
 						type: "failed",
@@ -181,7 +189,17 @@ export function useSpotifyWebPlayerAdapter({
 					? { type: "running", payload: { state: webPlayerState, deviceId } }
 					: { type: "pending" },
 		}),
-		[deviceId, on, setup.error, setup.isError, setup.refetch, webPlayerState],
+		[
+			deviceId,
+			on,
+			setup.error,
+			setup.isError,
+			setup.refetch,
+			webPlayer?.pause,
+			webPlayer?.resume,
+			webPlayer?.seek,
+			webPlayerState,
+		],
 	);
 }
 
@@ -190,9 +208,10 @@ const WEB_PLAYER_NAME = "Sonarah Web Player";
 function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	onDeviceId: (args: { deviceId: string }) => void;
 	setState: (state: IWebPlayerState | null) => void;
+	setWebPlayer: (state: SpotifyPlayer) => void;
 	token: string;
 }) {
-	const { onDeviceId, setState, token } = args;
+	const { onDeviceId, setState, setWebPlayer, token } = args;
 
 	return () => {
 		if (!token || typeof token !== "string") {
@@ -220,6 +239,7 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 			onDeviceId({
 				deviceId: device_id,
 			});
+			setWebPlayer(webPlayer);
 		});
 
 		webPlayer.addListener("not_ready", () => {});
