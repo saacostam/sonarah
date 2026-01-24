@@ -3,13 +3,13 @@ import type { IPlaylist } from "@/features/playlists/domain";
 import { EmptyQuery } from "@/shared/components";
 import { PlaylistBrief, TrackItem } from "../shared";
 
-export interface ManagePlaylistContentProps {
+export interface ManageMyPlaylistContentProps {
 	playlist: IPlaylist;
 }
 
-export function ManagePlaylistContent({
+export function ManageMyPlaylistContent({
 	playlist,
-}: ManagePlaylistContentProps) {
+}: ManageMyPlaylistContentProps) {
 	return (
 		<>
 			<PlaylistBrief playlist={playlist} />

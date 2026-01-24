@@ -1,10 +1,11 @@
-import { Flex, Heading, Tooltip } from "@radix-ui/themes";
 import { useEffect } from "react";
+import { useQueryUser } from "@/features/user/app";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
-import { PolymorphicButton, QueryError } from "@/shared/components";
-import { PlayIcon } from "@/shared/icons";
+import { QueryError } from "@/shared/components";
 import { useQueryPlaylistById } from "../../hooks";
-import { ManagePlaylistContent } from "./manage-playlist-content";
+import { BrowseExternalPlaylistContent } from "./browse-external-playlist-content";
+import { ManageMyPlaylistContent } from "./manage-my-playlist-content";
+import { ManagePlaylistShell } from "./manage-playlist-shell";
 import { ManagePlaylistSkeleton } from "./manage-playlist-skeleton";
 
 export interface ManagePlaylistProps {
@@ -23,6 +24,7 @@ export function ManagePlaylist({
 			id,
 		},
 	});
+	const user = useQueryUser();
 
 	useEffect(
 		function redirectIfNotFound() {
@@ -40,26 +42,7 @@ export function ManagePlaylist({
 
 	return (
 		<>
-			<Flex align="end" direction="row" justify="between" mb="4">
-				<Heading>Manage Playlist</Heading>
-				<Tooltip content="Move on to create your playlist based on this reference.">
-					<PolymorphicButton
-						action={{
-							action: {
-								type: "href",
-								href: onNextHref,
-							},
-							label: (
-								<>
-									<PlayIcon width={16} height={16} />
-									Next: Build Your Playlist
-								</>
-							),
-						}}
-					/>
-				</Tooltip>
-			</Flex>
-			{playlistById.isError && (
+			{(playlistById.isError || user.isError) && (
 				<QueryError
 					title="Unable to fetch playlist"
 					error={playlistById.error}
@@ -69,10 +52,20 @@ export function ManagePlaylist({
 					}}
 				/>
 			)}
-			{playlistById.isSuccess && (
-				<ManagePlaylistContent playlist={playlistById.data.playlist} />
-			)}
-			{playlistById.isLoading && <ManagePlaylistSkeleton />}
+			{playlistById.isSuccess &&
+				user.isSuccess &&
+				(user.data.id === playlistById.data.playlist.creator.id ? (
+					<ManagePlaylistShell title="Manage Playlist" onNextHref={onNextHref}>
+						<ManageMyPlaylistContent playlist={playlistById.data.playlist} />
+					</ManagePlaylistShell>
+				) : (
+					<ManagePlaylistShell title="Browse Playlist" onNextHref={onNextHref}>
+						<BrowseExternalPlaylistContent
+							playlist={playlistById.data.playlist}
+						/>
+					</ManagePlaylistShell>
+				))}
+			{(playlistById.isLoading || user.isLoading) && <ManagePlaylistSkeleton />}
 		</>
 	);
 }

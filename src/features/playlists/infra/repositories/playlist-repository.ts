@@ -54,6 +54,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 					  }[];
 				name: string;
 				owner: {
+					id: string;
 					display_name: string;
 				};
 				tracks: {
@@ -68,7 +69,10 @@ export class PlaylistRepository implements IPlaylistRepository {
 			playlists: res.items.map((item) => ({
 				id: item.id,
 				name: item.name,
-				creatorName: item.owner.display_name,
+				creator: {
+					id: item.owner.id,
+					name: item.owner.display_name,
+				},
 				pictureUrl: item.images?.at(0)?.url,
 				numberOfTracks: item.tracks.total,
 			})),
@@ -90,6 +94,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				  }[];
 			name: string;
 			owner: {
+				id: string;
 				display_name: string;
 			};
 			tracks: {
@@ -120,7 +125,10 @@ export class PlaylistRepository implements IPlaylistRepository {
 			playlist: {
 				id: res.id,
 				name: res.name,
-				creatorName: res.owner.display_name,
+				creator: {
+					id: res.owner.id,
+					name: res.owner.display_name,
+				},
 				numberOfTracks: res.tracks.total,
 				pictureUrl: res.images?.at(0)?.url,
 				tracks: res.tracks.items
@@ -172,6 +180,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 								url: string;
 						  }[];
 					owner: {
+						id: string;
 						display_name: string;
 					};
 					tracks: {
@@ -189,7 +198,10 @@ export class PlaylistRepository implements IPlaylistRepository {
 				.map((item) => ({
 					id: item.id,
 					name: item.name,
-					creatorName: item.owner.display_name,
+					creator: {
+						id: item.owner.id,
+						name: item.owner.display_name,
+					},
 					pictureUrl: item.images?.at(0)?.url,
 					numberOfTracks: item.tracks.total,
 				})),

@@ -66,7 +66,7 @@ export function PlaylistSearchItem({
 						truncate
 						style={{ color: "var(--gray-11)", display: "block" }}
 					>
-						by {playlist.creatorName}
+						by {playlist.creator.name}
 					</Text>
 				</div>
 				<Flex gap="2" flexShrink="0">

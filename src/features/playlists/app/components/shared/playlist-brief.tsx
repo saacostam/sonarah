@@ -26,7 +26,7 @@ export function PlaylistBrief({ playlist }: PlaylistBriefProps) {
 							{playlist.name}
 						</Heading>
 						<Text size="3" truncate style={{ color: "var(--gray-11)" }}>
-							by {playlist.creatorName}
+							by {playlist.creator.name}
 						</Text>
 					</div>
 					<Text size="2" style={{ color: "var(--accent-9)" }}>

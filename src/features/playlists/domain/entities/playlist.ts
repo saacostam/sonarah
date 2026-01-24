@@ -2,7 +2,10 @@ export interface ILeanPlaylist {
 	id: string;
 	name: string;
 	pictureUrl?: string;
-	creatorName: string;
+	creator: {
+		id: string;
+		name: string;
+	};
 	numberOfTracks: number;
 }
 

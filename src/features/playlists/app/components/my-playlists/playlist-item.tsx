@@ -33,34 +33,32 @@ export function PlaylistItem({ playlist, onUnfollow }: PlaylistItemProps) {
 						style={{ textDecoration: "none", color: "inherit" }}
 						data-testid="playlist-item"
 					>
-						<Flex
-							direction="column"
-							gap="2"
-							style={{ position: "relative" }}
-							width="8rem"
-						>
-							<Avatar
-								fallback={playlist.name}
-								src={playlist.pictureUrl}
-								size="8"
-							/>
-							<div style={{ textAlign: "center" }}>
-								<Tooltip
-									content={`${playlist.name} by ${playlist.creatorName}`}
-								>
+						<Tooltip content={`${playlist.name} by ${playlist.creator.name}`}>
+							<Flex
+								direction="column"
+								gap="2"
+								style={{ position: "relative" }}
+								width="8rem"
+							>
+								<Avatar
+									fallback={playlist.name}
+									src={playlist.pictureUrl}
+									size="8"
+								/>
+								<div style={{ textAlign: "center" }}>
 									<Heading align="center" truncate size="4">
 										{playlist.name}
 									</Heading>
-								</Tooltip>
-								<Text
-									align="center"
-									size="2"
-									style={{ color: "var(--accent-9)" }}
-								>
-									{playlist.numberOfTracks} songs
-								</Text>
-							</div>
-						</Flex>
+									<Text
+										align="center"
+										size="2"
+										style={{ color: "var(--accent-9)" }}
+									>
+										{playlist.numberOfTracks} songs
+									</Text>
+								</div>
+							</Flex>
+						</Tooltip>
 					</Link>
 				</Card>
 			</ContextMenu.Trigger>
