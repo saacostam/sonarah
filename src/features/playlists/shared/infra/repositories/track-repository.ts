@@ -94,4 +94,52 @@ export class TrackRepository implements ITrackRepository {
 			playlists: playlistsRecommendations,
 		};
 	}
+
+	async search(
+		args: ITrackRepositoryPayload["SearchIn"],
+	): Promise<ITrackRepositoryPayload["SearchOut"]> {
+		const { q, limit, page } = args;
+
+		const urlParams = new URLSearchParams();
+		urlParams.append("q", q);
+		urlParams.append("type", "track"); // Track type
+		urlParams.append("limit", String(limit));
+		urlParams.append("offset", String(limit * (page - 1)));
+
+		const res = await this.spotifyAuthClient.get<{
+			tracks: {
+				total: number;
+				limit: number;
+				items: (null | {
+					id: string;
+					album: { images: { url: string }[] };
+					uri: string;
+					name: string;
+					artists: { id: string; name: string }[];
+					duration_ms: number;
+				})[];
+			};
+		}>(`/v1/search?${urlParams.toString()}`);
+
+		return {
+			limit: res.tracks.limit,
+			page,
+			total: res.tracks.total,
+			tracks: res.tracks.items
+				.filter((item) => item !== null)
+				.map(
+					(item): ITrack => ({
+						id: item.id,
+						name: item.name,
+						artistNames: item.artists.map((a) => a.name),
+						durationInMs: item.duration_ms,
+						pictureUrl:
+							item.album.images?.[0]?.url ??
+							item.album.images?.[0]?.url ??
+							null,
+						uri: item.uri,
+					}),
+				),
+		};
+	}
 }

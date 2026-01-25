@@ -81,7 +81,7 @@ export function DashboardModalManagerRenderer() {
 				open={status.type === "search-playlist"}
 				onOpenChange={onClose}
 			>
-				<Dialog.Content maxWidth="1024px">
+				<Dialog.Content maxWidth="820px">
 					<Flex direction="row" gap="2" justify="between">
 						<Dialog.Title size="7">Import Playlist</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">

@@ -3,6 +3,7 @@ export enum QueryKey {
 	MY_PLAYLISTS = "My Playlists",
 	PLAYLIST_BY_ID = "Playlist By Id",
 	SEARCH_PLAYLISTS = "Search Playlists",
+	SEARCH_TRACKS = "Search Tracks",
 	SESSION = "Session",
 	TRACK_RECOMMENDATIONS = "Track Recommendations",
 	USER = "User",

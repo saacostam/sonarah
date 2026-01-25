@@ -28,3 +28,10 @@ export interface IPaginatedPlaylists {
 	total: number;
 	limit: number;
 }
+
+export interface IPaginatedTracks {
+	page: number;
+	tracks: ITrack[];
+	total: number;
+	limit: number;
+}

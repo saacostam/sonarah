@@ -5,4 +5,5 @@ export * from "./use-mutation-unfollow-playlist";
 export * from "./use-query-my-playlists";
 export * from "./use-query-playlist-by-id";
 export * from "./use-query-search-playlists";
+export * from "./use-query-search-tracks";
 export * from "./use-query-track-recommendations";

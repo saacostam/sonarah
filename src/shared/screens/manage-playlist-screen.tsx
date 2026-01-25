@@ -1,6 +1,9 @@
 import { useCallback, useEffect } from "react";
+import { ManagePlaylistModalManagerContext } from "@/features/playlists/manage-playlist/app";
+import { useManagePlaylistModalManagerImpl } from "@/features/playlists/manage-playlist/infra";
 import {
 	ManagePlaylist,
+	ManagePlaylistModalManagerRenderer,
 	ManagePlaylistSkeleton,
 } from "@/features/playlists/manage-playlist/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -31,16 +34,23 @@ export function ManagePlaylistScreen() {
 		if (id === undefined) onNotFound();
 	}, [id, onNotFound]);
 
-	return id ? (
-		<ManagePlaylist
-			id={id}
-			onNextHref={navigationAdapter.generateRoute({
-				name: RouteName.MATCH_PLAYLIST_BY_ID,
-				payload: { id },
-			})}
-			onNotFound={onNotFound}
-		/>
-	) : (
-		<ManagePlaylistSkeleton />
+	return (
+		<ManagePlaylistModalManagerContext.Provider
+			value={useManagePlaylistModalManagerImpl()}
+		>
+			{id ? (
+				<ManagePlaylist
+					id={id}
+					onNextHref={navigationAdapter.generateRoute({
+						name: RouteName.MATCH_PLAYLIST_BY_ID,
+						payload: { id },
+					})}
+					onNotFound={onNotFound}
+				/>
+			) : (
+				<ManagePlaylistSkeleton />
+			)}
+			<ManagePlaylistModalManagerRenderer />
+		</ManagePlaylistModalManagerContext.Provider>
 	);
 }

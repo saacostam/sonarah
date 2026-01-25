@@ -1,9 +1,12 @@
-import type { ITrack } from "../entities";
+import type { IPaginatedTracks, ITrack } from "../entities";
 
 export interface ITrackRepository {
 	getRecommendations(
 		args: ITrackRepositoryPayload["GetRecommendationsIn"],
 	): Promise<ITrackRepositoryPayload["GetRecommendationsOut"]>;
+	search(
+		args: ITrackRepositoryPayload["SearchIn"],
+	): Promise<ITrackRepositoryPayload["SearchOut"]>;
 }
 
 export interface ITrackRepositoryPayload {
@@ -19,4 +22,10 @@ export interface ITrackRepositoryPayload {
 			tracks: ITrack[];
 		}[];
 	};
+	SearchIn: {
+		limit: number;
+		q: string;
+		page: number;
+	};
+	SearchOut: IPaginatedTracks;
 }
