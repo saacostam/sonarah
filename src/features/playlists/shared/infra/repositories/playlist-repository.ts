@@ -145,6 +145,18 @@ export class PlaylistRepository implements IPlaylistRepository {
 		};
 	}
 
+	async removeItemsFromPlaylist(
+		args: IPlaylistRepositoryPayload["RemoveItemsFromPlaylistIn"],
+	): Promise<void> {
+		const { id, uris } = args;
+
+		await this.spotifyAuthClient.delete<void>(`/v1/playlists/${id}/tracks`, {
+			tracks: uris.map((uri) => ({
+				uri,
+			})),
+		});
+	}
+
 	async save(
 		args: IPlaylistRepositoryPayload["SaveIn"],
 	): Promise<IPlaylistRepositoryPayload["SaveOut"]> {

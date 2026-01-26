@@ -137,10 +137,11 @@ export class FetchClientAdapter implements IClientAdapter {
 		return this.request<TResponse>("PATCH", url, body, config);
 	}
 
-	delete<TResponse>(
+	delete<TResponse, TBody = unknown>(
 		url: string,
+		body?: TBody,
 		config?: IClientAdapterRequestConfig,
 	): Promise<TResponse> {
-		return this.request<TResponse>("DELETE", url, undefined, config);
+		return this.request<TResponse>("DELETE", url, body, config);
 	}
 }

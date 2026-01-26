@@ -18,8 +18,9 @@ export interface IClientAdapter {
 		body?: TBody,
 		config?: IClientAdapterRequestConfig,
 	): Promise<TResponse>;
-	delete<TResponse>(
+	delete<TResponse, TBody = unknown>(
 		url: string,
+		body?: TBody,
 		config?: IClientAdapterRequestConfig,
 	): Promise<TResponse>;
 }

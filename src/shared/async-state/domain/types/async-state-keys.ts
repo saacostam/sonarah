@@ -16,6 +16,7 @@ export enum MutationKey {
 	PAUSE_PLAYBACK = "Pause Playback",
 	PLAY_TRACK_OF_PLAYLIST = "Play Track Of Playlist",
 	REQUEST_ACCESS_TOKEN = "Request Access Token",
+	REMOVE_ITEMS_FROM_PLAYLIST = "Remove Item From Playlist",
 	SAVE_PLAYLIST = "Save Playlist",
 	SEEK_TO_POSITION = "Seek To Position",
 	SET_SESSION = "Set Session",

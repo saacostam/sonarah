@@ -21,6 +21,10 @@ export interface IPlaylistRepository {
 		args: IPlaylistRepositoryPayload["GetByIdIn"],
 	): Promise<IPlaylistRepositoryPayload["GetByIdOut"]>;
 
+	removeItemsFromPlaylist(
+		args: IPlaylistRepositoryPayload["RemoveItemsFromPlaylistIn"],
+	): Promise<void>;
+
 	save(
 		args: IPlaylistRepositoryPayload["SaveIn"],
 	): Promise<IPlaylistRepositoryPayload["SaveOut"]>;
@@ -60,6 +64,11 @@ export interface IPlaylistRepositoryPayload {
 	};
 	GetByIdOut: {
 		playlist: IPlaylist;
+	};
+
+	RemoveItemsFromPlaylistIn: {
+		id: string;
+		uris: string[];
 	};
 
 	SaveIn: {

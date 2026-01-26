@@ -6,6 +6,11 @@ export interface IManagePlaylistModalManager {
 		| {
 				type: "search-track";
 				playlistId: string;
+		  }
+		| {
+				type: "delete-track";
+				playlistId: string;
+				trackUri: string;
 		  };
 	setStatus: (status: IManagePlaylistModalManager["status"]) => void;
 }
