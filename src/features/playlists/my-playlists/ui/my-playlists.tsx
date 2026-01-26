@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useQueryMyPlaylists } from "@/features/playlists/shared/app";
 import { QueryError } from "@/shared/components";
-import { ArrowDownTrayIcon, PlusIcon } from "@/shared/icons";
+import { ArrowDownTrayIcon, LightBulbIcon, PlusIcon } from "@/shared/icons";
 import { MyPlaylistContent } from "./my-playlists-content";
 import { MyPlaylistPagination } from "./my-playlists-pagination";
 import { MyPlaylistsSkeleton } from "./my-playlists-skeleton";
@@ -80,6 +80,12 @@ export function MyPlaylists({
 				paginationLimit={paginationLimit}
 				setPage={setPage}
 			/>
+			<Flex align="center" gap="1" justify="center" mt="5">
+				<LightBulbIcon height={16} width={16} />
+				<Text style={{ color: "var(--gray-11)" }} size="2">
+					Right-click a playlist for more options
+				</Text>
+			</Flex>
 		</>
 	);
 }

@@ -8,6 +8,7 @@ export * from "./chevron-up-icon";
 export * from "./cube-transparent-icon";
 export * from "./ellipsis-vertical-icon";
 export * from "./exclamation-triangle-icon";
+export * from "./light-bulb-icon";
 export * from "./moon-icon";
 export * from "./pause-icon";
 export * from "./play-icon";
