@@ -19,7 +19,7 @@ export function DeleteTrack({
 }: DeleteTrackProps) {
 	const removeItemsFromPlaylist = useMutationRemoveItemsFromPlaylist();
 
-	const onClickRemove = useCallback(() => {
+	const onClickDelete = useCallback(() => {
 		removeItemsFromPlaylist.mutate(
 			{
 				id: playlistId,
@@ -50,10 +50,10 @@ export function DeleteTrack({
 				<Button
 					color="red"
 					loading={removeItemsFromPlaylist.isPending}
-					onClick={onClickRemove}
+					onClick={onClickDelete}
 					type="button"
 				>
-					Remove
+					Delete
 				</Button>
 			</Flex>
 		</Flex>
