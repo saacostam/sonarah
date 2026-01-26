@@ -4,8 +4,8 @@ import { useQueryUser } from "@/features/user/app";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { QueryError } from "@/shared/components";
 import { BrowseExternalPlaylistContent } from "./browse-external-playlist-content";
+import { ManagePlaylistShell } from "./layouts";
 import { ManageMyPlaylistContent } from "./manage-my-playlist-content";
-import { ManagePlaylistShell } from "./manage-playlist-shell";
 import { ManagePlaylistSkeleton } from "./manage-playlist-skeleton";
 
 export interface ManagePlaylistProps {
