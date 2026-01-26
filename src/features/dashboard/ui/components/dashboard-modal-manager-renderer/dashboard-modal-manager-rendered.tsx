@@ -83,7 +83,7 @@ export function DashboardModalManagerRenderer() {
 			>
 				<Dialog.Content maxWidth="820px">
 					<Flex direction="row" gap="2" justify="between">
-						<Dialog.Title size="7">Import Playlist</Dialog.Title>
+						<Dialog.Title size="6">Import Playlist</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">
 							<XIcon height={20} width={20} />
 						</Button>
@@ -100,7 +100,7 @@ export function DashboardModalManagerRenderer() {
 			>
 				<Dialog.Content maxWidth="512px">
 					<Flex direction="row" gap="2" justify="between">
-						<Dialog.Title size="7">Unfollow Playlist</Dialog.Title>
+						<Dialog.Title>Unfollow Playlist</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">
 							<XIcon height={20} width={20} />
 						</Button>

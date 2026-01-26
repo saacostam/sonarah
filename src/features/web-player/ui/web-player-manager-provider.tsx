@@ -190,7 +190,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 			>
 				<Dialog.Content maxWidth="512px">
 					<Flex direction="row" gap="2" justify="between">
-						<Dialog.Title size="7">Transfer Playback</Dialog.Title>
+						<Dialog.Title>Transfer Playback</Dialog.Title>
 						<Button onClick={onClosePlaybackModal} variant="ghost">
 							<XIcon height={20} width={20} />
 						</Button>

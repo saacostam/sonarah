@@ -62,7 +62,7 @@ export function ManagePlaylistModalManagerRenderer() {
 			<Dialog.Root open={status.type === "search-track"} onOpenChange={onClose}>
 				<Dialog.Content maxWidth="820px">
 					<Flex direction="row" gap="2" justify="between">
-						<Dialog.Title>Add Track</Dialog.Title>
+						<Dialog.Title size="6">Add Track</Dialog.Title>
 						<Button onClick={onClose} variant="ghost">
 							<XIcon height={20} width={20} />
 						</Button>
