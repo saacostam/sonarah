@@ -17,7 +17,7 @@ export function BackgroundWave({
 			aria-hidden="true"
 			className={className}
 		>
-			<rect width="1440" height="560" fill="var(--accent-1)" />
+			<rect width="1440" height="560" fill="var(--color-background)" />
 			<g
 				fill="none"
 				stroke="var(--accent-4)"

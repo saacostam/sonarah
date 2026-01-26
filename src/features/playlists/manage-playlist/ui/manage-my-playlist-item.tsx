@@ -18,7 +18,6 @@ export function ManageMyPlaylistItem(props: ManageMyPlaylistItemProps) {
 			</ContextMenu.Trigger>
 			<ContextMenu.Content>
 				<ContextMenu.Item
-					color="red"
 					onClick={(e) => {
 						e.stopPropagation();
 						onDelete(props.track.uri);

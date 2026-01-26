@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 function App() {
 	return (
-		<Theme accentColor="iris" grayColor="sage" panelBackground="translucent">
+		<Theme accentColor="indigo" grayColor="slate" panelBackground="translucent">
 			<Background>
 				<QueryClientProvider client={queryClient}>
 					<AdaptersProvider>

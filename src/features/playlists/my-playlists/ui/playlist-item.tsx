@@ -64,7 +64,6 @@ export function PlaylistItem({ playlist, onUnfollow }: PlaylistItemProps) {
 			</ContextMenu.Trigger>
 			<ContextMenu.Content>
 				<ContextMenu.Item
-					color="red"
 					onClick={(e) => {
 						e.stopPropagation();
 						onUnfollow();

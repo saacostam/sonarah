@@ -41,7 +41,7 @@ export function ManageMyPlaylistContent({
 			<Box mt="6">
 				<Heading size="5">Tracks</Heading>
 				<Text style={{ color: "var(--gray-11)" }} size="2">
-					💡 Right-click a track for more options
+					Right-click a track for more options
 				</Text>
 			</Box>
 			<Flex direction="column" gap="2" wrap="nowrap" my="4">
