@@ -41,7 +41,16 @@ export function MatchPlaylistScreen() {
 				value={useMatchPlaylistModalManagerImpl()}
 			>
 				{id ? (
-					<MatchPlaylist id={id} onNotFound={onNotFound} />
+					<MatchPlaylist
+						id={id}
+						onBackHref={navigationAdapter.generateRoute({
+							name: RouteName.PLAYLIST_BY_ID,
+							payload: {
+								id,
+							},
+						})}
+						onNotFound={onNotFound}
+					/>
 				) : (
 					<MatchPlaylistSkeleton />
 				)}

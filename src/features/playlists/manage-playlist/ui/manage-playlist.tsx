@@ -10,12 +10,14 @@ import { ManagePlaylistSkeleton } from "./manage-playlist-skeleton";
 
 export interface ManagePlaylistProps {
 	id: string;
+	onBackHref: string;
 	onNextHref: string;
 	onNotFound: () => void;
 }
 
 export function ManagePlaylist({
 	id,
+	onBackHref,
 	onNextHref,
 	onNotFound,
 }: ManagePlaylistProps) {
@@ -55,11 +57,19 @@ export function ManagePlaylist({
 			{playlistById.isSuccess &&
 				user.isSuccess &&
 				(user.data.id === playlistById.data.playlist.creator.id ? (
-					<ManagePlaylistShell title="Manage Playlist" onNextHref={onNextHref}>
+					<ManagePlaylistShell
+						title="Manage Playlist"
+						onBackHref={onBackHref}
+						onNextHref={onNextHref}
+					>
 						<ManageMyPlaylistContent playlist={playlistById.data.playlist} />
 					</ManagePlaylistShell>
 				) : (
-					<ManagePlaylistShell title="Browse Playlist" onNextHref={onNextHref}>
+					<ManagePlaylistShell
+						title="Browse Playlist"
+						onBackHref={onBackHref}
+						onNextHref={onNextHref}
+					>
 						<BrowseExternalPlaylistContent
 							playlist={playlistById.data.playlist}
 						/>

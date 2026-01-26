@@ -7,10 +7,15 @@ import { MatchPlaylistSkeleton } from "./match-playlist-skeleton";
 
 export interface MatchPlaylistProps {
 	id: string;
+	onBackHref: string;
 	onNotFound: () => void;
 }
 
-export function MatchPlaylist({ id, onNotFound }: MatchPlaylistProps) {
+export function MatchPlaylist({
+	id,
+	onBackHref,
+	onNotFound,
+}: MatchPlaylistProps) {
 	const playlistById = useQueryPlaylistById({
 		req: {
 			id,
@@ -44,7 +49,10 @@ export function MatchPlaylist({ id, onNotFound }: MatchPlaylistProps) {
 				/>
 			)}
 			{playlistById.isSuccess && (
-				<MatchPlaylistContent playlist={playlistById.data.playlist} />
+				<MatchPlaylistContent
+					onBackHref={onBackHref}
+					playlist={playlistById.data.playlist}
+				/>
 			)}
 			{playlistById.isLoading && <MatchPlaylistSkeleton />}
 		</>

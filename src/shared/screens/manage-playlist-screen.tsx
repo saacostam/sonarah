@@ -41,6 +41,9 @@ export function ManagePlaylistScreen() {
 			{id ? (
 				<ManagePlaylist
 					id={id}
+					onBackHref={navigationAdapter.generateRoute({
+						name: RouteName.DASHBOARD,
+					})}
 					onNextHref={navigationAdapter.generateRoute({
 						name: RouteName.MATCH_PLAYLIST_BY_ID,
 						payload: { id },

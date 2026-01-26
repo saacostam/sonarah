@@ -25,12 +25,13 @@ import {
 } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
 import { EmptyQuery, PolymorphicButton, QueryError } from "@/shared/components";
-import { PlayIcon } from "@/shared/icons";
+import { ChevronLeftIcon, PlayIcon } from "@/shared/icons";
 import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
 import { useMatchPlaylistModalManger } from "../app";
 import { MatchPlaylistRecommendations } from "./match-playlist-recommendations";
 
 export interface MatchPlaylistContentProps {
+	onBackHref: string;
 	playlist: IPlaylist;
 }
 
@@ -39,7 +40,10 @@ export interface IMatchedTrack {
 	track: ITrack;
 }
 
-export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
+export function MatchPlaylistContent({
+	onBackHref,
+	playlist,
+}: MatchPlaylistContentProps) {
 	const { setStatus } = useMatchPlaylistModalManger();
 
 	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
@@ -165,31 +169,50 @@ export function MatchPlaylistContent({ playlist }: MatchPlaylistContentProps) {
 	return (
 		<>
 			<WebPlayer />
-			<Flex align="end" direction="row" justify="between" my="4">
+			<Flex direction="column" justify="between" gap="4" mb="4">
+				<Flex align="end" direction="row" justify="between" gap="4">
+					<PolymorphicButton
+						action={{
+							action: {
+								type: "href",
+								href: onBackHref,
+							},
+							label: (
+								<>
+									<ChevronLeftIcon width={16} height={16} />
+									Back to Manage Playlist
+								</>
+							),
+						}}
+						variant="soft"
+					/>
+					<PolymorphicButton
+						action={{
+							action: {
+								type: "button",
+								onClick: onClickCreateHandler,
+							},
+							label: (
+								<>
+									<PlayIcon width={16} height={16} />
+									Next: Create Playlist {matchingTracks.length}/
+									{playlist.tracks.length}
+								</>
+							),
+						}}
+						color={
+							matchingTracks.length < playlist.tracks.length
+								? "yellow"
+								: undefined
+						}
+						variant={
+							matchingTracks.length < playlist.tracks.length
+								? "outline"
+								: "solid"
+						}
+					/>
+				</Flex>
 				<Heading>Match Playlist</Heading>
-				<PolymorphicButton
-					action={{
-						action: {
-							type: "button",
-							onClick: onClickCreateHandler,
-						},
-						label: (
-							<>
-								<PlayIcon width={16} height={16} />
-								Next: Create Playlist {matchingTracks.length}/
-								{playlist.tracks.length}
-							</>
-						),
-					}}
-					color={
-						matchingTracks.length < playlist.tracks.length
-							? "yellow"
-							: undefined
-					}
-					variant={
-						matchingTracks.length < playlist.tracks.length ? "outline" : "solid"
-					}
-				/>
 			</Flex>
 			<PlaylistBrief playlist={playlist} />
 			<Heading size="5" mt="6">
