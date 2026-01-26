@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Tooltip } from "@radix-ui/themes";
+import { Box, Button, Flex, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { useCallback } from "react";
 import type { IPlaylist } from "@/features/playlists/shared/domain";
 import { PlaylistBrief } from "@/features/playlists/shared/ui";
@@ -38,9 +38,12 @@ export function ManageMyPlaylistContent({
 	return (
 		<>
 			<PlaylistBrief playlist={playlist} />
-			<Heading mt="6" size="5">
-				Tracks
-			</Heading>
+			<Box mt="6">
+				<Heading size="5">Tracks</Heading>
+				<Text style={{ color: "var(--gray-11)" }} size="2">
+					💡 Right-click a track for more options
+				</Text>
+			</Box>
 			<Flex direction="column" gap="2" wrap="nowrap" my="4">
 				{playlist.tracks.length > 0 ? (
 					playlist.tracks.map((track, index) => (

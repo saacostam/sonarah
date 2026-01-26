@@ -12,7 +12,7 @@ export function ManageMyPlaylistItem(props: ManageMyPlaylistItemProps) {
 	return (
 		<ContextMenu.Root>
 			<ContextMenu.Trigger>
-				<div>
+				<div style={{ cursor: "context-menu" }}>
 					<TrackItem {...rest} />
 				</div>
 			</ContextMenu.Trigger>
