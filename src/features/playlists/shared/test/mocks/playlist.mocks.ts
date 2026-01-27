@@ -1,4 +1,4 @@
-import type { ILeanPlaylist } from "../../domain";
+import type { ILeanPlaylist, IPlaylist, ITrack } from "../../domain";
 
 export const MockLeanPlaylistFactory = (n: number): ILeanPlaylist[] => {
 	return Array.from({ length: n }, (_, i) => ({
@@ -10,5 +10,22 @@ export const MockLeanPlaylistFactory = (n: number): ILeanPlaylist[] => {
 		},
 		numberOfTracks: (i + 1) * 3,
 		pictureUrl: `https://picture-url/${i + 1}`,
+	}));
+};
+
+export const MockPlaylistFactory = (
+	n: number,
+	tracks: ITrack[],
+): IPlaylist[] => {
+	return Array.from({ length: n }, (_, i) => ({
+		id: `${i + 1}`,
+		name: `Playlist ${i + 1}`,
+		creator: {
+			id: `Creator Id ${i + 1}`,
+			name: `Creator Name ${i + 1}`,
+		},
+		numberOfTracks: (i + 1) * 3,
+		pictureUrl: `https://picture-url/${i + 1}`,
+		tracks,
 	}));
 };
