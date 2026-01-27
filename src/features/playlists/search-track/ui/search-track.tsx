@@ -9,7 +9,6 @@ import { EmptyQuery, QueryError } from "@/shared/components";
 import { SearchTrackItem } from "./search-track-item";
 
 export interface SearchTrackProps {
-	onCancel: () => void;
 	onError: (e: unknown) => void;
 	onSuccess: () => void;
 	playlistId: string;
@@ -18,7 +17,6 @@ export interface SearchTrackProps {
 const LIMIT = 20;
 
 export function SearchTrack({
-	onCancel,
 	onError,
 	onSuccess,
 	playlistId,
@@ -47,11 +45,10 @@ export function SearchTrack({
 				{
 					onSuccess,
 					onError,
-					onSettled: onCancel,
 				},
 			);
 		},
-		[mutateAddItemsToPlaylist, onCancel, onError, onSuccess, playlistId],
+		[mutateAddItemsToPlaylist, onError, onSuccess, playlistId],
 	);
 
 	const loadMoreRef = useRef<HTMLDivElement | null>(null);

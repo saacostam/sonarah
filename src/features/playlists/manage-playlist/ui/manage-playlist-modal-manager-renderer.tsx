@@ -22,7 +22,9 @@ export function ManagePlaylistModalManagerRenderer() {
 			"Added",
 			"Tracks added to playlist",
 		);
-	}, [notificationsAdapter]);
+
+		onClose();
+	}, [notificationsAdapter, onClose]);
 
 	const onAddItemToPlaylistError = useCallback(
 		(e: unknown) => {
@@ -32,8 +34,10 @@ export function ManagePlaylistModalManagerRenderer() {
 				"Error",
 				getErrorMessage(e, "Unnable to add tracks to playlist"),
 			);
+
+			onClose();
 		},
-		[errorLoggerAdapter, notificationsAdapter],
+		[errorLoggerAdapter, onClose, notificationsAdapter],
 	);
 
 	// Delete Track
@@ -68,7 +72,6 @@ export function ManagePlaylistModalManagerRenderer() {
 						</Button>
 					</Flex>
 					<SearchTrack
-						onCancel={onClose}
 						onError={onAddItemToPlaylistError}
 						onSuccess={onAddItemToPlaylistSuccess}
 						playlistId={status.type === "search-track" ? status.playlistId : ""}
