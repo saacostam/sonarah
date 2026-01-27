@@ -5,11 +5,11 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
 import type { IUser } from "@/features/user/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { renderWithProviders } from "@/tests";
-import type { IPlaylistRepositoryPayload } from "../../shared/domain";
-import { CreatePlaylist } from "./create-playlist";
+import { CreatePlaylist } from "./ui/create-playlist";
 
 describe("CreatePlaylist (repo integration)", () => {
 	it("renders skeleton while user query is loading", () => {
