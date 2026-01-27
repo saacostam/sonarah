@@ -18,3 +18,4 @@
     - We current handle it using onSuccess callbacks; ideally it's a single async promise.
 - [ ] Create error page for auth-guard
 - [ ] Create error page for home screen (and add unit test)
+- [ ] Investigate act wrapper alert when running tests

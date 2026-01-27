@@ -14,7 +14,7 @@ export function LazyLoadedSkeleton({ style }: LazyLoadedSkeletonProps) {
 			style={style}
 			data-testid="lazy-loaded-skeleton"
 		>
-			<RingLoader color="var(--accent-9)" size="128" />
+			<RingLoader color="var(--accent-9)" size="128px" />
 		</Flex>
 	);
 }
