@@ -9,6 +9,7 @@ import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { XIcon } from "@/shared/icons";
+import { getErrorMessage } from "@/shared/utils";
 
 export function DashboardModalManagerRenderer() {
 	const { routerAdapter, navigationAdapter, notificationsAdapter } =
@@ -38,7 +39,14 @@ export function DashboardModalManagerRenderer() {
 
 	const onSavePlaylistSuccess = useCallback(
 		(args: IPlaylistRepositoryPayload["SaveOut"]) => {
+			notificationsAdapter.notify(
+				INotificationAdapterType.SUCCESS,
+				"Added",
+				"Playlist added successfully",
+			);
+
 			onClose();
+
 			routerAdapter.push(
 				navigationAdapter.generateRoute({
 					name: RouteName.PLAYLIST_BY_ID,
@@ -46,7 +54,22 @@ export function DashboardModalManagerRenderer() {
 				}),
 			);
 		},
-		[onClose, routerAdapter, navigationAdapter],
+		[onClose, routerAdapter, navigationAdapter, notificationsAdapter],
+	);
+
+	const onSavePlaylistError = useCallback(
+		(e: unknown) => {
+			const errorDetails = getErrorMessage(e, "");
+
+			notificationsAdapter.notify(
+				INotificationAdapterType.ERROR,
+				"Error",
+				`We couldn't save the playlist. Please try again. ${errorDetails ?? `Details: ${errorDetails}`}`,
+			);
+
+			onClose();
+		},
+		[notificationsAdapter, onClose],
 	);
 
 	const onUnfollowSuccess = useCallback(() => {
@@ -89,7 +112,7 @@ export function DashboardModalManagerRenderer() {
 						</Button>
 					</Flex>
 					<SearchPlaylist
-						onCancel={onClose}
+						onError={onSavePlaylistError}
 						onSuccess={onSavePlaylistSuccess}
 					/>
 				</Dialog.Content>

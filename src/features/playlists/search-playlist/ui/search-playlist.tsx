@@ -6,23 +6,19 @@ import {
 	useQuerySearchPlaylists,
 } from "@/features/playlists/shared/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
-import { useAdapters } from "@/shared/adapters/core/app";
-import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { PlaylistSearchItem } from "./playlist-search-item";
 
 export interface SearchPlaylistProps {
-	onCancel: () => void;
+	onError: (e: unknown) => void;
 	onSuccess: (args: IPlaylistRepositoryPayload["SaveOut"]) => void;
 }
 
 const LIMIT = 20;
 
-export function SearchPlaylist({ onCancel, onSuccess }: SearchPlaylistProps) {
-	const { notificationsAdapter } = useAdapters();
-
+export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
 	const [search, setSearch] = useState<string>("");
-	const [debouncedSearch] = useDebounce(search, 400); // placeholder if you plan to debounce later
+	const [debouncedSearch] = useDebounce(search, 400);
 
 	const [focusedPlaylistId, setFocusedPlaylistId] = useState<
 		string | undefined
@@ -44,27 +40,12 @@ export function SearchPlaylist({ onCancel, onSuccess }: SearchPlaylistProps) {
 			mutateSavePlaylist(
 				{ id },
 				{
-					onSuccess: (args) => {
-						notificationsAdapter.notify(
-							INotificationAdapterType.SUCCESS,
-							"Added",
-							"Playlist added successfully",
-						);
-
-						onSuccess(args);
-					},
-					onError: () => {
-						notificationsAdapter.notify(
-							INotificationAdapterType.ERROR,
-							"Error",
-							"We couldn't save the playlist. Please try again.",
-						);
-						onCancel();
-					},
+					onSuccess,
+					onError,
 				},
 			);
 		},
-		[mutateSavePlaylist, onCancel, onSuccess, notificationsAdapter],
+		[mutateSavePlaylist, onError, onSuccess],
 	);
 
 	const loadMoreRef = useRef<HTMLDivElement | null>(null);
