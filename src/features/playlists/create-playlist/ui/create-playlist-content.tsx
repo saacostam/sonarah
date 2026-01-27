@@ -48,11 +48,15 @@ export function CreatePlaylistContent({
 	);
 
 	return (
-		<form onSubmit={createPlaylistForm.handleSubmit(submit)}>
+		<form
+			data-testid="create-playlist-content"
+			onSubmit={createPlaylistForm.handleSubmit(submit)}
+		>
 			<Flex direction="column" gap="6">
 				<Box>
 					<Input
 						label="Name"
+						aria-label="Name"
 						{...createPlaylistForm.register("name")}
 						error={errors.name?.message || null}
 					/>
