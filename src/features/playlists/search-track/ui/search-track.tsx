@@ -1,4 +1,4 @@
-import { Flex, Grid, Skeleton, Spinner, TextField } from "@radix-ui/themes";
+import { Flex, Grid, Spinner, TextField } from "@radix-ui/themes";
 import { useCallback, useState } from "react";
 import { useDebounce } from "use-debounce";
 import {
@@ -8,6 +8,7 @@ import {
 import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { SearchTrackItem } from "./search-track-item";
+import { SearchTrackSkeleton } from "./search-track-skeleton";
 
 export interface SearchTrackProps {
 	onError: (e: unknown) => void;
@@ -88,16 +89,13 @@ export function SearchTrack({
 						description="Add a keyword to start search"
 					/>
 				) : searchTracks.isLoading ? (
-					<Grid columns={{ xs: "1", md: "2" }} gap="2">
-						{new Array(12).fill(null).map((_, index) => (
-							<Skeleton key={+index} height="64px" width="100%" />
-						))}
-					</Grid>
+					<SearchTrackSkeleton />
 				) : searchTracks.isSuccess ? (
-					searchTracks.data.pages.length === 0 ? (
+					searchTracks.data.pages.length === 0 ||
+					searchTracks.data.pages.at(0)?.tracks.length === 0 ? (
 						<EmptyQuery />
 					) : (
-						<>
+						<main data-testid="search-track-content">
 							<Grid columns={{ xs: "1", md: "2" }} gap="2">
 								{searchTracks.data.pages.map((page) =>
 									page.tracks.map((track, index) => (
@@ -118,7 +116,7 @@ export function SearchTrack({
 							)}
 							{/* 👇 Sentinel for observer */}
 							<div ref={loadMoreRef} style={{ height: "1px" }} />
-						</>
+						</main>
 					)
 				) : (
 					<QueryError

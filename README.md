@@ -14,7 +14,7 @@
 - [x] Validate integration tests written for my-playlists
 - [x] Try to use web-player first, and fallback to api call for web-player actions: seek, pause, play, etc. NOTE: Only for seek
 - [x] (TransferPlayback) src/features/web-player/ui/transfer-playback.tsx - Move onError notification to the consumer}
-- [ ] Test for Search Tracks
+- [x] Test for Search Tracks
 - [ ] Test for Search Playlists
 - [ ] Create single-method for both creating new playlist and adding tracks to playlist (match-playlist)
     - We current handle it using onSuccess callbacks; ideally it's a single async promise.
