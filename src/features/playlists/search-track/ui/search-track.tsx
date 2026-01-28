@@ -1,10 +1,11 @@
 import { Flex, Grid, Skeleton, Spinner, TextField } from "@radix-ui/themes";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDebounce } from "use-debounce";
 import {
 	useMutationAddItemToPlaylist,
 	useQuerySearchTracks,
 } from "@/features/playlists/shared/app";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { SearchTrackItem } from "./search-track-item";
 
@@ -21,6 +22,8 @@ export function SearchTrack({
 	onSuccess,
 	playlistId,
 }: SearchTrackProps) {
+	const { intersectionObserverAdapter } = useAdapters();
+
 	const [search, setSearch] = useState("");
 	const [debouncedSearch] = useDebounce(search, 400);
 
@@ -51,31 +54,19 @@ export function SearchTrack({
 		[mutateAddItemsToPlaylist, onError, onSuccess, playlistId],
 	);
 
-	const loadMoreRef = useRef<HTMLDivElement | null>(null);
-	useEffect(
-		function setupIntersectionObserverForInfiniteScrolling() {
-			if (!loadMoreRef.current) return;
+	const loadMoreRef = intersectionObserverAdapter.useOnInView(
+		(inView, entry) => {
 			if (!searchTracks.hasNextPage || searchTracks.isFetchingNextPage) return;
 
-			const observer = new IntersectionObserver(
-				(entries) => {
-					const [entry] = entries;
-					if (entry.isIntersecting) {
-						searchTracks.fetchNextPage();
-					}
-				},
-				{
-					root: null, // viewport
-					rootMargin: "200px", // start loading before fully visible
-					threshold: 0.1,
-				},
-			);
-
-			observer.observe(loadMoreRef.current);
-
-			return () => observer.disconnect();
+			if (inView && entry.isIntersecting) {
+				searchTracks.fetchNextPage();
+			}
 		},
-		[searchTracks],
+		{
+			root: null,
+			rootMargin: "200px",
+			threshold: 0.1,
+		},
 	);
 
 	return (
