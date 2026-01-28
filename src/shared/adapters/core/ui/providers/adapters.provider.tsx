@@ -4,6 +4,7 @@ import { HashRouter } from "react-router";
 
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
+import { useIntersectionObserverAdapter } from "@/shared/adapters/intersection-observer/infra";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { NavigationProvider } from "@/shared/adapters/navigation/ui";
 import { ReactHotToastNotificationAdapter } from "@/shared/adapters/notifications/infra";
@@ -32,6 +33,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		[routerAdapter, storageAdapter],
 	);
 	const errorLoggerAdapter = useMemo(() => new MockErrorLoggerAdapter(), []);
+	const intersectionObserverAdapter = useIntersectionObserverAdapter();
 	const reactHotToastNotificationAdapter = useMemo(
 		() => new ReactHotToastNotificationAdapter(),
 		[],
@@ -50,6 +52,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		() => ({
 			authAdapter: authAdapter,
 			errorLoggerAdapter: errorLoggerAdapter,
+			intersectionObserverAdapter: intersectionObserverAdapter,
 			notificationsAdapter: reactHotToastNotificationAdapter,
 			routerAdapter: routerAdapter,
 			navigationAdapter,
@@ -60,6 +63,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		[
 			authAdapter,
 			errorLoggerAdapter,
+			intersectionObserverAdapter,
 			reactHotToastNotificationAdapter,
 			routerAdapter,
 			navigationAdapter,
