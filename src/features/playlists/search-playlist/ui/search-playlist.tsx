@@ -52,11 +52,17 @@ export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
 	);
 
 	const loadMoreRef = intersectionObserverAdapter.useOnInView(
-		(inView, entry) => {
-			if (inView && entry.isIntersecting) {
-				searchPlaylists.fetchNextPage();
-			}
-		},
+		useCallback(
+			(inView, entry) => {
+				if (!searchPlaylists.hasNextPage || searchPlaylists.isFetchingNextPage)
+					return;
+
+				if (inView && entry.isIntersecting) {
+					searchPlaylists.fetchNextPage();
+				}
+			},
+			[searchPlaylists],
+		),
 		{
 			root: null,
 			rootMargin: "200px",

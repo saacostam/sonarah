@@ -55,13 +55,17 @@ export function SearchTrack({
 	);
 
 	const loadMoreRef = intersectionObserverAdapter.useOnInView(
-		(inView, entry) => {
-			if (!searchTracks.hasNextPage || searchTracks.isFetchingNextPage) return;
+		useCallback(
+			(inView, entry) => {
+				if (!searchTracks.hasNextPage || searchTracks.isFetchingNextPage)
+					return;
 
-			if (inView && entry.isIntersecting) {
-				searchTracks.fetchNextPage();
-			}
-		},
+				if (inView && entry.isIntersecting) {
+					searchTracks.fetchNextPage();
+				}
+			},
+			[searchTracks],
+		),
 		{
 			root: null,
 			rootMargin: "200px",
