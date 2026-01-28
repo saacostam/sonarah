@@ -1,11 +1,12 @@
 import { Flex, Grid, Skeleton, Spinner, TextField } from "@radix-ui/themes";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDebounce } from "use-debounce";
 import {
 	useMutationSavePlaylist,
 	useQuerySearchPlaylists,
 } from "@/features/playlists/shared/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { PlaylistSearchItem } from "./playlist-search-item";
 
@@ -17,6 +18,8 @@ export interface SearchPlaylistProps {
 const LIMIT = 20;
 
 export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
+	const { intersectionObserverAdapter } = useAdapters();
+
 	const [search, setSearch] = useState<string>("");
 	const [debouncedSearch] = useDebounce(search, 400);
 
@@ -48,32 +51,17 @@ export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
 		[mutateSavePlaylist, onError, onSuccess],
 	);
 
-	const loadMoreRef = useRef<HTMLDivElement | null>(null);
-	useEffect(
-		function setupIntersectionObserverForInfiniteScrolling() {
-			if (!loadMoreRef.current) return;
-			if (!searchPlaylists.hasNextPage || searchPlaylists.isFetchingNextPage)
-				return;
-
-			const observer = new IntersectionObserver(
-				(entries) => {
-					const [entry] = entries;
-					if (entry.isIntersecting) {
-						searchPlaylists.fetchNextPage();
-					}
-				},
-				{
-					root: null, // viewport
-					rootMargin: "200px", // start loading before fully visible
-					threshold: 0.1,
-				},
-			);
-
-			observer.observe(loadMoreRef.current);
-
-			return () => observer.disconnect();
+	const loadMoreRef = intersectionObserverAdapter.useOnInView(
+		(inView, entry) => {
+			if (inView && entry.isIntersecting) {
+				searchPlaylists.fetchNextPage();
+			}
 		},
-		[searchPlaylists],
+		{
+			root: null,
+			rootMargin: "200px",
+			threshold: 0.1,
+		},
 	);
 
 	return (
