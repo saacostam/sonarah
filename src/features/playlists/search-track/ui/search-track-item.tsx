@@ -24,7 +24,7 @@ export function SearchTrackItem({
 	track,
 }: SearchTrackItemProps) {
 	return (
-		<Card>
+		<Card data-testid="search-track-item">
 			<Flex
 				direction="row"
 				gap="4"

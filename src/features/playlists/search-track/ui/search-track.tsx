@@ -77,6 +77,7 @@ export function SearchTrack({
 		<Flex direction="column" gap="4">
 			<TextField.Root
 				value={search}
+				aria-label="search"
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder="Search..."
 			/>
