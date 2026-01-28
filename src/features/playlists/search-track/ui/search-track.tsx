@@ -1,13 +1,10 @@
-import { Flex, Grid, Spinner, TextField } from "@radix-ui/themes";
+import { Flex, TextField } from "@radix-ui/themes";
 import { useCallback, useState } from "react";
 import { useDebounce } from "use-debounce";
-import {
-	useMutationAddItemToPlaylist,
-	useQuerySearchTracks,
-} from "@/features/playlists/shared/app";
+import { useQuerySearchTracks } from "@/features/playlists/shared/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
-import { SearchTrackItem } from "./search-track-item";
+import { SearchTrackContent } from "./search-track-content";
 import { SearchTrackSkeleton } from "./search-track-skeleton";
 
 export interface SearchTrackProps {
@@ -35,25 +32,6 @@ export function SearchTrack({
 		},
 		enabled: debouncedSearch !== "",
 	});
-
-	const addItemsToPlaylist = useMutationAddItemToPlaylist();
-	const { mutate: mutateAddItemsToPlaylist } = addItemsToPlaylist;
-
-	const onAdd = useCallback(
-		(uri: string) => {
-			mutateAddItemsToPlaylist(
-				{
-					id: playlistId,
-					uris: [uri],
-				},
-				{
-					onSuccess,
-					onError,
-				},
-			);
-		},
-		[mutateAddItemsToPlaylist, onError, onSuccess, playlistId],
-	);
 
 	const loadMoreRef = intersectionObserverAdapter.useOnInView(
 		useCallback(
@@ -95,28 +73,14 @@ export function SearchTrack({
 					searchTracks.data.pages.at(0)?.tracks.length === 0 ? (
 						<EmptyQuery />
 					) : (
-						<main data-testid="search-track-content">
-							<Grid columns={{ xs: "1", md: "2" }} gap="2">
-								{searchTracks.data.pages.map((page) =>
-									page.tracks.map((track, index) => (
-										<SearchTrackItem
-											key={track.id}
-											isPending={addItemsToPlaylist.isPending}
-											onAdd={onAdd}
-											order={index + 1}
-											track={track}
-										/>
-									)),
-								)}
-							</Grid>
-							{searchTracks.isFetchingNextPage && (
-								<Flex justify="center">
-									<Spinner my="1" size="3" />
-								</Flex>
-							)}
-							{/* 👇 Sentinel for observer */}
-							<div ref={loadMoreRef} style={{ height: "1px" }} />
-						</main>
+						<SearchTrackContent
+							isFetchingNextPage={searchTracks.isFetchingNextPage}
+							loadMoreRef={loadMoreRef}
+							onError={onError}
+							onSuccess={onSuccess}
+							playlistId={playlistId}
+							paginatedSearchTracks={searchTracks.data}
+						/>
 					)
 				) : (
 					<QueryError
