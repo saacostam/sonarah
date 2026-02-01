@@ -157,6 +157,21 @@ export class PlaylistRepository implements IPlaylistRepository {
 		});
 	}
 
+	async reorderItemsFromPlaylist(
+		args: IPlaylistRepositoryPayload["ReorderItemsFromPlaylistIn"],
+	): Promise<void> {
+		const { playlistId, rangeStart, insertBefore, rangeLength } = args;
+
+		await this.spotifyAuthClient.put<void>(
+			`/v1/playlists/${playlistId}/tracks`,
+			{
+				range_start: rangeStart,
+				insert_before: insertBefore,
+				range_length: rangeLength,
+			},
+		);
+	}
+
 	async save(
 		args: IPlaylistRepositoryPayload["SaveIn"],
 	): Promise<IPlaylistRepositoryPayload["SaveOut"]> {

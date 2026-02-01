@@ -25,6 +25,10 @@ export interface IPlaylistRepository {
 		args: IPlaylistRepositoryPayload["RemoveItemsFromPlaylistIn"],
 	): Promise<void>;
 
+	reorderItemsFromPlaylist(
+		args: IPlaylistRepositoryPayload["ReorderItemsFromPlaylistIn"],
+	): Promise<void>;
+
 	save(
 		args: IPlaylistRepositoryPayload["SaveIn"],
 	): Promise<IPlaylistRepositoryPayload["SaveOut"]>;
@@ -69,6 +73,13 @@ export interface IPlaylistRepositoryPayload {
 	RemoveItemsFromPlaylistIn: {
 		id: string;
 		uris: string[];
+	};
+
+	ReorderItemsFromPlaylistIn: {
+		playlistId: ILeanPlaylist["id"];
+		rangeStart: number;
+		insertBefore: number;
+		rangeLength: number;
 	};
 
 	SaveIn: {
