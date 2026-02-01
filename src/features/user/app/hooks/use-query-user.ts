@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { QueryKey } from "@/shared/async-state/domain";
+import { QueryKey } from "@/shared/async-state";
 import { useRepositories } from "@/shared/repositories/app";
 
 export function useQueryUser() {

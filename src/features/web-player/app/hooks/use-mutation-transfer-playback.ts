@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { MutationKey } from "@/shared/async-state/domain";
+import { MutationKey } from "@/shared/async-state";
 import { useRepositories } from "@/shared/repositories/app";
 
 export function useMutationTransferPlayback() {
