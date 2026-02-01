@@ -1,5 +1,5 @@
 import { Flex, Grid, Skeleton, Spinner, TextField } from "@radix-ui/themes";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import {
 	useMutationSavePlaylist,
@@ -20,6 +20,7 @@ const LIMIT = 20;
 export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
 	const { intersectionObserverAdapter } = useAdapters();
 
+	const searchRef = useRef<HTMLInputElement>(null);
 	const [search, setSearch] = useState<string>("");
 	const [debouncedSearch] = useDebounce(search, 400);
 
@@ -70,12 +71,17 @@ export function SearchPlaylist({ onError, onSuccess }: SearchPlaylistProps) {
 		},
 	);
 
+	useEffect(() => {
+		if (searchRef.current) searchRef.current.focus();
+	}, []);
+
 	return (
 		<Flex direction="column" gap="4">
 			<TextField.Root
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder="Search..."
+				ref={searchRef}
 			/>
 			<Flex direction="column" gap="2">
 				{debouncedSearch === "" ? (

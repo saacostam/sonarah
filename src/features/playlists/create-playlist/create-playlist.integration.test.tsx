@@ -196,4 +196,26 @@ describe("CreatePlaylist (repo integration)", () => {
 
 		expect(create).not.toHaveBeenCalled();
 	});
+
+	it("focuses name field on mount", async () => {
+		const onSuccess = vi.fn();
+		const create = vi.fn();
+
+		renderWithProviders(
+			<CreatePlaylist onCancel={vi.fn()} onSuccess={onSuccess} />,
+			{
+				repositories: {
+					user: {
+						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
+					},
+					playlist: {
+						create,
+					},
+				},
+			},
+		);
+
+		const nameInput = await screen.findByRole("textbox", { name: /name/i });
+		expect(nameInput).toHaveFocus();
+	});
 });

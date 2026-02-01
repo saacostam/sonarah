@@ -1,5 +1,5 @@
 import { Flex, TextField } from "@radix-ui/themes";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useQuerySearchTracks } from "@/features/playlists/shared/app";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -22,6 +22,7 @@ export function SearchTrack({
 }: SearchTrackProps) {
 	const { intersectionObserverAdapter } = useAdapters();
 
+	const searchRef = useRef<HTMLInputElement>(null);
 	const [search, setSearch] = useState("");
 	const [debouncedSearch] = useDebounce(search, 400);
 
@@ -52,6 +53,10 @@ export function SearchTrack({
 		},
 	);
 
+	useEffect(() => {
+		if (searchRef.current) searchRef.current.focus();
+	}, []);
+
 	return (
 		<Flex direction="column" gap="4">
 			<TextField.Root
@@ -59,6 +64,7 @@ export function SearchTrack({
 				aria-label="search"
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder="Search..."
+				ref={searchRef}
 			/>
 			<Flex direction="column" gap="2">
 				{debouncedSearch === "" ? (

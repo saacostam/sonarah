@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@radix-ui/themes";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useMutationCreatePlaylist } from "@/features/playlists/shared/app";
 import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
 import { InlineErrorMessage, Input } from "@/shared/components";
@@ -22,6 +22,10 @@ export function CreatePlaylistContent({
 
 	const createPlaylistForm = useCreatePlaylistForm();
 	const { errors } = createPlaylistForm.formState;
+
+	useEffect(() => {
+		createPlaylistForm.setFocus("name");
+	}, [createPlaylistForm]);
 
 	const submit = useCallback(
 		(args: ICreatePlaylistForm) => {

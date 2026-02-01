@@ -205,6 +205,37 @@ describe("Search Track [Integration Test]", () => {
 				expect(screen.getByTestId("empty-query")).toBeInTheDocument();
 			});
 		});
+
+		it("focuses search field on mount", async () => {
+			const onError = vi.fn();
+			const onSuccess = vi.fn();
+
+			const search = vi.fn();
+
+			const intersectionObserverAdapter =
+				createIntersectionObserverAdapterMock();
+
+			renderWithProviders(
+				<SearchTrack
+					onError={onError}
+					onSuccess={onSuccess}
+					playlistId="playlist-test-id"
+				/>,
+				{
+					adapters: {
+						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
+					},
+					repositories: {
+						track: {
+							search,
+						},
+					},
+				},
+			);
+
+			const input = screen.getByRole("textbox", { name: "search" });
+			expect(input).toHaveFocus();
+		});
 	});
 
 	describe("edge-cases", () => {
