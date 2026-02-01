@@ -22,9 +22,7 @@ export function ManagePlaylistModalManagerRenderer() {
 			"Added",
 			"Tracks added to playlist",
 		);
-
-		onClose();
-	}, [notificationsAdapter, onClose]);
+	}, [notificationsAdapter]);
 
 	const onAddItemToPlaylistError = useCallback(
 		(e: unknown) => {
