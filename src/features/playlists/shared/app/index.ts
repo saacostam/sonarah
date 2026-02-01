@@ -1,6 +1,7 @@
 export * from "./use-mutation-add-item-to-playlist";
 export * from "./use-mutation-create-playlist";
 export * from "./use-mutation-remove-items-from-playlist";
+export * from "./use-mutation-reorder-items-from-playlist";
 export * from "./use-mutation-save-playlist";
 export * from "./use-mutation-unfollow-playlist";
 export * from "./use-query-my-playlists";
