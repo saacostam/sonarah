@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { QueryKey } from "@/shared/async-state";
+import { QueryKey, useMetaQuery } from "@/shared/async-state";
 import { useRepositories } from "@/shared/repositories/app";
 import type { IPlaylistRepositoryPayload } from "../domain";
 
@@ -14,7 +13,7 @@ export function useQueryPlaylistById({
 }: UseQueryPlaylistByIdArgs) {
 	const { playlist } = useRepositories();
 
-	return useQuery({
+	return useMetaQuery({
 		queryKey: [QueryKey.PLAYLIST_BY_ID, req.id],
 		queryFn: () => playlist.getById(req),
 		enabled,

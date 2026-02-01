@@ -38,12 +38,13 @@ export function PlaylistSearchItem({
 	order,
 	playlist,
 }: PlaylistItemProps) {
-	const playlistById = useQueryPlaylistById({
+	const queryPlaylistById = useQueryPlaylistById({
 		req: {
 			id: playlist.id,
 		},
 		enabled: isExpanded,
 	});
+	const playlistById = queryPlaylistById.useQuery();
 
 	const [page, setPage] = useState(1);
 

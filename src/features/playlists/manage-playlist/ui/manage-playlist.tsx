@@ -21,11 +21,13 @@ export function ManagePlaylist({
 	onNextHref,
 	onNotFound,
 }: ManagePlaylistProps) {
-	const playlistById = useQueryPlaylistById({
+	const queryPlaylistById = useQueryPlaylistById({
 		req: {
 			id,
 		},
 	});
+	const playlistById = queryPlaylistById.useQuery();
+
 	const user = useQueryUser();
 
 	useEffect(
@@ -62,7 +64,10 @@ export function ManagePlaylist({
 						onBackHref={onBackHref}
 						onNextHref={onNextHref}
 					>
-						<ManageMyPlaylistContent playlist={playlistById.data.playlist} />
+						<ManageMyPlaylistContent
+							optimSetPlaylist={queryPlaylistById.setOptimisticData}
+							playlist={playlistById.data.playlist}
+						/>
 					</ManagePlaylistShell>
 				) : (
 					<ManagePlaylistShell

@@ -16,11 +16,12 @@ export function MatchPlaylist({
 	onBackHref,
 	onNotFound,
 }: MatchPlaylistProps) {
-	const playlistById = useQueryPlaylistById({
+	const queryPlaylistById = useQueryPlaylistById({
 		req: {
 			id,
 		},
 	});
+	const playlistById = queryPlaylistById.useQuery();
 
 	useEffect(
 		function redirectIfNotFound() {
