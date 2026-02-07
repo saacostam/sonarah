@@ -182,6 +182,7 @@ export function ManageMyPlaylistContent({
 						onClick={onAddTrack}
 						type="button"
 						style={{ cursor: "pointer" }}
+						variant="soft"
 					>
 						<PlusIcon height={24} width={24} />
 						Add Track
