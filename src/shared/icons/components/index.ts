@@ -1,6 +1,8 @@
 export * from "./arrow-down-tray-icon";
 export * from "./arrow-path-icon";
 export * from "./audio-wave-icon";
+export * from "./check-circle-icon";
+export * from "./check-icon";
 export * from "./chevron-down-icon";
 export * from "./chevron-left-icon";
 export * from "./chevron-right-icon";
@@ -9,6 +11,7 @@ export * from "./cube-transparent-icon";
 export * from "./ellipsis-vertical-icon";
 export * from "./exclamation-triangle-icon";
 export * from "./light-bulb-icon";
+export * from "./minus-circle-icon";
 export * from "./moon-icon";
 export * from "./pause-icon";
 export * from "./play-icon";

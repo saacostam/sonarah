@@ -25,7 +25,12 @@ import {
 } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
 import { EmptyQuery, PolymorphicButton, QueryError } from "@/shared/components";
-import { ChevronLeftIcon, PlayIcon } from "@/shared/icons";
+import {
+	CheckIcon,
+	ChevronLeftIcon,
+	MinusCircleIcon,
+	PlayIcon,
+} from "@/shared/icons";
 import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
 import { useMatchPlaylistModalManger } from "../app";
 import { MatchPlaylistRecommendations } from "./match-playlist-recommendations";
@@ -237,6 +242,16 @@ export function MatchPlaylistContent({
 							);
 						};
 
+						const matchingTrackRightSlot = (
+							<Badge color={matchedTrack ? "green" : "gray"}>
+								{matchedTrack ? (
+									<CheckIcon height={16} width={16} />
+								) : (
+									<MinusCircleIcon height={16} width={16} />
+								)}
+							</Badge>
+						);
+
 						return (
 							<Grid key={track.id} gap="2" columns="50% 50%" id={track.id}>
 								<button
@@ -263,6 +278,7 @@ export function MatchPlaylistContent({
 											hightlighted={isMatching}
 											order={index + 1}
 											track={matchedTrack.track}
+											rightSlot={matchingTrackRightSlot}
 										/>
 									) : (
 										<TrackItemLayout
@@ -270,14 +286,9 @@ export function MatchPlaylistContent({
 											header="Empty slot"
 											subheader="Select a suitable track"
 											highlighted={isMatching}
+											rightSlot={matchingTrackRightSlot}
 										/>
 									)}
-									<Badge
-										color={matchedTrack ? "green" : "red"}
-										style={{ position: "absolute", top: "1rem", right: "1rem" }}
-									>
-										{matchedTrack ? "Matched" : "Unmatched"}
-									</Badge>
 								</button>
 							</Grid>
 						);
