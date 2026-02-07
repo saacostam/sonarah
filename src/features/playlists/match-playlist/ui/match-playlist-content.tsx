@@ -1,12 +1,14 @@
 import {
 	Badge,
 	Box,
+	Button,
 	Card,
 	Flex,
 	Grid,
 	Heading,
 	Skeleton,
 	Text,
+	Tooltip,
 } from "@radix-ui/themes";
 import {
 	type MouseEventHandler,
@@ -24,10 +26,16 @@ import {
 	TrackItemLayout,
 } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
-import { EmptyQuery, PolymorphicButton, QueryError } from "@/shared/components";
+import {
+	Callout,
+	EmptyQuery,
+	PolymorphicButton,
+	QueryError,
+} from "@/shared/components";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
+	InformationCircleIcon,
 	MinusCircleIcon,
 	PlayIcon,
 } from "@/shared/icons";
@@ -53,6 +61,8 @@ export function MatchPlaylistContent({
 
 	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
 	const [matchingTracks, setMatchingTracks] = useState<IMatchedTrack[]>([]);
+
+	const [isInfoOpen, setIsInfoOpen] = useState(false);
 
 	const currentMatchingTrack = useMemo(() => {
 		return playlist.tracks.find(
@@ -217,14 +227,21 @@ export function MatchPlaylistContent({
 						}
 					/>
 				</Flex>
-				<Heading>Match Playlist</Heading>
+				<Box>
+					<Heading>Match Playlist</Heading>
+					<Text size="3">
+						Build a new playlist by matching tracks one-to-one. For each
+						reference track, choose a new track that feels like a good match.
+					</Text>
+				</Box>
 			</Flex>
 			<PlaylistBrief playlist={playlist} />
-			<Heading size="5" mt="6">
-				Reference Playlist
-			</Heading>
-			<Grid columns="60% 40%" gap="4" my="4">
+			<Grid columns="60% 40%" gap="4" my="6">
 				<Flex direction="column" gap="2" ref={tracksContainerRef}>
+					<Grid gap="2" columns="50% 50%">
+						<Heading size="5">Reference Playlist</Heading>
+						<Heading size="5">Matched Playlist</Heading>
+					</Grid>
 					{playlist.tracks.map((track, index) => {
 						const position = index;
 						const isMatching = position === currentMatchingPosition;
@@ -283,8 +300,8 @@ export function MatchPlaylistContent({
 									) : (
 										<TrackItemLayout
 											avatar={{ fallback: String(index + 1) }}
-											header="Empty slot"
-											subheader="Select a suitable track"
+											header="Waiting for a match"
+											subheader="Select a track to continue"
 											highlighted={isMatching}
 											rightSlot={matchingTrackRightSlot}
 										/>
@@ -297,7 +314,18 @@ export function MatchPlaylistContent({
 
 				<div style={{ width: "100%", padding: 0 }} ref={searchContainerRef}>
 					<Card key={currentMatchingPosition} style={{ marginTop: deltaY }}>
-						<Heading>Match Track</Heading>
+						<Flex align="center" direction="row" gap="4" justify="between">
+							<Heading>Match Track</Heading>
+							<Tooltip content="How matching works">
+								<Button
+									onClick={() => setIsInfoOpen((v) => !v)}
+									style={{ padding: "0.4rem" }}
+									variant={isInfoOpen ? "solid" : "soft"}
+								>
+									<InformationCircleIcon height={20} width={20} />
+								</Button>
+							</Tooltip>
+						</Flex>
 						{currentMatchingTrack && (
 							<>
 								<Text>{currentMatchingTrack.name}</Text>{" "}
@@ -306,6 +334,18 @@ export function MatchPlaylistContent({
 								</Text>
 							</>
 						)}
+
+						<Callout
+							my="3"
+							dismissable
+							dismissed={{
+								value: !isInfoOpen,
+								onDismiss: () => setIsInfoOpen(false),
+							}}
+						>
+							Matches advance automatically and can be changed anytime. You can
+							skip tracks if needed.
+						</Callout>
 
 						<Box mt="2">
 							{queryTrackRecommendations.isLoading ? (
