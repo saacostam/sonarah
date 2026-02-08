@@ -1,15 +1,4 @@
-import {
-	Badge,
-	Box,
-	Button,
-	Card,
-	Flex,
-	Grid,
-	Heading,
-	Skeleton,
-	Text,
-	Tooltip,
-} from "@radix-ui/themes";
+import { Badge, Box, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import {
 	type MouseEventHandler,
 	useCallback,
@@ -18,7 +7,6 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useQueryTrackRecommendations } from "@/features/playlists/shared/app";
 import type { IPlaylist, ITrack } from "@/features/playlists/shared/domain";
 import {
 	PlaylistBrief,
@@ -26,16 +14,10 @@ import {
 	TrackItemLayout,
 } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
-import {
-	Callout,
-	EmptyQuery,
-	PolymorphicButton,
-	QueryError,
-} from "@/shared/components";
+import { PolymorphicButton } from "@/shared/components";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
-	InformationCircleIcon,
 	MinusCircleIcon,
 	PlayIcon,
 } from "@/shared/icons";
@@ -62,21 +44,11 @@ export function MatchPlaylistContent({
 	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
 	const [matchingTracks, setMatchingTracks] = useState<IMatchedTrack[]>([]);
 
-	const [isInfoOpen, setIsInfoOpen] = useState(false);
-
 	const currentMatchingTrack = useMemo(() => {
 		return playlist.tracks.find(
 			(_, index) => index === currentMatchingPosition,
 		);
 	}, [currentMatchingPosition, playlist.tracks]);
-
-	const queryTrackRecommendations = useQueryTrackRecommendations({
-		enabled: !!currentMatchingTrack,
-		req: {
-			name: currentMatchingTrack?.name || "",
-			artists: currentMatchingTrack?.artistNames || [],
-		},
-	});
 
 	const onClickRecommendation = useCallback(
 		(track: ITrack) => {
@@ -312,70 +284,15 @@ export function MatchPlaylistContent({
 					})}
 				</Flex>
 
-				<div style={{ width: "100%", padding: 0 }} ref={searchContainerRef}>
-					<Card key={currentMatchingPosition} style={{ marginTop: deltaY }}>
-						<Flex align="center" direction="row" gap="4" justify="between">
-							<Heading>Match Track</Heading>
-							<Tooltip content="How matching works">
-								<Button
-									onClick={() => setIsInfoOpen((v) => !v)}
-									style={{ padding: "0.4rem" }}
-									variant={isInfoOpen ? "solid" : "soft"}
-								>
-									<InformationCircleIcon height={20} width={20} />
-								</Button>
-							</Tooltip>
-						</Flex>
-						{currentMatchingTrack && (
-							<>
-								<Text>{currentMatchingTrack.name}</Text>{" "}
-								<Text size="2" style={{ color: "var(--accent-9)" }}>
-									by {currentMatchingTrack.artistNames.join(", ")}
-								</Text>
-							</>
-						)}
-
-						<Callout
-							my="3"
-							dismissable
-							dismissed={{
-								value: !isInfoOpen,
-								onDismiss: () => setIsInfoOpen(false),
-							}}
-						>
-							Matches advance automatically and can be changed anytime. You can
-							skip tracks if needed.
-						</Callout>
-
-						<Box mt="2">
-							{queryTrackRecommendations.isLoading ? (
-								<Flex direction="column" gap="2">
-									{new Array(4).fill(null).map((_, index) => (
-										<Skeleton key={+index} height="74px" width="100%" />
-									))}
-								</Flex>
-							) : queryTrackRecommendations.isSuccess ? (
-								queryTrackRecommendations.data.playlists.length > 0 ? (
-									<MatchPlaylistRecommendations
-										recommendations={queryTrackRecommendations.data}
-										onClickRecommendation={onClickRecommendation}
-									/>
-								) : (
-									<EmptyQuery />
-								)
-							) : (
-								<QueryError
-									title="Unable to fetch track recommendations"
-									error={queryTrackRecommendations.error}
-									retry={{
-										onClick: queryTrackRecommendations.refetch,
-										isPending: queryTrackRecommendations.isFetching,
-									}}
-								/>
-							)}
-						</Box>
-					</Card>
-				</div>
+				{currentMatchingTrack && (
+					<MatchPlaylistRecommendations
+						currentMatchingTrack={currentMatchingTrack}
+						deltaY={deltaY}
+						key={currentMatchingPosition}
+						ref={searchContainerRef}
+						onClickRecommendation={onClickRecommendation}
+					/>
+				)}
 			</Grid>
 		</>
 	);

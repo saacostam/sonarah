@@ -8,15 +8,15 @@ import { TrackItem } from "@/features/playlists/shared/ui";
 import { useWebPlayerManager } from "@/features/web-player/app";
 import { PlayIcon, PlusIcon } from "@/shared/icons";
 
-export interface MatchPlaylistRecommendationsProps {
+export interface MatchPlaylistRecommendationsContentProps {
 	onClickRecommendation: (track: ITrack) => void;
 	recommendations: ITrackRepositoryPayload["GetRecommendationsOut"];
 }
 
-export function MatchPlaylistRecommendations({
+export function MatchPlaylistRecommendationsContent({
 	onClickRecommendation,
 	recommendations,
-}: MatchPlaylistRecommendationsProps) {
+}: MatchPlaylistRecommendationsContentProps) {
 	const wpm = useWebPlayerManager();
 
 	const [selectedPlaylistId, setSelectedPlaylistId] = useState<
