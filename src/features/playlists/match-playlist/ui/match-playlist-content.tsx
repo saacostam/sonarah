@@ -2,7 +2,6 @@ import { Badge, Box, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import {
 	type MouseEventHandler,
 	useCallback,
-	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -14,7 +13,7 @@ import {
 	TrackItemLayout,
 } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
-import { PolymorphicButton } from "@/shared/components";
+import { PolymorphicButton, RelativeScroll } from "@/shared/components";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
@@ -102,56 +101,22 @@ export function MatchPlaylistContent({
 		[currentMatchingPosition, matchingTracks, playlist.tracks],
 	);
 
-	const [deltaY, setDeltaY] = useState(0);
-	const tracksContainerRef = useRef<HTMLDivElement>(null);
-	const searchContainerRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const onScrollHandler = () => {
-			if (
-				!tracksContainerRef.current ||
-				!searchContainerRef.current ||
-				!currentMatchingTrack
-			)
-				return;
-
-			const currentMatchingTrackElement =
-				tracksContainerRef.current.querySelector(
-					`[id="${currentMatchingTrack.id}"]`,
-				);
-
-			if (!currentMatchingTrackElement) return;
-
-			const currentMatchingTrackElementBounds = currentMatchingTrackElement
-				.getClientRects()
-				.item(0);
-			const searchContainerBounds = searchContainerRef.current
-				.getClientRects()
-				.item(0);
-
-			if (!currentMatchingTrackElementBounds || !searchContainerBounds) return;
-
-			setDeltaY(
-				Math.max(
-					0,
-					Math.abs(
-						searchContainerBounds.y - currentMatchingTrackElementBounds.y,
-					),
-				),
-			);
-		};
-
-		onScrollHandler();
-		window.addEventListener("scroll", onScrollHandler);
-		return () => window.removeEventListener("scroll", onScrollHandler);
-	}, [currentMatchingTrack]);
-
 	const onClickCreateHandler = useCallback(() => {
 		setStatus({
 			type: "create-playlist",
 			uris: matchingTracks.map((match) => match.track.uri),
 		});
 	}, [matchingTracks, setStatus]);
+
+	const tracksContainerRef = useRef<HTMLDivElement>(null);
+
+	const anchorElement: HTMLElement | null = useMemo(() => {
+		return (
+			tracksContainerRef.current?.querySelector(
+				`[id="${currentMatchingTrack?.id}"]`,
+			) ?? null
+		);
+	}, [currentMatchingTrack?.id]);
 
 	return (
 		<>
@@ -284,15 +249,15 @@ export function MatchPlaylistContent({
 					})}
 				</Flex>
 
-				{currentMatchingTrack && (
-					<MatchPlaylistRecommendations
-						currentMatchingTrack={currentMatchingTrack}
-						deltaY={deltaY}
-						key={currentMatchingPosition}
-						ref={searchContainerRef}
-						onClickRecommendation={onClickRecommendation}
-					/>
-				)}
+				<RelativeScroll anchor={anchorElement}>
+					{currentMatchingTrack && (
+						<MatchPlaylistRecommendations
+							currentMatchingTrack={currentMatchingTrack}
+							key={currentMatchingPosition}
+							onClickRecommendation={onClickRecommendation}
+						/>
+					)}
+				</RelativeScroll>
 			</Grid>
 		</>
 	);

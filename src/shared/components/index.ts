@@ -6,4 +6,5 @@ export * from "./logo";
 export * from "./pagination";
 export * from "./polymorphic-button";
 export * from "./query-error";
+export * from "./relative-scroll";
 export * from "./wave-background";
