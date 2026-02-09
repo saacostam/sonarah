@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryPlaylistById } from "@/features/playlists/shared/app";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { EmptyQuery, QueryError } from "@/shared/components";
+import type { IMatchedTrack } from "../domain";
 import { MatchPlaylistContent } from "./match-playlist-content";
+import { MatchPlaylistLayout } from "./match-playlist-layout";
 import { MatchPlaylistSkeleton } from "./match-playlist-skeleton";
 
 export interface MatchPlaylistProps {
@@ -16,6 +18,8 @@ export function MatchPlaylist({
 	onBackHref,
 	onNotFound,
 }: MatchPlaylistProps) {
+	const [matchedTracks, setMatchedTracks] = useState<IMatchedTrack[]>([]);
+
 	const queryPlaylistById = useQueryPlaylistById({
 		req: {
 			id,
@@ -49,19 +53,28 @@ export function MatchPlaylist({
 					}}
 				/>
 			)}
-			{playlistById.isSuccess &&
-				(playlistById.data.playlist.tracks.length === 0 ? (
-					<EmptyQuery
-						description="Add a few more tracks to your reference tracklist and try again."
-						title="Nothing to match yet"
-					/>
-				) : (
-					<MatchPlaylistContent
-						onBackHref={onBackHref}
-						playlist={playlistById.data.playlist}
-						defaultTrackId={playlistById.data.playlist.tracks[0].id} // Safe to use [0] here because of length check above
-					/>
-				))}
+			{playlistById.isSuccess && (
+				<MatchPlaylistLayout
+					onBackHref={onBackHref}
+					matchedTracks={matchedTracks}
+					playlist={playlistById.data.playlist}
+				>
+					{playlistById.data.playlist.tracks.length === 0 ? (
+						<EmptyQuery
+							description="Add a few more tracks to your reference tracklist and try again."
+							title="Nothing to match yet"
+						/>
+					) : (
+						<MatchPlaylistContent
+							defaultTrackId={playlistById.data.playlist.tracks[0].id} // Safe to use [0] here because of length check above
+							matchedTracks={matchedTracks}
+							onBackHref={onBackHref}
+							playlist={playlistById.data.playlist}
+							setMatchedTracks={setMatchedTracks}
+						/>
+					)}
+				</MatchPlaylistLayout>
+			)}
 			{playlistById.isLoading && <MatchPlaylistSkeleton />}
 		</>
 	);
