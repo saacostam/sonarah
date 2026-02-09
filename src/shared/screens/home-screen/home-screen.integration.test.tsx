@@ -1,7 +1,9 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type { IAuthRepositoryPayload } from "@/features/auth/domain";
+import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import type { IAuthAdapterPayload } from "@/shared/adapters/auth/domain";
+import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
@@ -74,7 +76,7 @@ describe("HomeScreen [Integration]", () => {
 		});
 	});
 
-	it("should request access-token if code is available and reset route", async () => {
+	it("should successfully request access-token if code is available, set token and reset route", async () => {
 		const { di, deps } = diFactory({
 			token: "unauth",
 			code: "code",
@@ -97,6 +99,51 @@ describe("HomeScreen [Integration]", () => {
 			};
 			expect(deps.setToken).toHaveBeenCalledWith(payload);
 			expect(deps.resetRouter).toHaveBeenCalled();
+
+			const successfulLoginEvent: IAnalyticsEvent = {
+				name: "login",
+				payload: {
+					success: true,
+				},
+			};
+			expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
+				successfulLoginEvent,
+			);
+		});
+	});
+
+	it("should successfully request access-token if code is available, set token and reset route", async () => {
+		const { di, deps } = diFactory({
+			token: "unauth",
+			code: "code",
+		});
+
+		deps.requestAccessToken.mockRejectedValueOnce(
+			new DomainError(DomainErrorType.APP_ERROR, "user message", "dev message"),
+		);
+
+		renderWithProviders(<HomeScreen />, di);
+
+		await waitFor(() => {
+			const payload: IAuthRepositoryPayload["IRequestAccessTokenIn"] = {
+				code: "code",
+			};
+			expect(deps.requestAccessToken).toHaveBeenCalledExactlyOnceWith(payload);
+		});
+
+		await waitFor(() => {
+			expect(deps.setToken).not.toHaveBeenCalled();
+			expect(deps.resetRouter).toHaveBeenCalled();
+
+			const failedLoginEvent: IAnalyticsEvent = {
+				name: "login",
+				payload: {
+					success: false,
+				},
+			};
+			expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
+				failedLoginEvent,
+			);
 		});
 	});
 

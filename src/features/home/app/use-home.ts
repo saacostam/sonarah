@@ -10,7 +10,8 @@ enum UrlSearchParam {
 }
 
 export function useHome() {
-	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();
+	const { analyticsAdapter, authAdapter, routerAdapter, navigationAdapter } =
+		useAdapters();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
 	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
@@ -43,14 +44,28 @@ export function useHome() {
 			requestAccessToken(
 				{ code },
 				{
+					onError: () => {
+						analyticsAdapter.trackEvent({
+							name: "login",
+							payload: {
+								success: false,
+							},
+						});
+					},
 					onSuccess: (code) => {
 						authAdapter.setToken({ token: code });
+						analyticsAdapter.trackEvent({
+							name: "login",
+							payload: {
+								success: true,
+							},
+						});
 					},
 					onSettled: () => routerAdapter.reset(),
 				},
 			);
 		}
-	}, [authAdapter, code, requestAccessToken, routerAdapter]);
+	}, [analyticsAdapter, authAdapter, code, requestAccessToken, routerAdapter]);
 
 	return useMemo(
 		() =>
