@@ -112,7 +112,7 @@ describe("HomeScreen [Integration]", () => {
 		});
 	});
 
-	it("should successfully request access-token if code is available, set token and reset route", async () => {
+	it("should unsuccessfully request access-token if code is available and reset route", async () => {
 		const { di, deps } = diFactory({
 			token: "unauth",
 			code: "code",
