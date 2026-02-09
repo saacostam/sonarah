@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { IconProps } from "@/shared/icons";
@@ -51,7 +51,9 @@ describe("Callout", () => {
 
 		await user.click(screen.getByRole("button"));
 
-		expect(screen.queryByText("Dismiss me")).not.toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.queryByText("Dismiss me")).not.toBeInTheDocument();
+		});
 	});
 
 	it("calls onDismiss when controlled dismissed prop is provided", async () => {
