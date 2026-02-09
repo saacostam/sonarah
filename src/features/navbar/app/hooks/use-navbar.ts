@@ -5,8 +5,13 @@ import { RouteName } from "@/shared/adapters/navigation/domain";
 import { IThemeVariant } from "@/shared/adapters/theme/domain";
 
 export function useNavbar() {
-	const { authAdapter, navigationAdapter, routerAdapter, themeAdapter } =
-		useAdapters();
+	const {
+		analyticsAdapter,
+		authAdapter,
+		navigationAdapter,
+		routerAdapter,
+		themeAdapter,
+	} = useAdapters();
 
 	const session = authAdapter.getToken();
 
@@ -41,7 +46,16 @@ export function useNavbar() {
 							label: "Login",
 							action: {
 								type: "button" as const,
-								onClick: () => startAuthFlow(),
+								onClick: () => {
+									analyticsAdapter.trackEvent({
+										name: "click-login-button",
+										payload: {
+											location: "navbar",
+										},
+									});
+
+									startAuthFlow();
+								},
 							},
 						}
 					: {
@@ -55,6 +69,7 @@ export function useNavbar() {
 			theme: themeAdapter.theme,
 		}),
 		[
+			analyticsAdapter,
 			logout,
 			navigationAdapter,
 			onToggleTheme,

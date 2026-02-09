@@ -32,11 +32,20 @@ export function useHome() {
 					}
 				: {
 						type: "button",
-						onClick: () => startAuthFlow(),
+						onClick: () => {
+							analyticsAdapter.trackEvent({
+								name: "click-login-button",
+								payload: {
+									location: "landing",
+								},
+							});
+
+							startAuthFlow();
+						},
 					},
 			label: isAuth ? "Start Now" : "Login",
 		}),
-		[isAuth, navigationAdapter, startAuthFlow],
+		[analyticsAdapter, isAuth, navigationAdapter, startAuthFlow],
 	);
 
 	useEffect(() => {
@@ -46,7 +55,7 @@ export function useHome() {
 				{
 					onError: () => {
 						analyticsAdapter.trackEvent({
-							name: "login",
+							name: "request-access-token",
 							payload: {
 								success: false,
 							},
@@ -55,7 +64,7 @@ export function useHome() {
 					onSuccess: (code) => {
 						authAdapter.setToken({ token: code });
 						analyticsAdapter.trackEvent({
-							name: "login",
+							name: "request-access-token",
 							payload: {
 								success: true,
 							},

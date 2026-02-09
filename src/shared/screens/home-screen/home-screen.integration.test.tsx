@@ -101,7 +101,7 @@ describe("HomeScreen [Integration]", () => {
 			expect(deps.resetRouter).toHaveBeenCalled();
 
 			const successfulLoginEvent: IAnalyticsEvent = {
-				name: "login",
+				name: "request-access-token",
 				payload: {
 					success: true,
 				},
@@ -136,7 +136,7 @@ describe("HomeScreen [Integration]", () => {
 			expect(deps.resetRouter).toHaveBeenCalled();
 
 			const failedLoginEvent: IAnalyticsEvent = {
-				name: "login",
+				name: "request-access-token",
 				payload: {
 					success: false,
 				},
@@ -160,6 +160,16 @@ describe("HomeScreen [Integration]", () => {
 		await userEvent.click(button);
 
 		expect(deps.startAuthFlow).toHaveBeenCalledTimes(1);
+
+		const clickLoginButtonEvent: IAnalyticsEvent = {
+			name: "click-login-button",
+			payload: {
+				location: "landing",
+			},
+		};
+		expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
+			clickLoginButtonEvent,
+		);
 	});
 
 	it("should render start-now button if authenticated", async () => {

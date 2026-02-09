@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { IThemeVariant } from "@/shared/adapters/theme/domain";
@@ -32,13 +33,21 @@ const makeThemeAdapter = (initTheme?: IThemeVariant) => {
 	};
 };
 
+const makeAnalyticsAdapter = () => {
+	return {
+		trackEvent: vi.fn(),
+	};
+};
+
 describe("Navbar [Integration]", () => {
 	it("should render login and trigger auth flow when clicked, if session is unauthenticated", async () => {
+		const analyticsAdapter = makeAnalyticsAdapter();
 		const authAdapter = makeAuthAdapter("unauthenticated");
 		const themeAdapter = makeThemeAdapter();
 
 		renderWithProviders(<Navbar />, {
 			adapters: {
+				analyticsAdapter,
 				authAdapter,
 				navigationAdapter,
 				themeAdapter,
@@ -50,6 +59,16 @@ describe("Navbar [Integration]", () => {
 
 		expect(authAdapter.startAuthFlow).toHaveBeenCalled();
 		expect(authAdapter.removeToken).not.toHaveBeenCalled();
+
+		const clickLoginButtonEvent: IAnalyticsEvent = {
+			name: "click-login-button",
+			payload: {
+				location: "navbar",
+			},
+		};
+		expect(analyticsAdapter.trackEvent).toHaveBeenCalledExactlyOnceWith(
+			clickLoginButtonEvent,
+		);
 	});
 
 	it("should render logout and remove token when clicked, if session is authenticated", async () => {
