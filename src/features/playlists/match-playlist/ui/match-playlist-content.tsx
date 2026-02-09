@@ -1,37 +1,18 @@
-import { Badge, Box, Flex, Grid, Heading, Text } from "@radix-ui/themes";
-import {
-	type MouseEventHandler,
-	useCallback,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { Box, Flex, Grid, Heading, Text } from "@radix-ui/themes";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { IPlaylist, ITrack } from "@/features/playlists/shared/domain";
-import {
-	PlaylistBrief,
-	TrackItem,
-	TrackItemLayout,
-} from "@/features/playlists/shared/ui";
+import { PlaylistBrief } from "@/features/playlists/shared/ui";
 import { WebPlayer } from "@/features/web-player/ui";
 import { PolymorphicButton, RelativeScroll } from "@/shared/components";
-import {
-	CheckIcon,
-	ChevronLeftIcon,
-	MinusCircleIcon,
-	PlayIcon,
-} from "@/shared/icons";
-import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
+import { ChevronLeftIcon, PlayIcon } from "@/shared/icons";
 import { useMatchPlaylistModalManger } from "../app";
+import type { IMatchedTrack } from "../domain";
 import { MatchPlaylistRecommendations } from "./match-playlist-recommendations";
+import { MatchPlaylistTrackList } from "./match-playlist-track-list";
 
 export interface MatchPlaylistContentProps {
 	onBackHref: string;
 	playlist: IPlaylist;
-}
-
-export interface IMatchedTrack {
-	position: number;
-	track: ITrack;
 }
 
 export function MatchPlaylistContent({
@@ -41,7 +22,7 @@ export function MatchPlaylistContent({
 	const { setStatus } = useMatchPlaylistModalManger();
 
 	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
-	const [matchingTracks, setMatchingTracks] = useState<IMatchedTrack[]>([]);
+	const [matchedTracks, setMatchedTracks] = useState<IMatchedTrack[]>([]);
 
 	const currentMatchingTrack = useMemo(() => {
 		return playlist.tracks.find(
@@ -51,7 +32,7 @@ export function MatchPlaylistContent({
 
 	const onClickRecommendation = useCallback(
 		(track: ITrack) => {
-			setMatchingTracks((oldMatchingTracks) => {
+			setMatchedTracks((oldMatchingTracks) => {
 				const hasPosition = oldMatchingTracks.find(
 					(match) => match.position === currentMatchingPosition,
 				);
@@ -87,7 +68,7 @@ export function MatchPlaylistContent({
 							(currentMatchingPosition + i) % playlist.tracks.length;
 
 						if (
-							!matchingTracks.find((match) => match.position === nextPosition)
+							!matchedTracks.find((match) => match.position === nextPosition)
 						) {
 							setCurrentMatchingPosition(nextPosition);
 							break;
@@ -98,18 +79,17 @@ export function MatchPlaylistContent({
 				return newMatchingTracks;
 			});
 		},
-		[currentMatchingPosition, matchingTracks, playlist.tracks],
+		[currentMatchingPosition, matchedTracks, playlist.tracks],
 	);
 
 	const onClickCreateHandler = useCallback(() => {
 		setStatus({
 			type: "create-playlist",
-			uris: matchingTracks.map((match) => match.track.uri),
+			uris: matchedTracks.map((match) => match.track.uri),
 		});
-	}, [matchingTracks, setStatus]);
+	}, [matchedTracks, setStatus]);
 
 	const tracksContainerRef = useRef<HTMLDivElement>(null);
-
 	const anchorElement: HTMLElement | null = useMemo(() => {
 		return (
 			tracksContainerRef.current?.querySelector(
@@ -147,18 +127,18 @@ export function MatchPlaylistContent({
 							label: (
 								<>
 									<PlayIcon width={16} height={16} />
-									Next: Create Playlist {matchingTracks.length}/
+									Next: Create Playlist {matchedTracks.length}/
 									{playlist.tracks.length}
 								</>
 							),
 						}}
 						color={
-							matchingTracks.length < playlist.tracks.length
+							matchedTracks.length < playlist.tracks.length
 								? "yellow"
 								: undefined
 						}
 						variant={
-							matchingTracks.length < playlist.tracks.length
+							matchedTracks.length < playlist.tracks.length
 								? "outline"
 								: "solid"
 						}
@@ -173,81 +153,13 @@ export function MatchPlaylistContent({
 				</Box>
 			</Flex>
 			<PlaylistBrief playlist={playlist} />
-			<Grid columns="60% 40%" gap="4" my="6">
-				<Flex direction="column" gap="2" ref={tracksContainerRef}>
-					<Grid gap="2" columns="50% 50%">
-						<Heading size="5">Reference Playlist</Heading>
-						<Heading size="5">Matched Playlist</Heading>
-					</Grid>
-					{playlist.tracks.map((track, index) => {
-						const position = index;
-						const isMatching = position === currentMatchingPosition;
-
-						const matchedTrack = matchingTracks.find(
-							(match) => match.position === position,
-						);
-
-						const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-							setCurrentMatchingPosition(position);
-							const { currentTarget } = e;
-							nestedRequestAnimationFrame(
-								() => scrollToElement(currentTarget, 16),
-								10,
-							);
-						};
-
-						const matchingTrackRightSlot = (
-							<Badge color={matchedTrack ? "green" : "gray"}>
-								{matchedTrack ? (
-									<CheckIcon height={16} width={16} />
-								) : (
-									<MinusCircleIcon height={16} width={16} />
-								)}
-							</Badge>
-						);
-
-						return (
-							<Grid key={track.id} gap="2" columns="50% 50%" id={track.id}>
-								<button
-									className="btn-reset clickable"
-									onClick={onClick}
-									type="button"
-								>
-									{/* Displayed order stays 1-indexed */}
-									<TrackItem
-										order={index + 1}
-										track={track}
-										hightlighted={isMatching}
-									/>
-								</button>
-
-								<button
-									className="btn-reset clickable"
-									onClick={onClick}
-									style={{ position: "relative" }}
-									type="button"
-								>
-									{matchedTrack ? (
-										<TrackItem
-											hightlighted={isMatching}
-											order={index + 1}
-											track={matchedTrack.track}
-											rightSlot={matchingTrackRightSlot}
-										/>
-									) : (
-										<TrackItemLayout
-											avatar={{ fallback: String(index + 1) }}
-											header="Waiting for a match"
-											subheader="Select a track to continue"
-											highlighted={isMatching}
-											rightSlot={matchingTrackRightSlot}
-										/>
-									)}
-								</button>
-							</Grid>
-						);
-					})}
-				</Flex>
+			<Grid columns="60% 40%" gap="4" my="6" ref={tracksContainerRef}>
+				<MatchPlaylistTrackList
+					currentMatchingPosition={currentMatchingPosition}
+					matchedTracks={matchedTracks}
+					onClickTrack={setCurrentMatchingPosition}
+					playlist={playlist}
+				/>
 
 				<RelativeScroll anchor={anchorElement}>
 					{currentMatchingTrack && (
