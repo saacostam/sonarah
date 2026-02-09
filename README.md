@@ -1,4 +1,4 @@
-# Sonarah
+# 🎹 Sonarah
 
 Sonarah is a Spotify-powered playlist matching tool for people who care about flow, mood, and intent — not just collections of tracks.
 
