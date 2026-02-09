@@ -33,5 +33,5 @@ Improvements that can be added after the repository is public.
 
 ### Internal Cleanup
 - [ ] Unify playlist creation + track addition into a single async flow  
-  - Currently handled via `onSuccess` callbacks  
+  - Currently handled via chaining `onSuccess` callbacks  
   - Goal: one async method returning a single promise
