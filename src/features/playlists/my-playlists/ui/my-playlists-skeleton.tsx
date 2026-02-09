@@ -9,7 +9,7 @@ export function MyPlaylistsSkeleton() {
 			data-testid="my-playlists-skeleton"
 		>
 			{new Array(14).fill(null).map((_, index) => (
-				<Skeleton key={+index} width="9rem" height="13rem" />
+				<Skeleton key={+index} width="9.5rem" height="13rem" />
 			))}
 		</Flex>
 	);
