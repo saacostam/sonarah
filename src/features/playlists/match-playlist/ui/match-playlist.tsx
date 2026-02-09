@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQueryPlaylistById } from "@/features/playlists/shared/app";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
-import { QueryError } from "@/shared/components";
+import { EmptyQuery, QueryError } from "@/shared/components";
 import { MatchPlaylistContent } from "./match-playlist-content";
 import { MatchPlaylistSkeleton } from "./match-playlist-skeleton";
 
@@ -49,12 +49,19 @@ export function MatchPlaylist({
 					}}
 				/>
 			)}
-			{playlistById.isSuccess && (
-				<MatchPlaylistContent
-					onBackHref={onBackHref}
-					playlist={playlistById.data.playlist}
-				/>
-			)}
+			{playlistById.isSuccess &&
+				(playlistById.data.playlist.tracks.length === 0 ? (
+					<EmptyQuery
+						description="Add a few more tracks to your reference tracklist and try again."
+						title="Nothing to match yet"
+					/>
+				) : (
+					<MatchPlaylistContent
+						onBackHref={onBackHref}
+						playlist={playlistById.data.playlist}
+						defaultTrackId={playlistById.data.playlist.tracks[0].id} // Safe to use [0] here because of length check above
+					/>
+				))}
 			{playlistById.isLoading && <MatchPlaylistSkeleton />}
 		</>
 	);

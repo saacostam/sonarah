@@ -7,14 +7,14 @@ import { nestedRequestAnimationFrame, scrollToElement } from "@/shared/utils";
 import type { IMatchedTrack } from "../domain";
 
 export interface MatchPlaylistTrackListProps {
-	currentMatchingPosition: number;
+	currentMatchingTrackId: string;
 	matchedTracks: IMatchedTrack[];
-	onClickTrack: (position: number) => void;
+	onClickTrack: (trackId: string) => void;
 	playlist: IPlaylist;
 }
 
 export function MatchPlaylistTrackList({
-	currentMatchingPosition,
+	currentMatchingTrackId,
 	matchedTracks,
 	onClickTrack,
 	playlist,
@@ -26,15 +26,14 @@ export function MatchPlaylistTrackList({
 				<Heading size="5">Matched Playlist</Heading>
 			</Grid>
 			{playlist.tracks.map((track, index) => {
-				const position = index;
-				const isMatching = position === currentMatchingPosition;
+				const isMatching = track.id === currentMatchingTrackId;
 
 				const matchedTrack = matchedTracks.find(
-					(match) => match.position === position,
+					(match) => match.referenceTrackId === track.id,
 				);
 
 				const onClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-					onClickTrack(position);
+					onClickTrack(track.id);
 					const { currentTarget } = e;
 					nestedRequestAnimationFrame(
 						() => scrollToElement(currentTarget, 16),
@@ -77,7 +76,7 @@ export function MatchPlaylistTrackList({
 								<TrackItem
 									hightlighted={isMatching}
 									order={index + 1}
-									track={matchedTrack.track}
+									track={matchedTrack.newTrack}
 									rightSlot={matchingTrackRightSlot}
 								/>
 							) : (

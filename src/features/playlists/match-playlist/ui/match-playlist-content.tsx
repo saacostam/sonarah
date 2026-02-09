@@ -11,81 +11,70 @@ import { MatchPlaylistRecommendations } from "./match-playlist-recommendations";
 import { MatchPlaylistTrackList } from "./match-playlist-track-list";
 
 export interface MatchPlaylistContentProps {
+	defaultTrackId: string;
 	onBackHref: string;
 	playlist: IPlaylist;
 }
 
 export function MatchPlaylistContent({
+	defaultTrackId,
 	onBackHref,
 	playlist,
 }: MatchPlaylistContentProps) {
 	const { setStatus } = useMatchPlaylistModalManger();
 
-	const [currentMatchingPosition, setCurrentMatchingPosition] = useState(0);
+	const [currentlyMatchingTrackId, setCurrentlyMatchingTrackId] =
+		useState(defaultTrackId);
 	const [matchedTracks, setMatchedTracks] = useState<IMatchedTrack[]>([]);
 
 	const currentMatchingTrack = useMemo(() => {
 		return playlist.tracks.find(
-			(_, index) => index === currentMatchingPosition,
+			(track) => track.id === currentlyMatchingTrackId,
 		);
-	}, [currentMatchingPosition, playlist.tracks]);
+	}, [currentlyMatchingTrackId, playlist.tracks]);
 
 	const onClickRecommendation = useCallback(
 		(track: ITrack) => {
-			setMatchedTracks((oldMatchingTracks) => {
-				const hasPosition = oldMatchingTracks.find(
-					(match) => match.position === currentMatchingPosition,
+			setMatchedTracks((currMatchedTracks) => {
+				const existingTrack = currMatchedTracks.find(
+					(match) => match.referenceTrackId === currentlyMatchingTrackId,
 				);
 
-				const newMatchingTracks = hasPosition
-					? oldMatchingTracks.map((match) =>
-							match.position === currentMatchingPosition
+				const newMatchingTracks: IMatchedTrack[] = existingTrack
+					? currMatchedTracks.map((match) =>
+							match.referenceTrackId === currentlyMatchingTrackId
 								? {
 										...match,
-										track,
+										newTrack: track,
 									}
 								: match,
 						)
 					: [
-							...oldMatchingTracks,
-							{ track, position: currentMatchingPosition },
+							...currMatchedTracks,
+							{ newTrack: track, referenceTrackId: currentlyMatchingTrackId },
 						];
 
-				const positions = new Set(
-					new Array(playlist.tracks.length).fill(null).map((_, index) => index),
-				);
-				newMatchingTracks.forEach((match) => {
-					positions.delete(match.position);
-				});
-				const areAllTracksMatched = positions.size === 0;
+				const nextTrackId =
+					playlist.tracks.reduce((nextTrackId: string | null, track) => {
+						if (nextTrackId !== null) return nextTrackId;
 
-				if (areAllTracksMatched) {
-					setCurrentMatchingPosition(0);
-				} else {
-					// Find the next unmatched position (0-indexed)
-					for (let i = 1; i < playlist.tracks.length; i++) {
-						const nextPosition =
-							(currentMatchingPosition + i) % playlist.tracks.length;
+						const hasMatchingTrack = newMatchingTracks.find(
+							(mt) => mt.referenceTrackId === track.id,
+						);
+						return !hasMatchingTrack ? track.id : null;
+					}, null) ?? defaultTrackId;
 
-						if (
-							!matchedTracks.find((match) => match.position === nextPosition)
-						) {
-							setCurrentMatchingPosition(nextPosition);
-							break;
-						}
-					}
-				}
-
+				setCurrentlyMatchingTrackId(nextTrackId);
 				return newMatchingTracks;
 			});
 		},
-		[currentMatchingPosition, matchedTracks, playlist.tracks],
+		[currentlyMatchingTrackId, defaultTrackId, playlist.tracks],
 	);
 
 	const onClickCreateHandler = useCallback(() => {
 		setStatus({
 			type: "create-playlist",
-			uris: matchedTracks.map((match) => match.track.uri),
+			uris: matchedTracks.map((match) => match.newTrack.uri),
 		});
 	}, [matchedTracks, setStatus]);
 
@@ -155,9 +144,9 @@ export function MatchPlaylistContent({
 			<PlaylistBrief playlist={playlist} />
 			<Grid columns="60% 40%" gap="4" my="6" ref={tracksContainerRef}>
 				<MatchPlaylistTrackList
-					currentMatchingPosition={currentMatchingPosition}
+					currentMatchingTrackId={currentlyMatchingTrackId}
 					matchedTracks={matchedTracks}
-					onClickTrack={setCurrentMatchingPosition}
+					onClickTrack={setCurrentlyMatchingTrackId}
 					playlist={playlist}
 				/>
 
@@ -165,7 +154,7 @@ export function MatchPlaylistContent({
 					{currentMatchingTrack && (
 						<MatchPlaylistRecommendations
 							currentMatchingTrack={currentMatchingTrack}
-							key={currentMatchingPosition}
+							key={currentlyMatchingTrackId}
 							onClickRecommendation={onClickRecommendation}
 						/>
 					)}
