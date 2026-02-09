@@ -1,14 +1,16 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, type MotionStyle, motion } from "framer-motion";
 import type { PropsWithChildren } from "react";
 
-type AutoHeightPresenceProps = PropsWithChildren<{
+export interface AutoHeightPresenceProps {
 	isOpen: boolean;
-}>;
+	style?: MotionStyle;
+}
 
 export function AutoHeightPresence({
-	isOpen,
 	children,
-}: AutoHeightPresenceProps) {
+	isOpen,
+	style,
+}: PropsWithChildren<AutoHeightPresenceProps>) {
 	return (
 		<AnimatePresence>
 			{isOpen && (
@@ -19,6 +21,7 @@ export function AutoHeightPresence({
 					exit={{ opacity: 0, height: 0 }}
 					transition={{ duration: 0.25, ease: "easeInOut" }}
 					style={{
+						...style,
 						overflow: "hidden",
 					}}
 				>
