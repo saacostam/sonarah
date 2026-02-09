@@ -2,6 +2,7 @@ import { type PropsWithChildren, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
 
+import { useMockAnalyticsProvider } from "@/shared/adapters/analytics/infra";
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
 import { MockErrorLoggerAdapter } from "@/shared/adapters/errors/infra";
 import { useIntersectionObserverAdapter } from "@/shared/adapters/intersection-observer/infra";
@@ -27,6 +28,8 @@ export function AdaptersProvider({ children }: PropsWithChildren) {
 function AdaptersProviderDI({ children }: PropsWithChildren) {
 	const storageAdapter = useMemo(() => new LocalStorageAdapter(), []);
 	const routerAdapter = useReactRouterAdapter();
+
+	const analyticsAdapter = useMockAnalyticsProvider();
 	const navigationAdapter = useMemo(() => new NavigationAdapter(), []);
 	const authAdapter = useMemo(
 		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),
@@ -50,6 +53,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 
 	const allAdapters: IAdapters = useMemo(
 		() => ({
+			analyticsAdapter: analyticsAdapter,
 			authAdapter: authAdapter,
 			errorLoggerAdapter: errorLoggerAdapter,
 			intersectionObserverAdapter: intersectionObserverAdapter,
@@ -61,6 +65,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 			webPlayerAdapter: webPlayerAdapter,
 		}),
 		[
+			analyticsAdapter,
 			authAdapter,
 			errorLoggerAdapter,
 			intersectionObserverAdapter,

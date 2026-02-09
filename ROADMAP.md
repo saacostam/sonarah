@@ -21,7 +21,8 @@ Improvements that can be added after the repository is public.
 - [ ] Investigate `act(...)` wrapper warnings in test runs
 
 ### Observability
-- [ ] Add analytics adapter  
+- [ ] Analytics (Mock)
+  - [x] Add analytics adapter  
   - [ ] Light coverage for core user actions
 - [ ] Add error logging adapter  
   - [ ] Light coverage for runtime errors
