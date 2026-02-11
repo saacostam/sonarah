@@ -3,7 +3,7 @@
 ## Must-Haves
 Features, fixes, and tests required before making the repository public.
 
-- [ ] Handle web player initialization error cases  
+- [x] Handle web player initialization error cases  
   - Authorization errors (e.g. non-Premium users)
   - Failed device initialization
 - [ ] Happy-path test coverage for **Manage Playlist**

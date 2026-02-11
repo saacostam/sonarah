@@ -113,46 +113,54 @@ export function useSpotifyWebPlayerAdapter({
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: false,
-
 		queryKey: ["private-spotify-web-player-adapter-setup", token],
-		queryFn: () => {
-			setDeviceId(null);
-			setWebPlayerState(null);
+		queryFn: () =>
+			new Promise<null>((res, rej) => {
+				setDeviceId(null);
+				setWebPlayerState(null);
 
-			window.onSpotifyWebPlaybackSDKReady =
-				window.onSpotifyWebPlaybackSDKReady ??
-				createOnSpotifyWebPlaybackSDKReadyHandler({
-					onDeviceId: ({ deviceId }) => setDeviceId(deviceId),
-					setState: setWebPlayerState,
-					setWebPlayer,
-					token,
-				});
+				window.onSpotifyWebPlaybackSDKReady =
+					createOnSpotifyWebPlaybackSDKReadyHandler({
+						res,
+						rej,
+						onDeviceId: ({ deviceId }) => setDeviceId(deviceId),
+						setState: setWebPlayerState,
+						setWebPlayer,
+						token,
+					});
 
-			const body = document.querySelector("body");
-			if (!body) {
-				throw new DomainError(
-					DomainErrorType.APP_ERROR,
-					"Couldn't load web player",
-					"[init] Couldn't load web player. Missing body tag",
-				);
-			}
+				const body = document.querySelector("body");
+				if (!body) {
+					rej(
+						new DomainError(
+							DomainErrorType.APP_ERROR,
+							"Spotify Web Player failed to load. Please refresh the page.",
+							"[init] Couldn't load web player. Missing body tag",
+						),
+					);
+					return null;
+				}
 
-			const scriptAlreadyExists = Array.from(
-				body.querySelectorAll("script"),
-			).find((script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC);
-			if (scriptAlreadyExists) scriptAlreadyExists.remove();
+				const scriptAlreadyExists = Array.from(
+					body.querySelectorAll("script"),
+				).find((script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC);
+				if (scriptAlreadyExists) scriptAlreadyExists.remove();
 
-			const script = document.createElement("script");
-			script.src = SPOTIFY_WEB_PLAYER_SCRIPT_SRC;
+				const script = document.createElement("script");
+				script.src = SPOTIFY_WEB_PLAYER_SCRIPT_SRC;
 
-			script.onerror = (e) => {
-				throw e;
-			};
+				script.onerror = (e) => {
+					rej(
+						new DomainError(
+							DomainErrorType.APP_ERROR,
+							"Spotify Web Player failed to load. Please check your connection and try again.",
+							`[script.onerror] ${e}`,
+						),
+					);
+				};
 
-			body.append(script);
-
-			return null;
-		},
+				body.append(script);
+			}),
 		enabled,
 	});
 
@@ -179,11 +187,14 @@ export function useSpotifyWebPlayerAdapter({
 				? {
 						type: "failed",
 						payload: {
-							error: new DomainError(
-								DomainErrorType.APP_ERROR,
-								"Unable to initialize Spotify Web Player",
-								`[SpotifyWebPlayerAdapter]: ${setup.error}`,
-							),
+							error:
+								setup.error instanceof DomainError
+									? setup.error
+									: new DomainError(
+											DomainErrorType.APP_ERROR,
+											"Unable to start Spotify Web Player. Please try again.",
+											`[SpotifyWebPlayerAdapter]: ${setup.error}`,
+										),
 							retry: setup.refetch,
 						},
 					}
@@ -206,27 +217,36 @@ export function useSpotifyWebPlayerAdapter({
 const WEB_PLAYER_NAME = "Sonarah Web Player";
 
 function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
+	res: (v: null) => void;
+	rej: (e: unknown) => void;
 	onDeviceId: (args: { deviceId: string }) => void;
 	setState: (state: IWebPlayerState | null) => void;
 	setWebPlayer: (state: SpotifyPlayer) => void;
 	token: string;
 }) {
-	const { onDeviceId, setState, setWebPlayer, token } = args;
+	const { res, rej, onDeviceId, setState, setWebPlayer, token } = args;
 
 	return () => {
 		if (!token || typeof token !== "string") {
-			throw new DomainError(
-				DomainErrorType.APP_ERROR,
-				"Token not found",
-				"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback cannot start because your Spotify session has expired. Please log in again.",
+					"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
+				),
 			);
+			return;
 		}
+
 		if (!window.Spotify) {
-			throw new DomainError(
-				DomainErrorType.APP_ERROR,
-				"Spotify could not be added",
-				"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback cannot start because Spotify Web Player failed to load. Please refresh the page.",
+					"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
+				),
 			);
+			return;
 		}
 
 		const webPlayer = new window.Spotify.Player({
@@ -236,13 +256,20 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 		});
 
 		webPlayer.addListener("ready", ({ device_id }) => {
-			onDeviceId({
-				deviceId: device_id,
-			});
+			onDeviceId({ deviceId: device_id });
 			setWebPlayer(webPlayer);
+			res(null);
 		});
 
-		webPlayer.addListener("not_ready", () => {});
+		webPlayer.addListener("not_ready", (data) => {
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback cannot continue because Spotify Web Player is unavailable. Please try again.",
+					`[onSpotifyWebPlaybackSDKReady.listener."not_ready"] - ${data}`,
+				),
+			);
+		});
 
 		webPlayer.addListener("player_state_changed", (state) => {
 			const webPlayerState: IWebPlayerState = {
@@ -263,64 +290,46 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 			setState(webPlayerState);
 		});
 
+		webPlayer.on("account_error", ({ message }) => {
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback is not available for your Spotify account.",
+					`[onSpotifyWebPlaybackSDKReady.on."account_error"] ${message}`,
+				),
+			);
+		});
+
+		webPlayer.on("initialization_error", ({ message }) => {
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback failed to initialize. Please refresh the page and try again.",
+					`[onSpotifyWebPlaybackSDKReady.on."initialization_error"] ${message}`,
+				),
+			);
+		});
+
+		webPlayer.on("playback_error", ({ message }) => {
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Playback failed and cannot continue. Please try again.",
+					`[onSpotifyWebPlaybackSDKReady.on."playback_error"] ${message}`,
+				),
+			);
+		});
+
+		webPlayer.on("autoplay_failed", () => {
+			rej(
+				new DomainError(
+					DomainErrorType.APP_ERROR,
+					"Autoplay was blocked by your browser.",
+					`[onSpotifyWebPlaybackSDKReady.on."autoplay_failed"]`,
+				),
+			);
+		});
+
 		webPlayer.connect();
 	};
 }
-
-// webPlayer.on("autoplay_failed", () => {
-// 	console.log("autoplay_failed");
-// });
-
-// webPlayer.on("initialization_error", () => {
-// 	console.log("initialization_error");
-// });
-// webPlayer.on("account_error", () => {
-// 	console.log("account_error");
-// });
-// webPlayer.on("playback_error", ({ message }) => {
-// 	console.log("playback_error", message);
-// });
-
-// return async () => {
-// 	const token = await storageAdapter.get(StorageKeys.TOKEN);
-// 	if (!token || typeof token !== "string") {
-// 		throw new DomainError(DomainErrorType.APP_ERROR, "Token not found", "[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter");
-// 	}
-// 	if (!window.Spotify) {
-// 		throw new DomainError(DomainErrorType.APP_ERROR, "Spotify could not be added", "[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object");
-// 	};
-
-// 	const webPlayer = new window.Spotify.Player({
-// 		name: WEB_PLAYER_NAME,
-// 		getOAuthToken: (cb: (token: string) => void) => cb(token),
-// 		volume: 0.5,
-// 	});
-
-// 	webPlayer.addListener("ready", ({ device_id }) => {
-// 		setDeviceId(device_id);
-// 		void transferPlayback({ deviceId: device_id });
-// 	});
-
-// 	webPlayer.addListener("not_ready", () => {
-// 	});
-
-// 	webPlayer.on("autoplay_failed", () => {
-// 		console.log("autoplay_failed");
-// 	});
-
-// 	webPlayer.on("initialization_error", () => {
-// 		console.log("initialization_error");
-// 	});
-// 	webPlayer.on("account_error", () => {
-// 		console.log("account_error");
-// 	});
-// 	webPlayer.on("playback_error", ({ message }) => {
-// 		console.log("playback_error", message);
-// 	});
-
-// 	webPlayer.addListener("player_state_changed", setState);
-
-// 	await webPlayer.connect();
-// 	webPlayer.activateElement();
-// 	setPlayer(webPlayer);
-// };

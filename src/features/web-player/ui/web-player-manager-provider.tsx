@@ -9,6 +9,7 @@ import {
 import { useAdapters } from "@/shared/adapters/core/app";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 import { XIcon } from "@/shared/icons";
+import { getErrorMessage } from "@/shared/utils";
 import {
 	createPlaybackAction,
 	useMutationPausePlayback,
@@ -25,7 +26,8 @@ import type {
 import { TransferPlayback } from "./transfer-playback";
 
 export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
-	const { notificationsAdapter, webPlayerAdapter } = useAdapters();
+	const { errorLoggerAdapter, notificationsAdapter, webPlayerAdapter } =
+		useAdapters();
 
 	// Modal management
 	const [playbackModal, setPlaybackModal] = useState<IWebPlayerManagerModal>({
@@ -143,6 +145,21 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 			mutate();
 		};
 	}, [mutate]);
+
+	useEffect(() => {
+		if (webPlayerAdapter.status.type === "failed") {
+			notificationsAdapter.notify(
+				INotificationAdapterType.ERROR,
+				"Web Player Failed",
+				getErrorMessage(
+					webPlayerAdapter.status.payload.error,
+					"Couldn't load web player",
+				),
+			);
+
+			errorLoggerAdapter.logAny(webPlayerAdapter.status.payload.error);
+		}
+	}, [errorLoggerAdapter, notificationsAdapter, webPlayerAdapter.status]);
 
 	const webPlayerManager: IWebPlayerManager = useMemo(
 		() =>
