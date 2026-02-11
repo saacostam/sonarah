@@ -8,5 +8,8 @@ export interface INotificationAdapter {
 		type: INotificationAdapterType,
 		title: string,
 		msg: string,
+		options?: {
+			id?: string;
+		},
 	): Promise<string>;
 }

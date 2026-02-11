@@ -155,6 +155,9 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 					webPlayerAdapter.status.payload.error,
 					"Couldn't load web player",
 				),
+				{
+					id: "web-player-failed",
+				},
 			);
 
 			errorLoggerAdapter.logAny(webPlayerAdapter.status.payload.error);

@@ -10,8 +10,13 @@ export class ReactHotToastNotificationAdapter implements INotificationAdapter {
 		type: INotificationAdapterType,
 		title: string,
 		msg: string,
+		options?: {
+			id?: string;
+		},
 	): Promise<string> {
-		const sharedToastOptions: ToastOptions = {};
+		const sharedToastOptions: ToastOptions = {
+			id: options?.id,
+		};
 
 		switch (type) {
 			case INotificationAdapterType.ERROR: {
