@@ -69,6 +69,7 @@ declare global {
 }
 
 const SPOTIFY_WEB_PLAYER_SCRIPT_SRC = "https://sdk.scdn.co/spotify-player.js";
+const WEB_PLAYER_NAME = "Sonarah Web Player";
 
 export interface UseSpotifyWebPlayerAdapterArgs {
 	token: string;
@@ -105,8 +106,15 @@ export function useSpotifyWebPlayerAdapter({
 			setDeviceId(null);
 			setWebPlayerState(null);
 			setScheduledCallbacks([]);
+			webPlayer?.disconnect();
 		}
-	}, [enabled, token]);
+	}, [enabled, token, webPlayer]);
+
+	useEffect(() => {
+		return () => {
+			webPlayer?.disconnect();
+		};
+	}, [webPlayer]);
 
 	const setup = useQuery({
 		staleTime: Infinity,
@@ -135,16 +143,16 @@ export function useSpotifyWebPlayerAdapter({
 						new DomainError(
 							DomainErrorType.APP_ERROR,
 							"Spotify Web Player failed to load. Please refresh the page.",
-							"[init] Couldn't load web player. Missing body tag",
+							"[init] Missing body tag",
 						),
 					);
-					return null;
+					return;
 				}
 
-				const scriptAlreadyExists = Array.from(
-					body.querySelectorAll("script"),
-				).find((script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC);
-				if (scriptAlreadyExists) scriptAlreadyExists.remove();
+				const existing = Array.from(body.querySelectorAll("script")).find(
+					(script) => script.src === SPOTIFY_WEB_PLAYER_SCRIPT_SRC,
+				);
+				if (existing) existing.remove();
 
 				const script = document.createElement("script");
 				script.src = SPOTIFY_WEB_PLAYER_SCRIPT_SRC;
@@ -153,7 +161,7 @@ export function useSpotifyWebPlayerAdapter({
 					rej(
 						new DomainError(
 							DomainErrorType.APP_ERROR,
-							"Spotify Web Player failed to load. Please check your connection and try again.",
+							"Spotify Web Player failed to load. Please check your connection.",
 							`[script.onerror] ${e}`,
 						),
 					);
@@ -192,7 +200,7 @@ export function useSpotifyWebPlayerAdapter({
 									? setup.error
 									: new DomainError(
 											DomainErrorType.APP_ERROR,
-											"Unable to start Spotify Web Player. Please try again.",
+											"Unable to start Spotify Web Player.",
 											`[SpotifyWebPlayerAdapter]: ${setup.error}`,
 										),
 							retry: setup.refetch,
@@ -214,8 +222,6 @@ export function useSpotifyWebPlayerAdapter({
 	);
 }
 
-const WEB_PLAYER_NAME = "Sonarah Web Player";
-
 function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	res: (v: null) => void;
 	rej: (e: unknown) => void;
@@ -227,23 +233,37 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 	const { res, rej, onDeviceId, setState, setWebPlayer, token } = args;
 
 	return () => {
-		if (!token || typeof token !== "string") {
-			rej(
+		let settled = false;
+
+		const safeResolve = (v: null) => {
+			if (settled) return;
+			settled = true;
+			res(v);
+		};
+
+		const safeReject = (error: DomainError) => {
+			if (settled) return;
+			settled = true;
+			rej(error);
+		};
+
+		if (!token) {
+			safeReject(
 				new DomainError(
 					DomainErrorType.APP_ERROR,
-					"Playback cannot start because your Spotify session has expired. Please log in again.",
-					"[onSpotifyWebPlaybackSDKReady] Token not found when reading from storageAdapter",
+					"Your Spotify session has expired. Please log in again.",
+					"[SDKReady] Missing token",
 				),
 			);
 			return;
 		}
 
 		if (!window.Spotify) {
-			rej(
+			safeReject(
 				new DomainError(
 					DomainErrorType.APP_ERROR,
-					"Playback cannot start because Spotify Web Player failed to load. Please refresh the page.",
-					"[onSpotifyWebPlaybackSDKReady] Spotify not attached to window object",
+					"Spotify Web Player failed to initialize. Please refresh the page.",
+					"[SDKReady] Spotify not found on window",
 				),
 			);
 			return;
@@ -251,61 +271,47 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 
 		const webPlayer = new window.Spotify.Player({
 			name: WEB_PLAYER_NAME,
-			getOAuthToken: (cb: (token: string) => void) => cb(token),
+			getOAuthToken: (cb) => cb(token),
 			volume: 0.5,
 		});
 
 		webPlayer.addListener("ready", ({ device_id }) => {
 			onDeviceId({ deviceId: device_id });
 			setWebPlayer(webPlayer);
-			res(null);
-		});
-
-		webPlayer.addListener("not_ready", (data) => {
-			rej(
-				new DomainError(
-					DomainErrorType.APP_ERROR,
-					"Playback cannot continue because Spotify Web Player is unavailable. Please try again.",
-					`[onSpotifyWebPlaybackSDKReady.listener."not_ready"] - ${data}`,
-				),
-			);
+			safeResolve(null);
 		});
 
 		webPlayer.addListener("player_state_changed", (state) => {
-			const webPlayerState: IWebPlayerState = {
+			setState({
 				playback: {
 					duration: state.duration,
 					position: state.position,
 					paused: state.paused,
 				},
 				track: {
-					artists: state.track_window.current_track.artists.map(
-						({ name }) => name,
-					),
+					artists: state.track_window.current_track.artists.map((a) => a.name),
 					name: state.track_window.current_track.name,
 					img: state.track_window.current_track.album.images.at(0)?.url,
 				},
-			};
-
-			setState(webPlayerState);
+			});
 		});
 
 		webPlayer.on("account_error", ({ message }) => {
-			rej(
+			safeReject(
 				new DomainError(
 					DomainErrorType.APP_ERROR,
-					"Playback is not available for your Spotify account.",
-					`[onSpotifyWebPlaybackSDKReady.on."account_error"] ${message}`,
+					"Playback is not available for this Spotify account.",
+					`[account_error] ${message}`,
 				),
 			);
 		});
 
 		webPlayer.on("initialization_error", ({ message }) => {
-			rej(
+			safeReject(
 				new DomainError(
 					DomainErrorType.APP_ERROR,
-					"Playback failed to initialize. Please refresh the page and try again.",
-					`[onSpotifyWebPlaybackSDKReady.on."initialization_error"] ${message}`,
+					"Spotify failed to initialize.",
+					`[initialization_error] ${message}`,
 				),
 			);
 		});
@@ -330,6 +336,16 @@ function createOnSpotifyWebPlaybackSDKReadyHandler(args: {
 			);
 		});
 
-		webPlayer.connect();
+		webPlayer.connect().then((success) => {
+			if (!success) {
+				safeReject(
+					new DomainError(
+						DomainErrorType.APP_ERROR,
+						"Spotify connection failed.",
+						"[connect] returned false",
+					),
+				);
+			}
+		});
 	};
 }
