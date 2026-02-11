@@ -19,6 +19,7 @@ import {
 	ChevronUpIcon,
 	PlusIcon,
 } from "@/shared/icons";
+import { formatAvatarFallback } from "@/shared/utils";
 
 export interface PlaylistItemProps {
 	isExpanded: boolean;
@@ -56,7 +57,11 @@ export function PlaylistSearchItem({
 				align="center"
 				maxWidth="100%"
 			>
-				<Avatar fallback={order} src={playlist.pictureUrl} size="4" />
+				<Avatar
+					fallback={formatAvatarFallback(order, "-")}
+					src={playlist.pictureUrl}
+					size="4"
+				/>
 				<div style={{ flexGrow: 1, minWidth: 0 }}>
 					<Heading size="3" truncate>
 						{playlist.name}

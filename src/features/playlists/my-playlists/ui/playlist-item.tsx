@@ -12,6 +12,7 @@ import type { ILeanPlaylist } from "@/features/playlists/shared/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { TrashIcon } from "@/shared/icons";
+import { formatAvatarFallback } from "@/shared/utils";
 
 export interface PlaylistItemProps {
 	playlist: ILeanPlaylist;
@@ -41,7 +42,7 @@ export function PlaylistItem({ playlist, onUnfollow }: PlaylistItemProps) {
 								width="8rem"
 							>
 								<Avatar
-									fallback={playlist.name}
+									fallback={formatAvatarFallback(playlist.name, "-")}
 									src={playlist.pictureUrl}
 									size="8"
 								/>

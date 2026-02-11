@@ -17,6 +17,7 @@ import {
 	PauseIcon,
 	PlayIcon,
 } from "@/shared/icons";
+import { formatAvatarFallback } from "@/shared/utils";
 import { useWebPlayerManager } from "../app";
 
 export function WebPlayer() {
@@ -95,7 +96,7 @@ export function WebPlayer() {
 							<Box style={{ position: "relative", display: "inline-block" }}>
 								<Avatar
 									src={wpm.state.track.img}
-									fallback={wpm.state.track.name || "?"}
+									fallback={formatAvatarFallback(wpm.state.track.name, "-")}
 									size="3"
 								/>
 								{isPlaybackLoading && (

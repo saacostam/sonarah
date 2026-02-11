@@ -1,6 +1,9 @@
 import { Avatar, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { useMemo } from "react";
-import { formatTimeFromMilliseconds } from "@/shared/utils";
+import {
+	formatAvatarFallback,
+	formatTimeFromMilliseconds,
+} from "@/shared/utils";
 import type { IPlaylist } from "../domain";
 
 export interface PlaylistBriefProps {
@@ -19,7 +22,11 @@ export function PlaylistBrief({ playlist }: PlaylistBriefProps) {
 	return (
 		<Card>
 			<Flex gap="4" wrap="wrap">
-				<Avatar fallback={playlist.name} src={playlist.pictureUrl} size="6" />
+				<Avatar
+					fallback={formatAvatarFallback(playlist.name, "-")}
+					src={playlist.pictureUrl}
+					size="6"
+				/>
 				<Flex direction="column" justify="between">
 					<div>
 						<Heading size="4" truncate>

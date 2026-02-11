@@ -28,6 +28,7 @@ Improvements that can be added after the repository is public.
   - [ ] Light coverage for runtime errors
 
 ### UX / Error Handling
+- [x] Adjust Avatar component with long texts
 - [ ] Create error page for auth guard
 - [ ] Create error page for home screen  
   - [ ] Add unit tests

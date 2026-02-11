@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/themes";
 import type { ITrack } from "@/features/playlists/shared/domain";
 import { PlusIcon } from "@/shared/icons";
+import { formatAvatarFallback } from "@/shared/utils";
 
 export interface SearchTrackItemProps {
 	isPending: boolean;
@@ -32,7 +33,11 @@ export function SearchTrackItem({
 				align="center"
 				maxWidth="100%"
 			>
-				<Avatar fallback={order} src={track.pictureUrl} size="4" />
+				<Avatar
+					fallback={formatAvatarFallback(order, "-")}
+					src={track.pictureUrl}
+					size="4"
+				/>
 				<div style={{ flexGrow: 1, minWidth: 0 }}>
 					<Heading size="3" truncate>
 						{track.name}

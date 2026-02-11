@@ -1,5 +1,6 @@
 import { Avatar, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import type { ReactNode } from "react";
+import { formatAvatarFallback } from "@/shared/utils";
 
 export interface TrackItemLayoutProps {
 	avatar: {
@@ -30,7 +31,11 @@ export function TrackItemLayout({
 			}
 		>
 			<Flex direction="row" gap="4" wrap="wrap">
-				<Avatar fallback={avatar.fallback} src={avatar.src} size="4" />
+				<Avatar
+					fallback={formatAvatarFallback(avatar.fallback, "-")}
+					src={avatar.src}
+					size="4"
+				/>
 				<Flex direction="column" gap="2" style={{ flex: 1, minWidth: 0 }}>
 					<Heading size="3" truncate>
 						{header}
