@@ -1,5 +1,6 @@
 import type { IAnalyticsAdapter } from "@/shared/adapters/analytics/domain";
 import type { IAuthAdapter } from "@/shared/adapters/auth/domain";
+import type { IConfigurationAdapter } from "@/shared/adapters/configuration/domain";
 import type { IErrorLoggerAdapter } from "@/shared/adapters/errors/domain";
 import type { IIntersectionObserverAdapter } from "@/shared/adapters/intersection-observer/domain";
 import type { INavigationAdapter } from "@/shared/adapters/navigation/domain";
@@ -12,6 +13,7 @@ import type { IWebPlayerAdapter } from "@/shared/adapters/web-player/domain";
 export interface IAdapters {
 	analyticsAdapter: IAnalyticsAdapter;
 	authAdapter: IAuthAdapter;
+	configurationAdapter: IConfigurationAdapter;
 	errorLoggerAdapter: IErrorLoggerAdapter;
 	intersectionObserverAdapter: IIntersectionObserverAdapter;
 	notificationsAdapter: INotificationAdapter;
