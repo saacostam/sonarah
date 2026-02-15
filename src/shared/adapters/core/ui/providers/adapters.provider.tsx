@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren, useEffect, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
 
@@ -58,6 +58,13 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		token: session.type === "authenticated" ? session.token : "",
 		enabled: session.type === "authenticated" && !!session.token,
 	});
+
+	useEffect(() => {
+		console.log(
+			"[AdaptersProviderDI]",
+			configurationAdapter.getString(IConfigurationAdapterStringKey.BASE_URL),
+		);
+	}, [configurationAdapter]);
 
 	const allAdapters: IAdapters = useMemo(
 		() => ({
