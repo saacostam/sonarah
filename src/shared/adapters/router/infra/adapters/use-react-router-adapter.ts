@@ -60,8 +60,8 @@ export function useReactRouterAdapter({
 	);
 
 	const reset: IRouterAdapter["reset"] = useCallback(async () => {
-		window.location.href = window.location.origin;
-	}, []);
+		window.location.href = getBaseUrl();
+	}, [getBaseUrl]);
 
 	return useMemo(
 		(): IRouterAdapter => ({
