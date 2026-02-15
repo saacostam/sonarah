@@ -12,6 +12,9 @@ export default defineConfig({
 	},
 	// @ts-expect-error: Only used for testing - which has a quick feedback loop
 	test: {  
+		coverage: {
+			provider: 'v8',
+		},
 		globals: true,  
 		environment: 'jsdom',  
 		setupFiles: ['./src/tests/setup.ts'],  
