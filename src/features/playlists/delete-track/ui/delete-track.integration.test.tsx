@@ -9,11 +9,9 @@ describe("DeleteTrack (client integration)", () => {
 	const playlistId = "playlist-1";
 	const trackUri = "spotify:track:123";
 
-	function setup({
-		removeItemsFromPlaylist,
-	}: {
-		removeItemsFromPlaylist: ReturnType<typeof vi.fn>;
-	}) {
+	function setup() {
+		const removeItemsFromPlaylist = vi.fn();
+
 		const onClose = vi.fn();
 		const onSuccess = vi.fn();
 		const onError = vi.fn();
@@ -35,16 +33,13 @@ describe("DeleteTrack (client integration)", () => {
 			},
 		);
 
-		return { onClose, onSuccess, onError };
+		return { onClose, onSuccess, onError, removeItemsFromPlaylist };
 	}
 
 	it("calls client removeItemsFromPlaylist with correct payload and triggers callbacks", async () => {
-		const removeItemsFromPlaylist = vi.fn().mockResolvedValue(undefined);
+		const { onClose, onSuccess, onError, removeItemsFromPlaylist } = setup();
 
-		const { onClose, onSuccess, onError } = setup({
-			removeItemsFromPlaylist,
-		});
-
+		removeItemsFromPlaylist.mockResolvedValue(undefined);
 		await userEvent.click(screen.getByRole("button", { name: "Delete" }));
 
 		await waitFor(() => {
@@ -68,11 +63,9 @@ describe("DeleteTrack (client integration)", () => {
 			"Error",
 		);
 
-		const removeItemsFromPlaylist = vi.fn().mockRejectedValue(error);
+		const { onClose, onSuccess, onError, removeItemsFromPlaylist } = setup();
 
-		const { onClose, onSuccess, onError } = setup({
-			removeItemsFromPlaylist,
-		});
+		removeItemsFromPlaylist.mockRejectedValue(error);
 
 		await userEvent.click(screen.getByRole("button", { name: "Delete" }));
 
