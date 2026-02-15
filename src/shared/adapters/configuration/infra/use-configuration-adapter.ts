@@ -8,7 +8,7 @@ export function useConfigurationAdapter(): IConfigurationAdapter {
 	const getString: IConfigurationAdapter["getString"] = useCallback((key) => {
 		switch (key) {
 			case IConfigurationAdapterStringKey.BASE_URL: {
-				return import.meta.env.VITE_BASE_URL;
+				return import.meta.env.VITE_BASE_URL ?? null;
 			}
 		}
 	}, []);
