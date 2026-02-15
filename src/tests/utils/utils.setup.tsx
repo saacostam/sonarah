@@ -4,28 +4,23 @@ import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
 import { AdaptersContext } from "@/shared/adapters/core/app";
 import type { IAdapters } from "@/shared/adapters/core/domain";
-import { RepositoriesContext } from "@/shared/repositories/app";
-import type { IRepositories } from "@/shared/repositories/domain";
+import { ClientsContext } from "@/shared/clients/app";
+import type { IClients } from "@/shared/clients/domain";
 
-// REPOSITORIES
-export type MockRepositories = {
-	[K in keyof IRepositories]?: Partial<IRepositories[K]>;
+// CLIENTS
+export type MockClients = {
+	[K in keyof IClients]?: Partial<IClients[K]>;
 };
 
-interface RepositoryProviderProps {
+interface ClientsProviderProps {
 	children: ReactNode;
-	mock?: MockRepositories;
+	mock?: MockClients;
 }
 
-export function MockRepositoryProvider({
-	children,
-	mock,
-}: RepositoryProviderProps) {
-	const value = mock as IRepositories;
+export function MockClientProvider({ children, mock }: ClientsProviderProps) {
+	const value = mock as IClients;
 	return (
-		<RepositoriesContext.Provider value={value}>
-			{children}
-		</RepositoriesContext.Provider>
+		<ClientsContext.Provider value={value}>{children}</ClientsContext.Provider>
 	);
 }
 

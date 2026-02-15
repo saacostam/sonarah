@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IPlaylistRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IPlaylistClientPayload } from "../domain";
 
 export interface UseQuerySearchPlaylistsArgs {
-	req: Pick<IPlaylistRepositoryPayload["SearchIn"], "limit" | "q">;
+	req: Pick<IPlaylistClientPayload["SearchIn"], "limit" | "q">;
 	enabled?: boolean;
 }
 
@@ -12,7 +12,7 @@ export function useQuerySearchPlaylists({
 	req,
 	enabled,
 }: UseQuerySearchPlaylistsArgs) {
-	const { playlist } = useRepositories();
+	const { playlist } = useClients();
 
 	return useInfiniteQuery({
 		initialPageParam: 1,

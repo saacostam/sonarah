@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IPlaylistRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IPlaylistClientPayload } from "../domain";
 
 export interface UseQueryMyPlaylistsArgs {
-	req: IPlaylistRepositoryPayload["GetAllIn"];
+	req: IPlaylistClientPayload["GetAllIn"];
 }
 
 export function useQueryMyPlaylists({ req }: UseQueryMyPlaylistsArgs) {
-	const { playlist } = useRepositories();
+	const { playlist } = useClients();
 
 	return useQuery({
 		queryKey: [QueryKey.MY_PLAYLISTS, req.page],

@@ -2,7 +2,7 @@ import { Flex, Grid, Spinner } from "@radix-ui/themes";
 import type { InfiniteData } from "@tanstack/react-query";
 import { type Ref, useCallback } from "react";
 import { useMutationAddItemToPlaylist } from "../../shared/app";
-import type { ITrackRepositoryPayload } from "../../shared/domain";
+import type { ITrackClientPayload } from "../../shared/domain";
 import { SearchTrackItem } from "./search-track-item";
 
 export interface SearchTrackContentProps {
@@ -10,7 +10,7 @@ export interface SearchTrackContentProps {
 	loadMoreRef: Ref<HTMLDivElement>;
 	onError: (e: unknown) => void;
 	onSuccess: () => void;
-	paginatedSearchTracks: InfiniteData<ITrackRepositoryPayload["SearchOut"]>;
+	paginatedSearchTracks: InfiniteData<ITrackClientPayload["SearchOut"]>;
 	playlistId: string;
 }
 

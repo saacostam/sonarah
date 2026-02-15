@@ -5,7 +5,7 @@ import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { renderWithProviders } from "@/tests";
 import { DeleteTrack } from "./delete-track";
 
-describe("DeleteTrack (repo integration)", () => {
+describe("DeleteTrack (client integration)", () => {
 	const playlistId = "playlist-1";
 	const trackUri = "spotify:track:123";
 
@@ -27,7 +27,7 @@ describe("DeleteTrack (repo integration)", () => {
 				trackUri={trackUri}
 			/>,
 			{
-				repositories: {
+				clients: {
 					playlist: {
 						removeItemsFromPlaylist,
 					},
@@ -38,7 +38,7 @@ describe("DeleteTrack (repo integration)", () => {
 		return { onClose, onSuccess, onError };
 	}
 
-	it("calls repository removeItemsFromPlaylist with correct payload and triggers callbacks", async () => {
+	it("calls client removeItemsFromPlaylist with correct payload and triggers callbacks", async () => {
 		const removeItemsFromPlaylist = vi.fn().mockResolvedValue(undefined);
 
 		const { onClose, onSuccess, onError } = setup({

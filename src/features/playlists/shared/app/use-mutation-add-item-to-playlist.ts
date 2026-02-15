@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MutationKey, QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IPlaylistRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IPlaylistClientPayload } from "../domain";
 
 export function useMutationAddItemToPlaylist() {
 	const queryClient = useQueryClient();
 
-	const { playlist } = useRepositories();
+	const { playlist } = useClients();
 
 	return useMutation({
 		mutationKey: [MutationKey.ADD_ITEM_TO_PLAYLIST],
-		mutationFn: (args: IPlaylistRepositoryPayload["AddItemsToPlaylistIn"]) =>
+		mutationFn: (args: IPlaylistClientPayload["AddItemsToPlaylistIn"]) =>
 			playlist.addItems(args),
 		onSettled: () => {
 			queryClient.invalidateQueries({

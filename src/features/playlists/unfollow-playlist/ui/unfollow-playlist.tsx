@@ -1,14 +1,14 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import { useCallback } from "react";
 import { useMutationUnfollowPlaylist } from "@/features/playlists/shared/app";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { INotificationAdapterType } from "@/shared/adapters/notifications/domain";
 
 export interface UnfollowPlaylistProps {
 	id: string;
 	onCancel: () => void;
-	onSuccess: (args: IPlaylistRepositoryPayload["UnfollowOut"]) => void;
+	onSuccess: (args: IPlaylistClientPayload["UnfollowOut"]) => void;
 }
 
 export function UnfollowPlaylist({

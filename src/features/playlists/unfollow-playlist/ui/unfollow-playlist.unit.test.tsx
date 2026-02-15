@@ -25,7 +25,7 @@ describe("UnfollowPlaylist [Unit]", () => {
 				adapters: {
 					notificationsAdapter: {},
 				},
-				repositories: {
+				clients: {
 					playlist: {},
 				},
 			},
@@ -52,7 +52,7 @@ describe("UnfollowPlaylist [Unit]", () => {
 				adapters: {
 					notificationsAdapter: {},
 				},
-				repositories: {
+				clients: {
 					playlist: {
 						unfollow,
 					},
@@ -92,7 +92,7 @@ describe("UnfollowPlaylist [Unit]", () => {
 						notify,
 					},
 				},
-				repositories: {
+				clients: {
 					playlist: {
 						unfollow,
 					},

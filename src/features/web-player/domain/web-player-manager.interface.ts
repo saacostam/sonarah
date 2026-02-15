@@ -1,5 +1,5 @@
 import type { IWebPlayerState } from "@/shared/adapters/web-player/domain";
-import type { IWebPlayerRepositoryPayload } from "./web-player-repository.interface";
+import type { IWebPlayerClientPayload } from "./web-player-client.interface";
 
 type TrackedPromise<Args> = {
 	onClick: (args: Args) => void;
@@ -13,7 +13,7 @@ type Mutations = {
 		positionMs: number;
 	}>;
 	playTrackOfPlaylist: TrackedPromise<
-		IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"]
+		IWebPlayerClientPayload["PlayTrackOfPlaylistIn"]
 	>;
 };
 

@@ -1,8 +1,8 @@
 import { screen, waitFor, within } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import type {
-	IPlaylistRepositoryPayload,
-	ITrackRepositoryPayload,
+	IPlaylistClientPayload,
+	ITrackClientPayload,
 } from "@/features/playlists/shared/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { createIntersectionObserverAdapterMock } from "@/shared/test";
@@ -31,7 +31,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						playlist: {
 							addItems,
 						},
@@ -46,7 +46,7 @@ describe("Search Track [Integration Test]", () => {
 			userEvent.type(input, "keyword");
 
 			// Search Request
-			const searchExpectedResponse: ITrackRepositoryPayload["SearchOut"] = {
+			const searchExpectedResponse: ITrackClientPayload["SearchOut"] = {
 				page: 1,
 				limit: 20,
 				tracks: [
@@ -70,7 +70,7 @@ describe("Search Track [Integration Test]", () => {
 			search.mockResolvedValue(searchExpectedResponse);
 			intersectionObserverAdapter.trigger(true);
 
-			const searchExpectedRequest: ITrackRepositoryPayload["SearchIn"] = {
+			const searchExpectedRequest: ITrackClientPayload["SearchIn"] = {
 				limit: 20,
 				q: "keyword",
 				page: 1,
@@ -96,7 +96,7 @@ describe("Search Track [Integration Test]", () => {
 			});
 
 			// Add Items Request
-			const addItemsExpectedRequest: IPlaylistRepositoryPayload["AddItemsToPlaylistIn"] =
+			const addItemsExpectedRequest: IPlaylistClientPayload["AddItemsToPlaylistIn"] =
 				{
 					id: "playlist-test-id",
 					uris: ["test-uri-1"],
@@ -138,7 +138,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						track: {
 							search,
 						},
@@ -150,7 +150,7 @@ describe("Search Track [Integration Test]", () => {
 			userEvent.type(input, "keyword");
 
 			// Search Request
-			const searchExpectedResponse: ITrackRepositoryPayload["SearchOut"] = {
+			const searchExpectedResponse: ITrackClientPayload["SearchOut"] = {
 				page: 1,
 				limit: 20,
 				tracks: [],
@@ -159,7 +159,7 @@ describe("Search Track [Integration Test]", () => {
 			search.mockResolvedValue(searchExpectedResponse);
 			intersectionObserverAdapter.trigger(true);
 
-			const searchExpectedRequest: ITrackRepositoryPayload["SearchIn"] = {
+			const searchExpectedRequest: ITrackClientPayload["SearchIn"] = {
 				limit: 20,
 				q: "keyword",
 				page: 1,
@@ -193,7 +193,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						track: {
 							search,
 						},
@@ -225,7 +225,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						track: {
 							search,
 						},
@@ -258,7 +258,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						track: {
 							search,
 						},
@@ -274,7 +274,7 @@ describe("Search Track [Integration Test]", () => {
 			);
 			intersectionObserverAdapter.trigger(true);
 
-			const searchExpectedRequest: ITrackRepositoryPayload["SearchIn"] = {
+			const searchExpectedRequest: ITrackClientPayload["SearchIn"] = {
 				limit: 20,
 				q: "keyword",
 				page: 1,
@@ -289,7 +289,7 @@ describe("Search Track [Integration Test]", () => {
 			});
 
 			// Allow refetch
-			const searchExpectedResponse: ITrackRepositoryPayload["SearchOut"] = {
+			const searchExpectedResponse: ITrackClientPayload["SearchOut"] = {
 				page: 1,
 				limit: 20,
 				tracks: [
@@ -340,7 +340,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						track: {
 							search,
 						},
@@ -351,16 +351,16 @@ describe("Search Track [Integration Test]", () => {
 			const input = screen.getByRole("textbox", { name: "search" });
 			await userEvent.type(input, "keyword");
 
-			let resolve!: (args: ITrackRepositoryPayload["SearchOut"]) => void;
+			let resolve!: (args: ITrackClientPayload["SearchOut"]) => void;
 			search.mockImplementationOnce(
 				() =>
-					new Promise<ITrackRepositoryPayload["SearchOut"]>((res) => {
+					new Promise<ITrackClientPayload["SearchOut"]>((res) => {
 						resolve = res;
 					}),
 			);
 			intersectionObserverAdapter.trigger(true);
 
-			const searchExpectedRequest: ITrackRepositoryPayload["SearchIn"] = {
+			const searchExpectedRequest: ITrackClientPayload["SearchIn"] = {
 				limit: 20,
 				q: "keyword",
 				page: 1,
@@ -374,7 +374,7 @@ describe("Search Track [Integration Test]", () => {
 				expect(screen.getByTestId("search-track-skeleton")).toBeInTheDocument();
 			});
 
-			const searchExpectedResponse: ITrackRepositoryPayload["SearchOut"] = {
+			const searchExpectedResponse: ITrackClientPayload["SearchOut"] = {
 				page: 1,
 				limit: 20,
 				tracks: [
@@ -422,7 +422,7 @@ describe("Search Track [Integration Test]", () => {
 					adapters: {
 						intersectionObserverAdapter: intersectionObserverAdapter.adapter,
 					},
-					repositories: {
+					clients: {
 						playlist: {
 							addItems,
 						},
@@ -437,7 +437,7 @@ describe("Search Track [Integration Test]", () => {
 			userEvent.type(input, "keyword");
 
 			// Search Request
-			const searchExpectedResponse: ITrackRepositoryPayload["SearchOut"] = {
+			const searchExpectedResponse: ITrackClientPayload["SearchOut"] = {
 				page: 1,
 				limit: 20,
 				tracks: [
@@ -461,7 +461,7 @@ describe("Search Track [Integration Test]", () => {
 			search.mockResolvedValue(searchExpectedResponse);
 			intersectionObserverAdapter.trigger(true);
 
-			const searchExpectedRequest: ITrackRepositoryPayload["SearchIn"] = {
+			const searchExpectedRequest: ITrackClientPayload["SearchIn"] = {
 				limit: 20,
 				q: "keyword",
 				page: 1,

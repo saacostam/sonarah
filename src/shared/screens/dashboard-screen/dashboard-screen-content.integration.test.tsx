@@ -30,7 +30,7 @@ function renderWithModalManager(
 describe("DashboardScreenContent [Integration]", () => {
 	it("should set create-status when 'Create' button is clicked", async () => {
 		const { setStatus } = renderWithModalManager(<DashboardScreenContent />, {
-			repositories: {
+			clients: {
 				playlist: {
 					getAll: async () => ({
 						total: 0,
@@ -56,7 +56,7 @@ describe("DashboardScreenContent [Integration]", () => {
 
 	it("should set search-status when 'Import' button is clicked", async () => {
 		const { setStatus } = renderWithModalManager(<DashboardScreenContent />, {
-			repositories: {
+			clients: {
 				playlist: {
 					getAll: async () => ({
 						total: 0,

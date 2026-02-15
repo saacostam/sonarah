@@ -19,7 +19,7 @@ import { RingLoader } from "react-spinners";
 import { useMutationReorderItemsFromPlaylist } from "@/features/playlists/shared/app";
 import type {
 	IPlaylist,
-	IPlaylistRepositoryPayload,
+	IPlaylistClientPayload,
 } from "@/features/playlists/shared/domain";
 import { PlaylistBrief } from "@/features/playlists/shared/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -32,7 +32,7 @@ import { useManagePlaylistModalManager } from "../app";
 import { ManageMyPlaylistItem } from "./manage-my-playlist-item";
 
 export interface ManageMyPlaylistContentProps {
-	optimSetPlaylist: OptimDataSetter<IPlaylistRepositoryPayload["GetByIdOut"]>;
+	optimSetPlaylist: OptimDataSetter<IPlaylistClientPayload["GetByIdOut"]>;
 	playlist: IPlaylist;
 }
 

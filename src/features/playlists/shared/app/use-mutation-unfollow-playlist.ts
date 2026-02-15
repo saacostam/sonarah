@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MutationKey, QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IPlaylistRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IPlaylistClientPayload } from "../domain";
 
 export function useMutationUnfollowPlaylist() {
 	const queryClient = useQueryClient();
-	const { playlist } = useRepositories();
+	const { playlist } = useClients();
 
 	return useMutation({
 		mutationKey: [MutationKey.UNFOLLOW_PLAYLIST],
-		mutationFn: (args: IPlaylistRepositoryPayload["UnfollowIn"]) =>
+		mutationFn: (args: IPlaylistClientPayload["UnfollowIn"]) =>
 			playlist.unfollow(args),
 		onSettled: () => {
 			queryClient.invalidateQueries({

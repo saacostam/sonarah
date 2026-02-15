@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useDashboardModalManager } from "@/features/dashboard/app";
 import { CreatePlaylist } from "@/features/playlists/create-playlist/ui";
 import { SearchPlaylist } from "@/features/playlists/search-playlist/ui";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import { UnfollowPlaylist } from "@/features/playlists/unfollow-playlist/ui";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
@@ -20,7 +20,7 @@ export function DashboardModalManagerRenderer() {
 	const onClose = useCallback(() => setStatus({ type: "browse" }), [setStatus]);
 
 	const onCreatePlaylistSuccess = useCallback(
-		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
+		(args: IPlaylistClientPayload["CreatePlaylistOut"]) => {
 			onClose();
 			notificationsAdapter.notify(
 				INotificationAdapterType.SUCCESS,
@@ -38,7 +38,7 @@ export function DashboardModalManagerRenderer() {
 	);
 
 	const onSavePlaylistSuccess = useCallback(
-		(args: IPlaylistRepositoryPayload["SaveOut"]) => {
+		(args: IPlaylistClientPayload["SaveOut"]) => {
 			notificationsAdapter.notify(
 				INotificationAdapterType.SUCCESS,
 				"Added",

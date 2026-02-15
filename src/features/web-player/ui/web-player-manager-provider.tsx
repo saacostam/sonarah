@@ -19,9 +19,9 @@ import {
 	WebPlayerManagerContext,
 } from "../app";
 import type {
+	IWebPlayerClientPayload,
 	IWebPlayerManager,
 	IWebPlayerManagerModal,
-	IWebPlayerRepositoryPayload,
 } from "../domain";
 import { TransferPlayback } from "./transfer-playback";
 
@@ -74,7 +74,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 	const seekToPosition = useMemo(
 		() =>
 			createPlaybackAction<
-				Omit<IWebPlayerRepositoryPayload["SeekToPositionIn"], "deviceId">
+				Omit<IWebPlayerClientPayload["SeekToPositionIn"], "deviceId">
 			>({
 				webPlayerAdapter,
 				notificationsAdapter,
@@ -94,9 +94,7 @@ export function WebPlayerManagerProvider({ children }: PropsWithChildren) {
 
 	const playTrackOfPlaylist = useMemo(
 		() =>
-			createPlaybackAction<
-				IWebPlayerRepositoryPayload["PlayTrackOfPlaylistIn"]
-			>({
+			createPlaybackAction<IWebPlayerClientPayload["PlayTrackOfPlaylistIn"]>({
 				webPlayerAdapter,
 				notificationsAdapter,
 				setPlaybackModal,

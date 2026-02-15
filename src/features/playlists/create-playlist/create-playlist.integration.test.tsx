@@ -5,18 +5,18 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import type { IUser } from "@/features/user/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
 import { renderWithProviders } from "@/tests";
 import { CreatePlaylist } from "./ui/create-playlist";
 
-describe("CreatePlaylist (repo integration)", () => {
+describe("CreatePlaylist (client integration)", () => {
 	it("renders skeleton while user query is loading", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={vi.fn()} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn(() => new Promise<IUser>(() => {})),
 					},
@@ -39,7 +39,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={vi.fn()} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser,
 					},
@@ -60,7 +60,7 @@ describe("CreatePlaylist (repo integration)", () => {
 	it("creates playlist successfully and calls onSuccess", async () => {
 		const onSuccess = vi.fn();
 
-		const createResponse: IPlaylistRepositoryPayload["CreatePlaylistIn"] = {
+		const createResponse: IPlaylistClientPayload["CreatePlaylistIn"] = {
 			userId: "playlist-1",
 			name: "My Playlist",
 			visibility: "public",
@@ -70,7 +70,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={onSuccess} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
 					},
@@ -109,7 +109,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={vi.fn()} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
 					},
@@ -138,7 +138,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={vi.fn()} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
 					},
@@ -164,7 +164,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={vi.fn()} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
 					},
@@ -204,7 +204,7 @@ describe("CreatePlaylist (repo integration)", () => {
 		renderWithProviders(
 			<CreatePlaylist onCancel={vi.fn()} onSuccess={onSuccess} />,
 			{
-				repositories: {
+				clients: {
 					user: {
 						getUser: vi.fn().mockResolvedValue({ id: "user-1" }),
 					},

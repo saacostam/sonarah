@@ -1,9 +1,9 @@
 import { QueryKey, useMetaQuery } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IPlaylistRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IPlaylistClientPayload } from "../domain";
 
 export interface UseQueryPlaylistByIdArgs {
-	req: IPlaylistRepositoryPayload["GetByIdIn"];
+	req: IPlaylistClientPayload["GetByIdIn"];
 	enabled?: boolean;
 }
 
@@ -11,7 +11,7 @@ export function useQueryPlaylistById({
 	req,
 	enabled,
 }: UseQueryPlaylistByIdArgs) {
-	const { playlist } = useRepositories();
+	const { playlist } = useClients();
 
 	return useMetaQuery({
 		queryKey: [QueryKey.PLAYLIST_BY_ID, req.id],

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { ITrackRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { ITrackClientPayload } from "../domain";
 
 export interface UseQueryTrackRecommendationsArgs {
-	req: ITrackRepositoryPayload["GetRecommendationsIn"];
+	req: ITrackClientPayload["GetRecommendationsIn"];
 	enabled?: boolean;
 }
 
@@ -12,7 +12,7 @@ export function useQueryTrackRecommendations({
 	req,
 	enabled,
 }: UseQueryTrackRecommendationsArgs) {
-	const { track } = useRepositories();
+	const { track } = useClients();
 
 	return useQuery({
 		enabled,

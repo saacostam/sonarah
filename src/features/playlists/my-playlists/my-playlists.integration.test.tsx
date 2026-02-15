@@ -37,7 +37,7 @@ describe("MyPlaylists [Integration]", () => {
 						adapters: {
 							navigationAdapter,
 						},
-						repositories: {
+						clients: {
 							playlist: {
 								getAll: async () => ({
 									page: 1,
@@ -89,7 +89,7 @@ describe("MyPlaylists [Integration]", () => {
 						adapters: {
 							navigationAdapter,
 						},
-						repositories: {
+						clients: {
 							playlist: {
 								getAll: async () => ({
 									page: 1,
@@ -138,7 +138,7 @@ describe("MyPlaylists [Integration]", () => {
 						/>,
 						{
 							adapters: { navigationAdapter },
-							repositories: {
+							clients: {
 								playlist: {
 									getAll: async () => ({
 										page: 1,
@@ -179,7 +179,7 @@ describe("MyPlaylists [Integration]", () => {
 					setPage={vi.fn()}
 				/>,
 				{
-					repositories: {
+					clients: {
 						playlist: {
 							getAll: async () => ({
 								page: 1,
@@ -213,7 +213,7 @@ describe("MyPlaylists [Integration]", () => {
 					setPage={vi.fn()}
 				/>,
 				{
-					repositories: {
+					clients: {
 						playlist: {
 							getAll: async () => ({
 								page: 1,
@@ -249,7 +249,7 @@ describe("MyPlaylists [Integration]", () => {
 					setPage={vi.fn()}
 				/>,
 				{
-					repositories: {
+					clients: {
 						playlist: {
 							getAll: async () => ({
 								page: 1,

@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import type { IAuthRepositoryPayload } from "@/features/auth/domain";
+import type { IAuthClientPayload } from "@/features/auth/domain";
 import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import type { IAuthAdapterPayload } from "@/shared/adapters/auth/domain";
 import { DomainError, DomainErrorType } from "@/shared/adapters/errors/domain";
@@ -18,7 +18,7 @@ const diFactory = (args: { token: "auth" | "unauth"; code?: string }) => {
 	const startAuthFlow = vi.fn();
 	const resetRouter = vi.fn();
 
-	// repositories
+	// clients
 	const requestAccessToken = vi.fn();
 
 	const di: Parameters<typeof renderWithProviders>[1] = {
@@ -41,7 +41,7 @@ const diFactory = (args: { token: "auth" | "unauth"; code?: string }) => {
 				trackEvent: analyticsTrackEvent,
 			},
 		},
-		repositories: {
+		clients: {
 			auth: {
 				requestAccessToken,
 			},
@@ -87,7 +87,7 @@ describe("HomeScreen [Integration]", () => {
 		renderWithProviders(<HomeScreen />, di);
 
 		await waitFor(() => {
-			const payload: IAuthRepositoryPayload["IRequestAccessTokenIn"] = {
+			const payload: IAuthClientPayload["IRequestAccessTokenIn"] = {
 				code: "code",
 			};
 			expect(deps.requestAccessToken).toHaveBeenCalledWith(payload);
@@ -125,7 +125,7 @@ describe("HomeScreen [Integration]", () => {
 		renderWithProviders(<HomeScreen />, di);
 
 		await waitFor(() => {
-			const payload: IAuthRepositoryPayload["IRequestAccessTokenIn"] = {
+			const payload: IAuthClientPayload["IRequestAccessTokenIn"] = {
 				code: "code",
 			};
 			expect(deps.requestAccessToken).toHaveBeenCalledExactlyOnceWith(payload);

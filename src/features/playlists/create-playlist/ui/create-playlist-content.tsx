@@ -1,14 +1,14 @@
 import { Box, Button, Flex } from "@radix-ui/themes";
 import { useCallback, useEffect } from "react";
 import { useMutationCreatePlaylist } from "@/features/playlists/shared/app";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import { InlineErrorMessage, Input } from "@/shared/components";
 import { getErrorMessage } from "@/shared/utils";
 import { type ICreatePlaylistForm, useCreatePlaylistForm } from "../app";
 
 export interface CreatePlaylistContentProps {
 	onCancel: () => void;
-	onSuccess: (args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => void;
+	onSuccess: (args: IPlaylistClientPayload["CreatePlaylistOut"]) => void;
 	userId: string;
 }
 

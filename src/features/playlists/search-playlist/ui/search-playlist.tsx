@@ -5,14 +5,14 @@ import {
 	useMutationSavePlaylist,
 	useQuerySearchPlaylists,
 } from "@/features/playlists/shared/app";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError } from "@/shared/components";
 import { PlaylistSearchItem } from "./playlist-search-item";
 
 export interface SearchPlaylistProps {
 	onError: (e: unknown) => void;
-	onSuccess: (args: IPlaylistRepositoryPayload["SaveOut"]) => void;
+	onSuccess: (args: IPlaylistClientPayload["SaveOut"]) => void;
 }
 
 const LIMIT = 20;

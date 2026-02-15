@@ -4,8 +4,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet } from "react-router";
 import { AuthGuard } from "@/features/auth/ui";
 import { AdaptersProvider } from "@/shared/adapters/core/ui";
+import { ClientsProvider } from "@/shared/clients/ui";
 import { Background } from "@/shared/components";
-import { RepositoriesProvider } from "@/shared/repositories/ui";
 
 const queryClient = new QueryClient();
 
@@ -15,11 +15,11 @@ function App() {
 			<Background>
 				<QueryClientProvider client={queryClient}>
 					<AdaptersProvider>
-						<RepositoriesProvider>
+						<ClientsProvider>
 							<AuthGuard>
 								<Outlet />
 							</AuthGuard>
-						</RepositoriesProvider>
+						</ClientsProvider>
 					</AdaptersProvider>
 					<ReactQueryDevtools buttonPosition="bottom-left" />
 				</QueryClientProvider>

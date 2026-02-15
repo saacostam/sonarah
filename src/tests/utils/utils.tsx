@@ -7,8 +7,8 @@ import {
 import {
 	type MockAdapters,
 	MockAdaptersProvider,
-	type MockRepositories,
-	MockRepositoryProvider,
+	MockClientProvider,
+	type MockClients,
 	TestProviders,
 } from "./utils.setup";
 
@@ -18,20 +18,20 @@ import {
 function createWrapper({
 	adapters,
 	initialEntries,
-	repositories,
+	clients,
 }: {
 	adapters?: MockAdapters;
 	initialEntries?: string[];
-	repositories?: MockRepositories;
+	clients?: MockClients;
 }) {
 	return function Wrapper({ children }: { children: React.ReactNode }) {
 		return (
 			<TestProviders initialEntries={initialEntries}>
-				<MockRepositoryProvider mock={repositories}>
+				<MockClientProvider mock={clients}>
 					<MockAdaptersProvider mock={adapters}>
 						{children}
 					</MockAdaptersProvider>
-				</MockRepositoryProvider>
+				</MockClientProvider>
 			</TestProviders>
 		);
 	};
@@ -45,14 +45,13 @@ export function renderWithProviders(
 	options?: Omit<RenderOptions, "wrapper"> & {
 		adapters?: MockAdapters;
 		initialEntries?: string[];
-		repositories?: MockRepositories;
+		clients?: MockClients;
 	},
 ) {
-	const { adapters, initialEntries, repositories, ...renderOptions } =
-		options ?? {};
+	const { adapters, initialEntries, clients, ...renderOptions } = options ?? {};
 
 	return render(ui, {
-		wrapper: createWrapper({ adapters, initialEntries, repositories }),
+		wrapper: createWrapper({ adapters, initialEntries, clients: clients }),
 		...renderOptions,
 	});
 }
@@ -65,14 +64,13 @@ export function renderHookWithProviders<Result, Props>(
 	options?: Omit<RenderHookOptions<Props>, "wrapper"> & {
 		adapters?: MockAdapters;
 		initialEntries?: string[];
-		repositories?: MockRepositories;
+		clients?: MockClients;
 	},
 ) {
-	const { adapters, initialEntries, repositories, ...renderOptions } =
-		options ?? {};
+	const { adapters, initialEntries, clients, ...renderOptions } = options ?? {};
 
 	return renderHook(callback, {
-		wrapper: createWrapper({ adapters, initialEntries, repositories }),
+		wrapper: createWrapper({ adapters, initialEntries, clients: clients }),
 		...renderOptions,
 	});
 }

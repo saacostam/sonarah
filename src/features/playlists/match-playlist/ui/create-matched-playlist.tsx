@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { CreatePlaylist } from "@/features/playlists/create-playlist/ui";
 import { useMutationAddItemToPlaylist } from "@/features/playlists/shared/app";
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 
 export interface CreateMatchedPlaylistProps {
 	onClose: () => void;
@@ -19,7 +19,7 @@ export function CreateMatchedPlaylist({
 	const { mutate: addItemToPlaylistMutate } = useMutationAddItemToPlaylist();
 
 	const onCreatePlaylistSuccess = useCallback(
-		(args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => {
+		(args: IPlaylistClientPayload["CreatePlaylistOut"]) => {
 			const { id } = args;
 
 			addItemToPlaylistMutate(

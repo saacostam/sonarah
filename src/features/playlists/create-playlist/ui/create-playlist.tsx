@@ -1,4 +1,4 @@
-import type { IPlaylistRepositoryPayload } from "@/features/playlists/shared/domain";
+import type { IPlaylistClientPayload } from "@/features/playlists/shared/domain";
 import { useQueryUser } from "@/features/user/app";
 import { QueryError } from "@/shared/components";
 import { CreatePlaylistContent } from "./create-playlist-content";
@@ -6,7 +6,7 @@ import { CreatePlaylistSkeleton } from "./create-playlist-skeleton";
 
 export interface CreatePlaylistProps {
 	onCancel: () => void;
-	onSuccess: (args: IPlaylistRepositoryPayload["CreatePlaylistOut"]) => void;
+	onSuccess: (args: IPlaylistClientPayload["CreatePlaylistOut"]) => void;
 }
 
 export function CreatePlaylist({ onCancel, onSuccess }: CreatePlaylistProps) {

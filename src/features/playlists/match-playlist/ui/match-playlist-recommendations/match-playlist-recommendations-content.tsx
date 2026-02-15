@@ -2,7 +2,7 @@ import { Button, Flex, Tooltip } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import type {
 	ITrack,
-	ITrackRepositoryPayload,
+	ITrackClientPayload,
 } from "@/features/playlists/shared/domain";
 import { TrackItem } from "@/features/playlists/shared/ui";
 import { useWebPlayerManager } from "@/features/web-player/app";
@@ -10,7 +10,7 @@ import { PlayIcon, PlusIcon } from "@/shared/icons";
 
 export interface MatchPlaylistRecommendationsContentProps {
 	onClickRecommendation: (track: ITrack) => void;
-	recommendations: ITrackRepositoryPayload["GetRecommendationsOut"];
+	recommendations: ITrackClientPayload["GetRecommendationsOut"];
 }
 
 export function MatchPlaylistRecommendationsContent({

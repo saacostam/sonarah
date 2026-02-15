@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { MutationKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { IAuthRepositoryPayload } from "../../domain";
+import { useClients } from "@/shared/clients/app";
+import type { IAuthClientPayload } from "../../domain";
 
 export function useMutationRequestAccessToken() {
-	const { auth } = useRepositories();
+	const { auth } = useClients();
 
 	return useMutation({
 		mutationKey: [MutationKey.REQUEST_ACCESS_TOKEN],
-		mutationFn: async (args: IAuthRepositoryPayload["IRequestAccessTokenIn"]) =>
+		mutationFn: async (args: IAuthClientPayload["IRequestAccessTokenIn"]) =>
 			auth.requestAccessToken(args),
 	});
 }

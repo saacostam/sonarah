@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
-import type { ITrackRepositoryPayload } from "../domain";
+import { useClients } from "@/shared/clients/app";
+import type { ITrackClientPayload } from "../domain";
 
 export interface UseQuerySearchTracksArgs {
-	req: Pick<ITrackRepositoryPayload["SearchIn"], "limit" | "q">;
+	req: Pick<ITrackClientPayload["SearchIn"], "limit" | "q">;
 	enabled?: boolean;
 }
 
@@ -12,7 +12,7 @@ export function useQuerySearchTracks({
 	req,
 	enabled,
 }: UseQuerySearchTracksArgs) {
-	const { track } = useRepositories();
+	const { track } = useClients();
 
 	return useInfiniteQuery({
 		initialPageParam: 1,

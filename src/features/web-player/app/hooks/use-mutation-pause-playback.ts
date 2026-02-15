@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { MutationKey } from "@/shared/async-state";
-import { useRepositories } from "@/shared/repositories/app";
+import { useClients } from "@/shared/clients/app";
 
 export function useMutationPausePlayback() {
-	const { webPlayer } = useRepositories();
+	const { webPlayer } = useClients();
 
 	return useMutation({
 		mutationKey: [MutationKey.PAUSE_PLAYBACK],

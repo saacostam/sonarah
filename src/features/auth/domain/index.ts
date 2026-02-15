@@ -1,2 +1,2 @@
-export * from "./auth-repository.interface";
+export * from "./auth-client.interface";
 export * from "./auth-routes";
