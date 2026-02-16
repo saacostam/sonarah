@@ -1,5 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import { LimitedUsersAccessAlertManagerContext } from "@/features/access/limited-users/app";
+import type { ILimitedUsersAccessAlertManager } from "@/features/access/limited-users/domain";
 import type { IAuthClientPayload } from "@/features/auth/domain";
 import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import type { IAuthAdapterPayload } from "@/shared/adapters/auth/domain";
@@ -20,6 +22,15 @@ const diFactory = (args: { token: "auth" | "unauth"; code?: string }) => {
 
 	// clients
 	const requestAccessToken = vi.fn();
+
+	// limited-users manager
+	const setManagerStatus = vi.fn();
+	const limitedUsersAccessAlertManager: ILimitedUsersAccessAlertManager = {
+		status: {
+			type: "closed",
+		},
+		setStatus: setManagerStatus,
+	};
 
 	const di: Parameters<typeof renderWithProviders>[1] = {
 		adapters: {
@@ -50,12 +61,14 @@ const diFactory = (args: { token: "auth" | "unauth"; code?: string }) => {
 
 	return {
 		di,
+		manager: limitedUsersAccessAlertManager,
 		deps: {
 			analyticsTrackEvent,
 			requestAccessToken,
 			setToken,
 			startAuthFlow,
 			resetRouter,
+			setManagerStatus,
 		},
 	};
 };
@@ -147,29 +160,76 @@ describe("HomeScreen [Integration]", () => {
 		});
 	});
 
-	it("should render login button if unauthenticated", async () => {
-		const { di, deps } = diFactory({ token: "unauth" });
+	describe("login", () => {
+		it("should render login button if unauthenticated, and trigger auth-flow if limited-users-access-alert-manager is not available", async () => {
+			const { di, deps } = diFactory({ token: "unauth" });
 
-		renderWithProviders(<HomeScreen />, di);
+			renderWithProviders(<HomeScreen />, di);
 
-		await waitFor(() => {
-			expect(screen.getByTestId("home-screen-content")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByTestId("home-screen-content")).toBeInTheDocument();
+			});
+
+			const button = await screen.findByRole("button", { name: /login/i });
+			await userEvent.click(button);
+
+			expect(deps.startAuthFlow).toHaveBeenCalledTimes(1);
+
+			const clickLoginButtonEvent: IAnalyticsEvent = {
+				name: "click-login-button",
+				payload: {
+					location: "landing",
+				},
+			};
+			expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
+				clickLoginButtonEvent,
+			);
 		});
 
-		const button = await screen.findByRole("button", { name: /login/i });
-		await userEvent.click(button);
+		it("should render login button if unauthenticated, and trigger alert if limited-users-access-alert-manager is available", async () => {
+			const { di, deps, manager } = diFactory({ token: "unauth" });
 
-		expect(deps.startAuthFlow).toHaveBeenCalledTimes(1);
+			renderWithProviders(
+				<LimitedUsersAccessAlertManagerContext.Provider value={manager}>
+					<HomeScreen />
+				</LimitedUsersAccessAlertManagerContext.Provider>,
+				di,
+			);
 
-		const clickLoginButtonEvent: IAnalyticsEvent = {
-			name: "click-login-button",
-			payload: {
-				location: "landing",
-			},
-		};
-		expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
-			clickLoginButtonEvent,
-		);
+			await waitFor(() => {
+				expect(screen.getByTestId("home-screen-content")).toBeInTheDocument();
+			});
+
+			const button = await screen.findByRole("button", { name: /login/i });
+			await userEvent.click(button);
+
+			// Check that alert was triggered
+			expect(deps.setManagerStatus).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					type: "open",
+				}),
+			);
+
+			expect(deps.startAuthFlow).not.toHaveBeenCalled();
+			expect(deps.analyticsTrackEvent).not.toHaveBeenCalled();
+
+			// Check if onContinue callback triggers login
+			deps.setManagerStatus.mock.calls[0][0].onContinue();
+
+			await waitFor(() => {
+				expect(deps.startAuthFlow).toHaveBeenCalledTimes(1);
+
+				const clickLoginButtonEvent: IAnalyticsEvent = {
+					name: "click-login-button",
+					payload: {
+						location: "landing",
+					},
+				};
+				expect(deps.analyticsTrackEvent).toHaveBeenCalledExactlyOnceWith(
+					clickLoginButtonEvent,
+				);
+			});
+		});
 	});
 
 	it("should render start-now button if authenticated", async () => {

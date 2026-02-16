@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { useLimitedUsersAccessAlertManager } from "@/features/access/limited-users/app";
 import { useMutationRequestAccessToken } from "@/features/auth/app";
 import { useMutationStartAuthFlow } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
@@ -12,6 +13,8 @@ enum UrlSearchParam {
 export function useHome() {
 	const { analyticsAdapter, authAdapter, routerAdapter, navigationAdapter } =
 		useAdapters();
+
+	const limitedUsersAccessAlertManager = useLimitedUsersAccessAlertManager();
 
 	const { mutate: startAuthFlow } = useMutationStartAuthFlow();
 	const { mutate: requestAccessToken } = useMutationRequestAccessToken();
@@ -33,19 +36,40 @@ export function useHome() {
 				: {
 						type: "button",
 						onClick: () => {
-							analyticsAdapter.trackEvent({
-								name: "click-login-button",
-								payload: {
-									location: "landing",
-								},
-							});
+							const onClickLogin = () => {
+								analyticsAdapter.trackEvent({
+									name: "click-login-button",
+									payload: {
+										location: "landing",
+									},
+								});
 
-							startAuthFlow();
+								startAuthFlow();
+							};
+
+							// Show alert if available, else continue
+							if (
+								limitedUsersAccessAlertManager &&
+								limitedUsersAccessAlertManager.status.type === "closed"
+							) {
+								limitedUsersAccessAlertManager.setStatus({
+									type: "open",
+									onContinue: onClickLogin,
+								});
+							} else {
+								onClickLogin();
+							}
 						},
 					},
 			label: isAuth ? "Start Now" : "Login",
 		}),
-		[analyticsAdapter, isAuth, navigationAdapter, startAuthFlow],
+		[
+			analyticsAdapter,
+			isAuth,
+			limitedUsersAccessAlertManager,
+			navigationAdapter,
+			startAuthFlow,
+		],
 	);
 
 	useEffect(() => {

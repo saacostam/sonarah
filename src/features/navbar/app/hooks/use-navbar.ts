@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { useLimitedUsersAccessAlertManager } from "@/features/access/limited-users/app";
 import { useMutationStartAuthFlow } from "@/shared/adapters/auth/app";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
@@ -12,6 +13,8 @@ export function useNavbar() {
 		routerAdapter,
 		themeAdapter,
 	} = useAdapters();
+
+	const limitedUsersAccessAlertManager = useLimitedUsersAccessAlertManager();
 
 	const session = authAdapter.getToken();
 
@@ -47,14 +50,29 @@ export function useNavbar() {
 							action: {
 								type: "button" as const,
 								onClick: () => {
-									analyticsAdapter.trackEvent({
-										name: "click-login-button",
-										payload: {
-											location: "navbar",
-										},
-									});
+									const onClickLogin = () => {
+										analyticsAdapter.trackEvent({
+											name: "click-login-button",
+											payload: {
+												location: "navbar",
+											},
+										});
 
-									startAuthFlow();
+										startAuthFlow();
+									};
+
+									// Show alert if available, else continue
+									if (
+										limitedUsersAccessAlertManager &&
+										limitedUsersAccessAlertManager.status.type === "closed"
+									) {
+										limitedUsersAccessAlertManager.setStatus({
+											type: "open",
+											onContinue: onClickLogin,
+										});
+									} else {
+										onClickLogin();
+									}
 								},
 							},
 						}
@@ -70,6 +88,7 @@ export function useNavbar() {
 		}),
 		[
 			analyticsAdapter,
+			limitedUsersAccessAlertManager,
 			logout,
 			navigationAdapter,
 			onToggleTheme,

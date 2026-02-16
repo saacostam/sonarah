@@ -1,5 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import { LimitedUsersAccessAlertManagerContext } from "@/features/access/limited-users/app";
+import type { ILimitedUsersAccessAlertManager } from "@/features/access/limited-users/domain";
 import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
@@ -39,36 +41,110 @@ const makeAnalyticsAdapter = () => {
 	};
 };
 
-describe("Navbar [Integration]", () => {
-	it("should render login and trigger auth flow when clicked, if session is unauthenticated", async () => {
-		const analyticsAdapter = makeAnalyticsAdapter();
-		const authAdapter = makeAuthAdapter("unauthenticated");
-		const themeAdapter = makeThemeAdapter();
+const makeLimitedUsersAccessAlertManager = () => {
+	const setManagerStatus = vi.fn();
+	const limitedUsersAccessAlertManager: ILimitedUsersAccessAlertManager = {
+		status: {
+			type: "closed",
+		},
+		setStatus: setManagerStatus,
+	};
 
-		renderWithProviders(<Navbar />, {
-			adapters: {
-				analyticsAdapter,
-				authAdapter,
-				navigationAdapter,
-				themeAdapter,
-			},
+	return {
+		limitedUsersAccessAlertManager,
+		setManagerStatus,
+	};
+};
+
+describe("Navbar [Integration]", () => {
+	describe("Login", () => {
+		it("should render login and trigger auth flow when clicked, if session is unauthenticated and no limited-users-access-alert-manager is available", async () => {
+			const analyticsAdapter = makeAnalyticsAdapter();
+			const authAdapter = makeAuthAdapter("unauthenticated");
+			const themeAdapter = makeThemeAdapter();
+
+			renderWithProviders(<Navbar />, {
+				adapters: {
+					analyticsAdapter,
+					authAdapter,
+					navigationAdapter,
+					themeAdapter,
+				},
+			});
+
+			const cta = await screen.findByRole("button", { name: /login/i });
+			await userEvent.click(cta);
+
+			expect(authAdapter.startAuthFlow).toHaveBeenCalled();
+			expect(authAdapter.removeToken).not.toHaveBeenCalled();
+
+			const clickLoginButtonEvent: IAnalyticsEvent = {
+				name: "click-login-button",
+				payload: {
+					location: "navbar",
+				},
+			};
+			expect(analyticsAdapter.trackEvent).toHaveBeenCalledExactlyOnceWith(
+				clickLoginButtonEvent,
+			);
 		});
 
-		const cta = await screen.findByRole("button", { name: /login/i });
-		await userEvent.click(cta);
+		it("should render login and trigger alert, if session is unauthenticated and limited-users-access-alert-manager is available", async () => {
+			const analyticsAdapter = makeAnalyticsAdapter();
+			const authAdapter = makeAuthAdapter("unauthenticated");
+			const themeAdapter = makeThemeAdapter();
 
-		expect(authAdapter.startAuthFlow).toHaveBeenCalled();
-		expect(authAdapter.removeToken).not.toHaveBeenCalled();
+			const { limitedUsersAccessAlertManager, setManagerStatus } =
+				makeLimitedUsersAccessAlertManager();
 
-		const clickLoginButtonEvent: IAnalyticsEvent = {
-			name: "click-login-button",
-			payload: {
-				location: "navbar",
-			},
-		};
-		expect(analyticsAdapter.trackEvent).toHaveBeenCalledExactlyOnceWith(
-			clickLoginButtonEvent,
-		);
+			renderWithProviders(
+				<LimitedUsersAccessAlertManagerContext.Provider
+					value={limitedUsersAccessAlertManager}
+				>
+					<Navbar />
+				</LimitedUsersAccessAlertManagerContext.Provider>,
+				{
+					adapters: {
+						analyticsAdapter,
+						authAdapter,
+						navigationAdapter,
+						themeAdapter,
+					},
+				},
+			);
+
+			const cta = await screen.findByRole("button", { name: /login/i });
+			await userEvent.click(cta);
+
+			// Check that alert was triggered
+			expect(setManagerStatus).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					type: "open",
+				}),
+			);
+			expect(authAdapter.startAuthFlow).not.toHaveBeenCalled();
+			expect(analyticsAdapter.trackEvent).not.toHaveBeenCalled();
+
+			expect(authAdapter.removeToken).not.toHaveBeenCalled();
+
+			// Check if onContinue callback triggers login
+			setManagerStatus.mock.calls[0][0].onContinue();
+
+			await waitFor(() => {
+				expect(authAdapter.startAuthFlow).toHaveBeenCalled();
+				expect(authAdapter.removeToken).not.toHaveBeenCalled();
+
+				const clickLoginButtonEvent: IAnalyticsEvent = {
+					name: "click-login-button",
+					payload: {
+						location: "navbar",
+					},
+				};
+				expect(analyticsAdapter.trackEvent).toHaveBeenCalledExactlyOnceWith(
+					clickLoginButtonEvent,
+				);
+			});
+		});
 	});
 
 	it("should render logout and remove token when clicked, if session is authenticated", async () => {
