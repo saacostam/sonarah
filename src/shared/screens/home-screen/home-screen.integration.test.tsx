@@ -170,7 +170,9 @@ describe("HomeScreen [Integration]", () => {
 				expect(screen.getByTestId("home-screen-content")).toBeInTheDocument();
 			});
 
-			const button = await screen.findByRole("button", { name: /login/i });
+			const button = await screen.findByRole("button", {
+				name: /start matching a playlist/i,
+			});
 			await userEvent.click(button);
 
 			expect(deps.startAuthFlow).toHaveBeenCalledTimes(1);
@@ -200,7 +202,9 @@ describe("HomeScreen [Integration]", () => {
 				expect(screen.getByTestId("home-screen-content")).toBeInTheDocument();
 			});
 
-			const button = await screen.findByRole("button", { name: /login/i });
+			const button = await screen.findByRole("button", {
+				name: /start matching a playlist/i,
+			});
 			await userEvent.click(button);
 
 			// Check that alert was triggered

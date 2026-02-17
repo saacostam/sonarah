@@ -61,7 +61,7 @@ export function useHome() {
 							}
 						},
 					},
-			label: isAuth ? "Start Now" : "Login",
+			label: isAuth ? "Start Now" : "Start matching a playlist",
 		}),
 		[
 			analyticsAdapter,
