@@ -25,18 +25,29 @@ export function Callout({
 
 	return (
 		<AutoHeightPresence isOpen={!isDismissed}>
-			<RadixCallout.Root size="1" variant="surface" {...rest}>
-				<RadixCallout.Icon>
+			<RadixCallout.Root
+				size="1"
+				variant="surface"
+				{...rest}
+				style={{ ...rest.style, display: "flex" }}
+			>
+				<RadixCallout.Icon style={{ flex: 0 }}>
 					{icon ?? <InformationCircleIcon height={20} width={20} />}
 				</RadixCallout.Icon>
 
-				<Flex gap="1" align="start">
+				<Flex
+					gap="1"
+					align="start"
+					justify="between"
+					style={{ flex: 1, minWidth: 0 }}
+				>
 					<RadixCallout.Text style={{ flex: 1 }}>{children}</RadixCallout.Text>
 
 					{dismissable && (
 						<Button
 							size="1"
 							variant="ghost"
+							color={rest.color}
 							onClick={
 								dismissed
 									? dismissed.onDismiss
