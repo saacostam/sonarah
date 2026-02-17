@@ -16,14 +16,14 @@ export interface HomeContentProps {
 }
 
 const IMAGES = [
-	"/my-playlists.jpeg",
-	"/add-track.jpeg",
-	"/browse.jpeg",
-	"/create.jpeg",
-	"/import-playlist.jpeg",
-	"/match.jpeg",
-	"/playlist.jpeg",
-	"/unfollow.jpeg",
+	"my-playlists.jpeg",
+	"add-track.jpeg",
+	"browse.jpeg",
+	"create.jpeg",
+	"import-playlist.jpeg",
+	"match.jpeg",
+	"playlist.jpeg",
+	"unfollow.jpeg",
 ];
 
 export function HomeContent({ mainCta }: HomeContentProps) {
@@ -69,7 +69,7 @@ export function HomeContent({ mainCta }: HomeContentProps) {
 							</Flex>
 							<img
 								alt="ScreenShot of reference playlist screen"
-								src="/playlist.jpeg"
+								src="playlist.jpeg"
 								width="100%"
 							/>
 							<Text>
@@ -87,7 +87,7 @@ export function HomeContent({ mainCta }: HomeContentProps) {
 							</Flex>
 							<img
 								alt="ScreenShot of match playlist screen"
-								src="/match.jpeg"
+								src="match.jpeg"
 								width="100%"
 							/>
 							<Text>
@@ -108,7 +108,7 @@ export function HomeContent({ mainCta }: HomeContentProps) {
 							</Flex>
 							<img
 								alt="ScreenShot of create playlist screen"
-								src="/create.jpeg"
+								src="create.jpeg"
 								width="100%"
 							/>
 							<Text>
