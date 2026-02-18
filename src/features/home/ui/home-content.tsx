@@ -1,4 +1,5 @@
 import {
+	AspectRatio,
 	Badge,
 	Box,
 	Card,
@@ -58,6 +59,7 @@ export function HomeContent({ mainCta }: HomeContentProps) {
 				<Heading size="6" mb="4" align="center">
 					How it Works?
 				</Heading>
+
 				<Grid columns={{ xs: "1", sm: "2", md: "3" }} gap="4" justify="between">
 					<Card>
 						<Flex direction="column" gap="2">
@@ -120,20 +122,33 @@ export function HomeContent({ mainCta }: HomeContentProps) {
 				</Grid>
 			</Box>
 			<Separator style={{ width: "100%" }} />
-			<Box py="4" mx="auto" width="720px">
+			<Heading size="6" mb="4" align="center">
+				Demo
+			</Heading>
+			<AspectRatio ratio={16 / 9}>
+				<iframe
+					src={`https://www.youtube.com/embed/_vvhEZMpJiY`}
+					title="YouTube video player"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					style={{
+						width: "100%",
+						height: "100%",
+						border: 0,
+					}}
+				/>
+			</AspectRatio>
+			<Separator style={{ width: "100%" }} />
+			<Box py="4" mx="auto" maxWidth="720px">
 				<Heading size="6" mb="4" align="center">
 					Why Sonarah?
 				</Heading>
-				<Grid columns={{ xs: "1", sm: "2" }}>
-					<ul style={{ margin: 0 }}>
-						<li>You choose every track</li>
-						<li>No playlists generated for you</li>
-					</ul>
-					<ul style={{ margin: 0 }}>
-						<li>Order matters more than similarity</li>
-						<li>Playlists are treated as intentional works</li>
-					</ul>
-				</Grid>
+				<ul style={{ margin: 0 }}>
+					<li>You choose every track</li>
+					<li>No playlists generated for you</li>
+					<li>Order matters more than similarity</li>
+					<li>Playlists are treated as intentional works</li>
+				</ul>
 			</Box>
 			<Separator style={{ width: "100%" }} />
 			<Box py="4">
