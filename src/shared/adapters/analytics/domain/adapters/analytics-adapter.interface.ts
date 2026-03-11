@@ -1,6 +1,7 @@
 export interface AnalyticsEventMap {
 	"request-access-token": { success: boolean };
 	"click-login-button": { location: "navbar" | "landing" };
+	"view-dashboard": undefined;
 }
 
 export type IAnalyticsEvent = {

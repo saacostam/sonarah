@@ -1,10 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDashboardModalManager } from "@/features/dashboard/app";
 import {
 	DashboardModalManagerProvider,
 	DashboardModalManagerRenderer,
 } from "@/features/dashboard/ui";
 import { MyPlaylists } from "@/features/playlists/my-playlists/ui";
+import { useAdapters } from "@/shared/adapters/core/app";
 
 export function DashboardScreen() {
 	return (
@@ -16,6 +17,8 @@ export function DashboardScreen() {
 }
 
 export function DashboardScreenContent() {
+	const { analyticsAdapter } = useAdapters();
+
 	const paginationLimit = 14;
 	const [page, setPage] = useState(1);
 
@@ -37,6 +40,13 @@ export function DashboardScreenContent() {
 		},
 		[setStatus],
 	);
+
+	useEffect(() => {
+		analyticsAdapter.trackEvent({
+			name: "view-dashboard",
+			payload: undefined,
+		});
+	}, [analyticsAdapter]);
 
 	return (
 		<MyPlaylists

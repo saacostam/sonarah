@@ -2,6 +2,7 @@ import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { DashboardModalManagerContext } from "@/features/dashboard/app";
 import type { IDashboardModalManager } from "@/features/dashboard/domain";
+import type { IAnalyticsEvent } from "@/shared/adapters/analytics/domain";
 import { renderWithProviders } from "@/tests";
 import { DashboardScreenContent } from "./dashboard-screen";
 
@@ -29,7 +30,14 @@ function renderWithModalManager(
 
 describe("DashboardScreenContent [Integration]", () => {
 	it("should set create-status when 'Create' button is clicked", async () => {
+		const trackEvent = vi.fn();
+
 		const { setStatus } = renderWithModalManager(<DashboardScreenContent />, {
+			adapters: {
+				analyticsAdapter: {
+					trackEvent,
+				},
+			},
 			clients: {
 				playlist: {
 					getAll: async () => ({
@@ -52,10 +60,23 @@ describe("DashboardScreenContent [Integration]", () => {
 
 		expect(setStatus).toHaveBeenCalledWith(expectedPayload);
 		expect(setStatus).toHaveBeenCalledTimes(1);
+
+		const expectedEventPayload: IAnalyticsEvent = {
+			name: "view-dashboard",
+			payload: undefined,
+		};
+		expect(trackEvent).toHaveBeenCalledExactlyOnceWith(expectedEventPayload);
 	});
 
 	it("should set search-status when 'Import' button is clicked", async () => {
+		const trackEvent = vi.fn();
+
 		const { setStatus } = renderWithModalManager(<DashboardScreenContent />, {
+			adapters: {
+				analyticsAdapter: {
+					trackEvent,
+				},
+			},
 			clients: {
 				playlist: {
 					getAll: async () => ({
@@ -78,5 +99,11 @@ describe("DashboardScreenContent [Integration]", () => {
 
 		expect(setStatus).toHaveBeenCalledWith(expectedPayload);
 		expect(setStatus).toHaveBeenCalledTimes(1);
+
+		const expectedEventPayload: IAnalyticsEvent = {
+			name: "view-dashboard",
+			payload: undefined,
+		};
+		expect(trackEvent).toHaveBeenCalledExactlyOnceWith(expectedEventPayload);
 	});
 });
