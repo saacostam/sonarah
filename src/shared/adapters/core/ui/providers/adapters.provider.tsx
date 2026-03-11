@@ -2,7 +2,7 @@ import { type PropsWithChildren, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { HashRouter } from "react-router";
 
-import { useMockAnalyticsProvider } from "@/shared/adapters/analytics/infra";
+import { useAnalyticsAdapter } from "@/shared/adapters/analytics/infra";
 import { SpotifyAuthAdapter } from "@/shared/adapters/auth/infra";
 import { IConfigurationAdapterStringKey } from "@/shared/adapters/configuration/domain";
 import { useConfigurationAdapter } from "@/shared/adapters/configuration/infra";
@@ -37,7 +37,7 @@ function AdaptersProviderDI({ children }: PropsWithChildren) {
 		),
 	});
 
-	const analyticsAdapter = useMockAnalyticsProvider();
+	const analyticsAdapter = useAnalyticsAdapter();
 	const navigationAdapter = useMemo(() => new NavigationAdapter(), []);
 	const authAdapter = useMemo(
 		() => new SpotifyAuthAdapter(storageAdapter, routerAdapter),

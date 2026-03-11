@@ -1,1 +1,1 @@
-export * from "./use-mock-analytics-provider";
+export * from "./use-analytics-adapter";
