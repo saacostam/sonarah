@@ -42,7 +42,7 @@ export function ManagePlaylistModalManagerRenderer() {
 	const onDeleteTrackSuccess = useCallback(() => {
 		notificationsAdapter.notify(
 			INotificationAdapterType.SUCCESS,
-			"Added",
+			"Deleted",
 			"Track was deleted successfully",
 		);
 	}, [notificationsAdapter]);
